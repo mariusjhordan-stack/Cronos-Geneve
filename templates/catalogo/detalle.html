@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ reloj.marca.nombre }} {{ reloj.nombre }} | Cronos Genève{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Breadcrumb Discreto -->
+    <nav class="mb-4">
+        <div class="d-flex align-items-center gap-2 small text-technical" style="font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase;">
+            <a href="{% url 'catalogo:index' %}" class="text-technical text-decoration-none hover-gold">Catálogo</a>
+            <span>&bull;</span>
+            <a href="{% url 'catalogo:index' %}?marca={{ reloj.marca.id }}" class="text-technical text-decoration-none hover-gold">{{ reloj.marca.nombre }}</a>
+            <span>&bull;</span>
+            <span class="text-secondary">{{ reloj.nombre }}</span>
+        </div>
+    </nav>
+
+    <!-- Encabezado Editorial Solemne -->
+    <div class="text-center py-4">
+        <span class="watch-brand-name d-block mb-1" style="font-size: 0.78rem; letter-spacing: 0.32em;">
+            {{ reloj.marca.nombre }}
+        </span>
+        <h1 class="editorial-headline mb-0" style="font-size: clamp(2rem, 4vw, 3.4rem); letter-spacing: 0.1em;">
+            {{ reloj.nombre }}
+        </h1>
+    </div>
+
+    <hr class="my-4" style="border-color: var(--border-line);">
+
+    <!-- Sección Principal: Imagen 50% y Resumen Técnico / Compra -->
+    <div class="row g-5 align-items-center py-4">
+        <!-- Columna Izquierda: Escenario Fotográfico 50% -->
+        <div class="col-lg-6">
+            <div class="detail-stage">
+                {% if reloj.imagen_url %}
+                    <img src="{{ reloj.imagen_url }}" alt="{{ reloj.nombre }}" class="img-fluid" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800';">
+                {% else %}
+                    <div class="text-center text-technical">
+                        <span class="d-block small" style="letter-spacing: 0.2em;">REGISTRO VISUAL RESERVADO</span>
+                    </div>
+                {% endif %}
+
+                <!-- Indicador de Escasez en la Ficha -->
+                <div class="position-absolute top-0 end-0 m-4">
+                    {% if reloj.stock == 0 %}
+                        <span class="stock-editorial-tag tag-out">[ AGOTADO ]</span>
+                    {% elif reloj.stock == 1 %}
+                        <span class="stock-editorial-tag tag-unique">[ PIEZA ÚNICA ]</span>
+                    {% elif reloj.stock <= 3 %}
+                        <span class="stock-editorial-tag tag-low">[ {{ reloj.stock }} DISPONIBLES ]</span>
+                    {% else %}
+                        <span class="stock-editorial-tag">[ EN BÓVEDA ]</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna Derecha: Cotización, Calibre & Adquisición -->
+        <div class="col-lg-6 ps-lg-5">
+            <div class="mb-4">
+                <span class="filter-label-editorial mb-2">COTIZACIÓN OFICIAL EN BÓVEDA</span>
+                <div class="watch-price-tag fs-2 text-white">
+                    ${{ reloj.precio|floatformat:2 }} <span class="watch-price-currency fs-6">USD</span>
+                </div>
+                <span class="text-technical small d-block mt-1" style="font-size: 0.72rem; letter-spacing: 0.08em;">
+                    Impuestos de importación y seguro de tránsito internacional incluidos.
+                </span>
+            </div>
+
+            <!-- Resumen Técnico Sintético -->
+            <div class="py-3 border-top border-bottom" style="border-color: var(--border-line) !important;">
+                <div class="row g-3 text-uppercase font-sans" style="font-size: 0.75rem; letter-spacing: 0.14em;">
+                    <div class="col-6 text-technical">Mecanismo:</div>
+                    <div class="col-6 text-primary text-end">{{ reloj.get_movimiento_display }}</div>
+
+                    <div class="col-6 text-technical">Diámetro de Caja:</div>
+                    <div class="col-6 text-primary text-end">{{ reloj.diametro_caja_mm }} MM</div>
+
+                    <div class="col-6 text-technical">Hermeticidad:</div>
+                    <div class="col-6 text-primary text-end">{{ reloj.resistencia_agua_m }} M WR</div>
+
+                    <div class="col-6 text-technical">Cristal:</div>
+                    <div class="col-6 text-primary text-end">{{ reloj.cristal|truncatewords:4 }}</div>
+
+                    <div class="col-6 text-technical">Brazalete:</div>
+                    <div class="col-6 text-primary text-end">{{ reloj.material_correa|truncatewords:4 }}</div>
+                </div>
+            </div>
+
+            <!-- Acciones de Adquisición -->
+            <div class="pt-4">
+                {% if reloj.stock > 0 %}
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <span class="filter-label-editorial mb-0">UNIDADES:</span>
+                        <div class="d-inline-flex align-items-center border" style="border-color: var(--border-line) !important;">
+                            <button type="button" class="btn-qty-swiss px-2" onclick="const input = document.getElementById('detailQuantity'); if(input.value > 1) input.value--;">
+                                &minus;
+                            </button>
+                            <input type="number" id="detailQuantity" class="form-control form-control-sm bg-transparent border-0 text-white text-center font-monospace" style="width: 45px; border-radius: 0 !important;" value="1" min="1" max="{{ reloj.stock }}" readonly>
+                            <button type="button" class="btn-qty-swiss px-2" onclick="const input = document.getElementById('detailQuantity'); if(input.value < {{ reloj.stock }}) input.value++;">
+                                &#43;
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn-editorial-primary py-3" onclick="CronosCart.add({{ reloj.id }}, parseInt(document.getElementById('detailQuantity').value))">
+                            AÑADIR A LA BOLSA &rarr;
+                        </button>
+                        <button type="button" class="btn-editorial-ghost py-3 btn-compare-trigger" data-reloj-id="{{ reloj.id }}" onclick="CronosComparator.toggle({{ reloj.id }}, '{{ reloj.nombre|escapejs }}', '{{ reloj.marca.nombre|escapejs }}', '{{ reloj.imagen_url|default:''|escapejs }}')">
+                            COMPARAR EN MATRIZ
+                        </button>
+                    </div>
+                {% else %}
+                    <div class="p-3 border border-secondary text-secondary small mb-3">
+                        Esta pieza se encuentra actualmente agotada o bajo encargo especial de manufactura.
+                    </div>
+                    <button type="button" class="btn-editorial-ghost w-100 py-3 btn-compare-trigger" data-reloj-id="{{ reloj.id }}" onclick="CronosComparator.toggle({{ reloj.id }}, '{{ reloj.nombre|escapejs }}', '{{ reloj.marca.nombre|escapejs }}', '{{ reloj.imagen_url|default:''|escapejs }}')">
+                        COMPARAR EN MATRIZ
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección Editorial: THE WATCH -->
+    <div class="row g-5 py-5 my-3 border-top" style="border-color: var(--border-line) !important;">
+        <div class="col-lg-5">
+            <span class="filter-label-editorial mb-2">MEMORIA DE MANUFACTURA</span>
+            <h2 class="editorial-title fs-3 text-white">THE WATCH</h2>
+        </div>
+        <div class="col-lg-7">
+            <p class="text-secondary leading-relaxed mb-0" style="white-space: pre-line; line-height: 2; font-size: 0.95rem;">
+                {{ reloj.descripcion }}
+            </p>
+        </div>
+    </div>
+
+    <!-- Sección: TECHNICAL SPECIFICATIONS -->
+    <div class="row g-5 py-5 border-top" style="border-color: var(--border-line) !important;">
+        <div class="col-lg-5">
+            <span class="filter-label-editorial mb-2">FICHA DE BÓVEDA</span>
+            <h2 class="editorial-title fs-3 text-white">TECHNICAL SPECIFICATIONS</h2>
+        </div>
+        <div class="col-lg-7">
+            <div class="detail-specs-table">
+                <div class="detail-specs-row">
+                    <span class="detail-specs-label">MANUFACTURA</span>
+                    <span class="detail-specs-value">{{ reloj.marca.nombre }} ({{ reloj.marca.pais_origen|default:"Suiza" }})</span>
+                </div>
+                <div class="detail-specs-row">
+                    <span class="detail-specs-label">CALIBRE / MOVIMIENTO</span>
+                    <span class="detail-specs-value">{{ reloj.get_movimiento_display }}</span>
+                </div>
+                <div class="detail-specs-row">
+                    <span class="detail-specs-label">DIÁMETRO DE CAJA</span>
+                    <span class="detail-specs-value font-monospace">{{ reloj.diametro_caja_mm }} MM</span>
+                </div>
+                <div class="detail-specs-row">
+                    <span class="detail-specs-label">CRISTAL</span>
+                    <span class="detail-specs-value">{{ reloj.cristal }}</span>
+                </div>
+                <div class="detail-specs-row">
+                    <span class="detail-specs-label">HERMETICIDAD</span>
+                    <span class="detail-specs-value font-monospace">{{ reloj.resistencia_agua_m }} M / {{ reloj.resistencia_agua_m|floatformat:0 }} ATM</span>
+                </div>
+                <div class="detail-specs-row">
+                    <span class="detail-specs-label">BRAZALETE</span>
+                    <span class="detail-specs-value">{{ reloj.material_correa }}</span>
+                </div>
+                <div class="detail-specs-row">
+                    <span class="detail-specs-label">INGRESO EN BÓVEDA</span>
+                    <span class="detail-specs-value">{{ reloj.creado_en|date:"d F Y" }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Piezas Relacionadas en Galería Editorial -->
+    {% if piezas_relacionadas %}
+        <div class="pt-5 mt-5 border-top" style="border-color: var(--border-line) !important;">
+            <div class="d-flex justify-content-between align-items-baseline mb-4">
+                <div>
+                    <span class="filter-label-editorial mb-1">CURADURÍA SUGERIDA</span>
+                    <h3 class="editorial-title fs-4 text-white">PIEZAS DE CALIBRE ANÁLOGO</h3>
+                </div>
+                <a href="{% url 'catalogo:index' %}" class="filter-label-editorial text-secondary text-decoration-none hover-gold">
+                    VER CATÁLOGO &rarr;
+                </a>
+            </div>
+
+            <div class="catalog-gallery">
+                {% for rel in piezas_relacionadas %}
+                    <article class="gallery-cell">
+                        <div class="watch-photo-stage" style="height: 260px;">
+                            {% if rel.imagen_url %}
+                                <img src="{{ rel.imagen_url }}" alt="{{ rel.nombre }}" loading="lazy">
+                            {% endif %}
+                        </div>
+                        <div class="watch-brand-name">{{ rel.marca.nombre }}</div>
+                        <h4 class="watch-model-title fs-5 mb-2">
+                            <a href="{% url 'catalogo:detalle' rel.pk %}">{{ rel.nombre }}</a>
+                        </h4>
+                        <div class="watch-price-tag mb-3">
+                            ${{ rel.precio|floatformat:2 }} <span class="watch-price-currency">USD</span>
+                        </div>
+                        <div class="d-flex gap-2 mt-auto">
+                            <a href="{% url 'catalogo:detalle' rel.pk %}" class="btn-editorial-ghost flex-grow-1 text-center">
+                                VER DETALLE &rarr;
+                            </a>
+                            {% if rel.stock > 0 %}
+                                <button type="button" class="btn-editorial-primary px-3" onclick="CronosCart.add({{ rel.id }})" title="Reservar pieza">
+                                    +
+                                </button>
+                            {% endif %}
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

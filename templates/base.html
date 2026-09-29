@@ -1,0 +1,541 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Cronos Genève | Haute Horlogerie & Manufacture{% endblock %}</title>
+
+    <!-- Google Fonts: Cormorant Garamond (Haute Horlogerie Serif) & Inter (Precision Sans) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5.3 CSS vía CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Hoja de Estilos Swiss Haute Horlogerie (Zero AI Look) -->
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Header / Navbar Editorial (75px, Fondo Sólido #111214, Divisor de 1px) -->
+    <header class="header-swiss sticky-top">
+        <div class="container d-flex align-items-center justify-content-between">
+            <!-- Brand Monogram -->
+            <a class="brand-swiss" href="{% url 'catalogo:index' %}">
+                <span class="brand-title">CRONOS GENÈVE</span>
+                <span class="brand-subtitle">MANUFACTURE &bull; SUISSE</span>
+            </a>
+
+            <!-- Navegación Central -->
+            <nav class="d-none d-md-flex align-items-center gap-1">
+                <a class="nav-link-swiss {% if request.resolver_match.url_name == 'index' %}active{% endif %}" href="{% url 'catalogo:index' %}">
+                    Catálogo
+                </a>
+                <a class="nav-link-swiss" href="{% url 'catalogo:index' %}?orden=novedades">
+                    Colecciones
+                </a>
+                <a class="nav-link-swiss {% if request.resolver_match.url_name == 'comparador' %}active{% endif %}" href="{% url 'catalogo:comparador' %}">
+                    Comparador
+                </a>
+                <a class="nav-link-swiss" href="/admin/" target="_blank" title="Bóveda de Control">
+                    Bóveda Admin
+                </a>
+            </nav>
+
+            <!-- Bolsa de Compra Minimalista: BOLSA (2) -->
+            <div class="d-flex align-items-center gap-3">
+                <button class="bag-trigger" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBag" aria-controls="offcanvasBag" title="Ver selección de piezas">
+                    <span>BOLSA (<span id="cartBadge">{{ carrito_global.total_unidades|default:"0" }}</span>)</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenedor de Mensajes del Sistema -->
+    <div class="container mt-3">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-dark alert-dismissible fade show border-0 rounded-0 py-2 px-3 small d-flex align-items-center justify-content-between" style="background-color: var(--bg-surface); border-left: 2px solid var(--accent-bronze) !important;" role="alert">
+                    <span class="text-primary font-sans small">{{ message }}</span>
+                    <button type="button" class="btn-close btn-close-white p-2" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- Contenido Dinámico Principal -->
+    <main class="flex-grow-1">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Private Watch Bag (Drawer Lateral Editorial Offcanvas) -->
+    <div class="offcanvas offcanvas-end offcanvas-bag" tabindex="-1" id="offcanvasBag" aria-labelledby="offcanvasBagLabel">
+        <div class="offcanvas-header d-flex justify-content-between align-items-baseline">
+            <div>
+                <span class="brand-subtitle d-block">CRONOS GENÈVE</span>
+                <h5 class="editorial-title fs-5 mb-0" id="offcanvasBagLabel">
+                    YOUR SELECTION
+                </h5>
+            </div>
+            <button type="button" class="btn-close btn-close-white p-2" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+        </div>
+
+        <div class="offcanvas-body p-4 d-flex flex-column" id="cartDrawerBody">
+            <!-- Lista Dinámica de Relojes en Bolsa -->
+            <div id="cartItemsContainer" class="flex-grow-1 overflow-auto pe-1">
+                {% if carrito_global.tiene_items %}
+                    {% for item in carrito_global.items %}
+                        <div class="bag-item-row" data-reloj-id="{{ item.reloj.id }}">
+                            <div class="d-flex gap-3 align-items-start">
+                                <div class="bg-black p-2 d-flex align-items-center justify-content-center" style="width: 70px; height: 70px; flex-shrink: 0; border: 1px solid var(--border-line);">
+                                    {% if item.reloj.imagen_url %}
+                                        <img src="{{ item.reloj.imagen_url }}" alt="{{ item.reloj.nombre }}" class="img-fluid object-fit-contain h-100">
+                                    {% endif %}
+                                </div>
+                                <div class="flex-grow-1 min-w-0">
+                                    <span class="watch-brand-name d-block">{{ item.reloj.marca.nombre }}</span>
+                                    <h6 class="watch-model-title fs-6 text-truncate mb-1" title="{{ item.reloj.nombre }}">{{ item.reloj.nombre }}</h6>
+                                    <span class="text-secondary small d-block mb-3 font-monospace">{{ item.cantidad }} &times; ${{ item.reloj.precio|floatformat:2 }} USD</span>
+
+                                    <!-- Controles de Cantidad -->
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="d-inline-flex align-items-center gap-1">
+                                            <button type="button" class="btn-qty-swiss" onclick="CronosCart.update({{ item.reloj.id }}, 'decrementar')" title="Disminuir unidad">
+                                                &minus;
+                                            </button>
+                                            <span class="px-2 small text-primary font-monospace">{{ item.cantidad }}</span>
+                                            <button type="button" class="btn-qty-swiss" onclick="CronosCart.update({{ item.reloj.id }}, 'incrementar')" {% if item.cantidad >= item.reloj.stock %}disabled{% endif %} title="Añadir unidad">
+                                                &#43;
+                                            </button>
+                                        </div>
+
+                                        <span class="text-primary fw-medium small font-monospace">${{ item.subtotal|floatformat:2 }}</span>
+
+                                        <button type="button" class="btn btn-link text-technical p-0 ms-2 text-decoration-none" onclick="CronosCart.remove({{ item.reloj.id }})" title="Retirar de la bolsa">
+                                            <span style="font-size: 0.9rem;">&times;</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <!-- Estado Vacío -->
+                    <div class="text-center py-5 my-auto text-secondary">
+                        <span class="watch-brand-name d-block mb-2">BÓVEDA DISPONIBLE</span>
+                        <h6 class="editorial-title fs-5 mb-2">Su selección está vacía</h6>
+                        <p class="small text-technical mb-4">Ninguna pieza horológica ha sido consignada en su bolsa personal.</p>
+                        <a href="{% url 'catalogo:index' %}" class="btn-editorial-ghost text-decoration-none" data-bs-dismiss="offcanvas">
+                            EXPLORAR CATÁLOGO &rarr;
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Footer del Offcanvas con Subtotal y Checkout -->
+        <div class="offcanvas-footer" id="cartDrawerFooter">
+            <div class="d-flex justify-content-between align-items-baseline mb-4">
+                <span class="text-secondary small text-uppercase" style="letter-spacing: 0.16em; font-size: 0.72rem;">TOTAL ESTIMADO</span>
+                <span id="cartDrawerTotal" class="text-primary fs-5 fw-medium font-monospace">
+                    ${{ carrito_global.total|floatformat:2|default:"0.00" }} <span class="small text-technical">USD</span>
+                </span>
+            </div>
+
+            <div class="d-grid gap-2">
+                <a href="{% url 'pedidos:checkout' %}" id="btnProceedCheckout" class="btn-editorial-primary text-center text-decoration-none py-3 {% if not carrito_global.tiene_items %}disabled{% endif %}">
+                    PROCEDER A LA ADQUISICIÓN &rarr;
+                </a>
+                <button type="button" class="btn btn-link text-technical text-decoration-none small py-1" onclick="CronosCart.clear()" {% if not carrito_global.tiene_items %}disabled{% endif %} style="font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase;">
+                    VACIAR SELECCIÓN
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Barra Flotante del Comparador Técnico (Aparece cuando >= 2 piezas seleccionadas) -->
+    <div id="comparatorFloatingBar" class="comparator-float-bar d-flex align-items-center gap-4">
+        <div class="d-flex align-items-center gap-3">
+            <div class="d-flex align-items-center gap-2" id="comparatorThumbsContainer">
+                <!-- Miniaturas inyectadas con JS -->
+            </div>
+            <div class="d-none d-md-block">
+                <span class="brand-subtitle d-block" style="font-size: 0.58rem;">MATRIZ HOROLÓGICA</span>
+                <span class="text-primary small" id="comparatorCountLabel" style="font-size: 0.75rem;">2 piezas para contrastar</span>
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn-editorial-ghost btn-sm py-2 px-3" onclick="CronosComparator.clear()" title="Deseleccionar todas las piezas">
+                LIMPIAR
+            </button>
+            <a href="{% url 'catalogo:comparador' %}" id="btnGoComparator" class="btn-editorial-primary btn-sm py-2 px-3 text-decoration-none">
+                COMPARAR ESPECIFICACIONES &rarr;
+            </a>
+        </div>
+    </div>
+
+    <!-- Toast de Notificaciones Discreto -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1090;">
+        <div id="cronosToast" class="toast toast-swiss" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-black text-white border-bottom" style="border-color: var(--border-line) !important;">
+                <span class="me-auto text-bronze fw-semibold" style="font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase;">Cronos Genève</span>
+                <small class="text-technical" style="font-size: 0.65rem;">Bóveda</small>
+                <button type="button" class="btn-close btn-close-white p-1" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+            </div>
+            <div class="toast-body small py-3 text-primary font-sans" id="cronosToastBody" style="font-size: 0.78rem;">
+                Operación completada en inventario.
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Editorial Minimalista -->
+    <footer class="footer-swiss py-5 text-secondary">
+        <div class="container py-3">
+            <div class="row g-4 justify-content-between">
+                <div class="col-lg-4">
+                    <span class="brand-title d-block mb-1" style="font-size: 1.15rem;">CRONOS GENÈVE</span>
+                    <span class="brand-subtitle d-block mb-3">MANUFACTURE D'HORLOGERIE</span>
+                    <p class="small text-secondary mb-3" style="line-height: 1.8; font-size: 0.8rem;">
+                        Preservación y custodia de alta horología suiza. Inspección cronométrica, trazabilidad de calibres y certificación notarial de procedencia.
+                    </p>
+                </div>
+
+                <div class="col-6 col-lg-2">
+                    <span class="filter-label-editorial mb-3">ÍNDICE</span>
+                    <ul class="list-unstyled small" style="font-size: 0.78rem;">
+                        <li class="mb-2"><a href="{% url 'catalogo:index' %}" class="text-decoration-none text-secondary">Colección 2026</a></li>
+                        <li class="mb-2"><a href="{% url 'catalogo:comparador' %}" class="text-decoration-none text-secondary">Matriz Comparativa</a></li>
+                        <li class="mb-2"><a href="{% url 'pedidos:checkout' %}" class="text-decoration-none text-secondary">Adquisición</a></li>
+                        <li class="mb-2"><a href="/api/relojes/" class="text-decoration-none text-secondary" target="_blank">Endpoint JSON DRF</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-6 col-lg-3">
+                    <span class="filter-label-editorial mb-3">ESTÁNDARES</span>
+                    <ul class="list-unstyled small text-secondary" style="font-size: 0.78rem;">
+                        <li class="mb-2">&bull; Poinçon de Genève</li>
+                        <li class="mb-2">&bull; Master Chronometer METAS</li>
+                        <li class="mb-2">&bull; Swiss Luxury Minimalist UI</li>
+                        <li class="mb-2">&bull; Custodia Asegurada</li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3">
+                    <span class="filter-label-editorial mb-3">CONCIERGE</span>
+                    <p class="small text-secondary mb-1" style="font-size: 0.78rem;">Rue du Rhône 42, Genève &bull; San Isidro, Lima</p>
+                    <p class="small text-secondary mb-1" style="font-size: 0.78rem;">concierge@cronos-geneve.com</p>
+                    <p class="small text-secondary" style="font-size: 0.78rem;">+41 22 819 00 00</p>
+                </div>
+            </div>
+
+            <hr class="my-4" style="border-color: var(--border-line);">
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center small text-technical" style="font-size: 0.7rem; letter-spacing: 0.08em;">
+                <span>&copy; 2026 CRONOS GENÈVE. TOUS DROITS RÉSERVÉS.</span>
+                <span>HAUTE HORLOGERIE SUISSE &bull; EDITORIAL STANDARD</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5.3 Bundle JS vía CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <!-- Motor JavaScript Editorial: Carrito Asíncrono y Comparador Dinámico -->
+    <script>
+        // ==========================================
+        // 1. GESTIÓN DEL CARRITO (Fetch API)
+        // ==========================================
+        const CronosCart = {
+            toastEl: null,
+            offcanvasEl: null,
+
+            init() {
+                const toastNode = document.getElementById('cronosToast');
+                if (toastNode) this.toastEl = new bootstrap.Toast(toastNode);
+
+                const offcanvasNode = document.getElementById('offcanvasBag');
+                if (offcanvasNode) this.offcanvasEl = new bootstrap.Offcanvas(offcanvasNode);
+            },
+
+            showToast(mensaje) {
+                const body = document.getElementById('cronosToastBody');
+                if (body) body.textContent = mensaje;
+                if (this.toastEl) this.toastEl.show();
+            },
+
+            async add(relojId, cantidad = 1, openDrawer = true) {
+                try {
+                    const response = await fetch(`/pedidos/carrito/agregar/${relojId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRFToken': this.getCSRFToken()
+                        },
+                        body: JSON.stringify({ cantidad: cantidad })
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        this.updateDOM(data.cart);
+                        this.showToast(data.mensaje);
+                        if (openDrawer && this.offcanvasEl) {
+                            this.offcanvasEl.show();
+                        }
+                    } else {
+                        this.showToast(data.mensaje || 'Error al reservar la pieza.');
+                    }
+                } catch (error) {
+                    console.error('Error en CronosCart.add:', error);
+                }
+            },
+
+            async update(relojId, accion) {
+                try {
+                    const response = await fetch(`/pedidos/carrito/actualizar/${relojId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRFToken': this.getCSRFToken()
+                        },
+                        body: new URLSearchParams({ accion: accion })
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        this.updateDOM(data.cart);
+                    } else {
+                        this.showToast(data.mensaje || 'No fue posible actualizar las unidades.');
+                    }
+                } catch (error) {
+                    console.error('Error en CronosCart.update:', error);
+                }
+            },
+
+            async remove(relojId) {
+                try {
+                    const response = await fetch(`/pedidos/carrito/eliminar/${relojId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRFToken': this.getCSRFToken()
+                        }
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        this.updateDOM(data.cart);
+                        this.showToast(data.mensaje);
+                    }
+                } catch (error) {
+                    console.error('Error en CronosCart.remove:', error);
+                }
+            },
+
+            async clear() {
+                try {
+                    const response = await fetch(`/pedidos/carrito/vaciar/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRFToken': this.getCSRFToken()
+                        }
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        this.updateDOM(data.cart);
+                        this.showToast(data.mensaje);
+                    }
+                } catch (error) {
+                    console.error('Error en CronosCart.clear:', error);
+                }
+            },
+
+            updateDOM(cart) {
+                // 1. Contador numérico minimalista entre paréntesis en Navbar
+                const badge = document.getElementById('cartBadge');
+                if (badge) badge.textContent = cart.total_unidades || 0;
+
+                // 2. Total en Footer del Drawer
+                const totalEl = document.getElementById('cartDrawerTotal');
+                if (totalEl) totalEl.innerHTML = `${cart.total_formateado} <span class="small text-technical">USD</span>`;
+
+                // 3. Activar/Desactivar Botón Checkout
+                const btnCheckout = document.getElementById('btnProceedCheckout');
+                if (btnCheckout) {
+                    if (cart.tiene_items) {
+                        btnCheckout.classList.remove('disabled');
+                    } else {
+                        btnCheckout.classList.add('disabled');
+                    }
+                }
+
+                // 4. Renderizar Filas de Ítems
+                const container = document.getElementById('cartItemsContainer');
+                if (!container) return;
+
+                if (!cart.tiene_items || cart.items.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-5 my-auto text-secondary">
+                            <span class="watch-brand-name d-block mb-2">BÓVEDA DISPONIBLE</span>
+                            <h6 class="editorial-title fs-5 mb-2">Su selección está vacía</h6>
+                            <p class="small text-technical mb-4">Ninguna pieza horológica ha sido consignada en su bolsa personal.</p>
+                            <a href="{% url 'catalogo:index' %}" class="btn-editorial-ghost text-decoration-none" data-bs-dismiss="offcanvas">
+                                EXPLORAR CATÁLOGO &rarr;
+                            </a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = '';
+                cart.items.forEach(item => {
+                    const isMax = item.cantidad >= item.stock_disponible;
+                    html += `
+                        <div class="bag-item-row" data-reloj-id="${item.id}">
+                            <div class="d-flex gap-3 align-items-start">
+                                <div class="bg-black p-2 d-flex align-items-center justify-content-center" style="width: 70px; height: 70px; flex-shrink: 0; border: 1px solid var(--border-line);">
+                                    ${item.imagen_url ? `<img src="${item.imagen_url}" alt="${item.nombre}" class="img-fluid object-fit-contain h-100">` : ``}
+                                </div>
+                                <div class="flex-grow-1 min-w-0">
+                                    <span class="watch-brand-name d-block">${item.marca}</span>
+                                    <h6 class="watch-model-title fs-6 text-truncate mb-1" title="${item.nombre}">${item.nombre}</h6>
+                                    <span class="text-secondary small d-block mb-3 font-monospace">${item.cantidad} &times; ${item.precio_formateado} USD</span>
+
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="d-inline-flex align-items-center gap-1">
+                                            <button type="button" class="btn-qty-swiss" onclick="CronosCart.update(${item.id}, 'decrementar')" title="Disminuir unidad">
+                                                &minus;
+                                            </button>
+                                            <span class="px-2 small text-primary font-monospace">${item.cantidad}</span>
+                                            <button type="button" class="btn-qty-swiss" onclick="CronosCart.update(${item.id}, 'incrementar')" ${isMax ? 'disabled' : ''} title="Añadir unidad">
+                                                &#43;
+                                            </button>
+                                        </div>
+
+                                        <span class="text-primary fw-medium small font-monospace">${item.subtotal_formateado}</span>
+
+                                        <button type="button" class="btn btn-link text-technical p-0 ms-2 text-decoration-none" onclick="CronosCart.remove(${item.id})" title="Retirar de la bolsa">
+                                            <span style="font-size: 0.9rem;">&times;</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            },
+
+            getCSRFToken() {
+                const cookieValue = document.cookie
+                    .split('; ')
+                    .find(row => row.startsWith('csrftoken='))
+                    ?.split('=')[1];
+                return cookieValue || '{{ csrf_token }}';
+            }
+        };
+
+        // ==========================================
+        // 2. GESTIÓN DEL COMPARADOR DINÁMICO
+        // ==========================================
+        const CronosComparator = {
+            storageKey: 'cronos_comparador_items',
+
+            getItems() {
+                try {
+                    return JSON.parse(sessionStorage.getItem(this.storageKey)) || [];
+                } catch {
+                    return [];
+                }
+            },
+
+            saveItems(items) {
+                sessionStorage.setItem(this.storageKey, JSON.stringify(items));
+                this.syncUI();
+            },
+
+            toggle(id, nombre, marca, imgUrl) {
+                let items = this.getItems();
+                const index = items.findIndex(item => item.id == id);
+
+                if (index >= 0) {
+                    items.splice(index, 1);
+                } else {
+                    if (items.length >= 3) {
+                        CronosCart.showToast("Puede comparar un máximo de 3 piezas horológicas simultáneamente.");
+                        return;
+                    }
+                    items.push({ id, nombre, marca, imgUrl });
+                }
+
+                this.saveItems(items);
+            },
+
+            has(id) {
+                return this.getItems().some(item => item.id == id);
+            },
+
+            clear() {
+                sessionStorage.removeItem(this.storageKey);
+                this.syncUI();
+            },
+
+            syncUI() {
+                const items = this.getItems();
+                const bar = document.getElementById('comparatorFloatingBar');
+                const thumbsContainer = document.getElementById('comparatorThumbsContainer');
+                const countLabel = document.getElementById('comparatorCountLabel');
+                const btnGo = document.getElementById('btnGoComparator');
+
+                // Sincronizar botones en el catálogo
+                document.querySelectorAll('.btn-compare-trigger').forEach(btn => {
+                    const id = btn.dataset.relojId;
+                    if (this.has(id)) {
+                        btn.classList.add('active');
+                        btn.innerHTML = `SELECCIONADO &check;`;
+                    } else {
+                        btn.classList.remove('active');
+                        btn.innerHTML = btn.classList.contains('btn-compare-minimal') ? `+ COMPARAR` : (btn.classList.contains('py-3') ? `COMPARAR EN MATRIZ` : `COMPARAR`);
+                    }
+                });
+
+                if (!bar) return;
+
+                if (items.length >= 2) {
+                    bar.classList.add('active');
+
+                    if (thumbsContainer) {
+                        thumbsContainer.innerHTML = items.map(item => `
+                            <img src="${item.imgUrl || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100'}" alt="${item.nombre}" class="comparator-mini-thumb" title="${item.marca} - ${item.nombre}">
+                        `).join('');
+                    }
+
+                    if (countLabel) {
+                        countLabel.textContent = `${items.length} piezas seleccionadas`;
+                    }
+
+                    if (btnGo) {
+                        const idsQuery = items.map(i => i.id).join(',');
+                        btnGo.href = `{% url 'catalogo:comparador' %}?ids=${idsQuery}`;
+                    }
+                } else {
+                    bar.classList.remove('active');
+                }
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            CronosCart.init();
+            CronosComparator.syncUI();
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

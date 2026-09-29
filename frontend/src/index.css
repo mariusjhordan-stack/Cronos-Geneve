@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background-color: #111214;
+  color: #F1F0ED;
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Custom Scrollbar for Luxury Editorial feel */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #111214;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #A58A68;
+}
+
+/* Print Styles for Certificate of Authenticity */
+@media print {
+  body {
+    background-color: #ffffff !important;
+    color: #111111 !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .certificate-print-container {
+    border-color: #333333 !important;
+    background: #ffffff !important;
+    color: #111111 !important;
+    padding: 2rem !important;
+  }
+
+  .certificate-print-text-dark {
+    color: #111111 !important;
+  }
+
+  .certificate-print-text-muted {
+    color: #555555 !important;
+  }
+
+  .certificate-print-border {
+    border-color: #cccccc !important;
+  }
+}

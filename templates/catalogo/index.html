@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+
+{% block title %}Collection Horlogère 2026 | Cronos Genève{% endblock %}
+
+{% block content %}
+<!-- 1. Hero Editorial Asimétrico (Composición de 2 Columnas sobre #111214) -->
+<section class="hero-editorial-split">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <!-- Columna Izquierda: Manifiesto Editorial de Alta Relojería -->
+            <div class="col-lg-6 pe-lg-5">
+                <span class="hero-eyebrow">COLLECTION 2026</span>
+                <h1 class="hero-headline">THE ART OF MECHANICAL TIME</h1>
+                <p class="hero-lead">
+                    A curated selection of exceptional Swiss timepieces, rigorously certified for chronometric precision, ancestral craftsmanship and horological heritage.
+                </p>
+                <div class="pt-2">
+                    <a href="#catalogo" class="hero-action-link">
+                        EXPLORE &rarr;
+                    </a>
+                </div>
+
+                <!-- Detalle técnico suizo al pie del manifiesto -->
+                <div class="hero-manifesto-meta d-flex gap-4 mt-5 pt-4 border-top" style="border-color: var(--border-line-subtle) !important;">
+                    <div>
+                        <span class="d-block text-technical" style="font-size: 0.6rem; letter-spacing: 0.24em;">ORIGINE</span>
+                        <span class="text-secondary small font-monospace">GENÈVE, SUISSE</span>
+                    </div>
+                    <div>
+                        <span class="d-block text-technical" style="font-size: 0.6rem; letter-spacing: 0.24em;">CERTIFICATION</span>
+                        <span class="text-secondary small font-monospace">METAS &bull; COSC</span>
+                    </div>
+                    <div>
+                        <span class="d-block text-technical" style="font-size: 0.6rem; letter-spacing: 0.24em;">INVENTAIRE</span>
+                        <span class="text-bronze small font-monospace">{{ total_resultados }} PIÈCES</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Fotografía del Reloj Protagonista sin Caja -->
+            <div class="col-lg-6 text-center">
+                <div class="hero-protagonist-stage">
+                    {% if relojes %}
+                        {% with hero_piece=relojes.0 %}
+                            <a href="{% url 'catalogo:detalle' hero_piece.pk %}" class="d-inline-block text-decoration-none">
+                                <img src="{{ hero_piece.imagen_url }}" alt="{{ hero_piece.nombre }}" class="hero-protagonist-image" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=900';">
+                            </a>
+                            <div class="hero-protagonist-caption">
+                                <span class="hero-caption-tag">PIÈCE MAÎTRESSE</span>
+                                <span class="hero-caption-title">{{ hero_piece.marca.nombre }} &mdash; {{ hero_piece.nombre }}</span>
+                            </div>
+                        {% endwith %}
+                    {% else %}
+                        <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=900" alt="Chronographe d'Exception" class="hero-protagonist-image">
+                        <div class="hero-protagonist-caption">
+                            <span class="hero-caption-tag">PIÈCE MAÎTRESSE</span>
+                            <span class="hero-caption-title">ROLEX &mdash; COSMOGRAPH DAYTONA</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 2. Catálogo y Franja de Filtros Minimalista -->
+<div class="container py-5" id="catalogo">
+    <!-- Barra de Filtros Minimalista en Franja Horizontal Continua -->
+    <div class="filter-strip-editorial">
+        <form method="GET" action="{% url 'catalogo:index' %}" id="filterForm" class="row g-0 align-items-center">
+            <!-- BUSCAR -->
+            <div class="col-lg-3 col-md-6 filter-item">
+                <span class="filter-item-label">BUSCAR</span>
+                <input type="text" name="q" id="id_q" class="filter-input-minimal" placeholder="Referencia o calibre..." value="{{ busqueda }}">
+            </div>
+
+            <!-- MANUFACTURA -->
+            <div class="col-lg-3 col-md-6 filter-item">
+                <span class="filter-item-label">MANUFACTURA</span>
+                <select name="marca" id="id_marca" class="filter-select-minimal" onchange="document.getElementById('filterForm').submit()">
+                    <option value="">Todas las Casas</option>
+                    {% for m in marcas %}
+                        <option value="{{ m.id }}" {% if filtro_marca == m.id|stringformat:"s" %}selected{% endif %}>
+                            {{ m.nombre }} ({{ m.relojes.count }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- CALIBRE -->
+            <div class="col-lg-2 col-md-6 filter-item">
+                <span class="filter-item-label">CALIBRE</span>
+                <select name="movimiento" id="id_movimiento" class="filter-select-minimal" onchange="document.getElementById('filterForm').submit()">
+                    <option value="">Cualquier Calibre</option>
+                    {% for key, label in movimientos %}
+                        <option value="{{ key }}" {% if filtro_movimiento == key %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- ORDENAR -->
+            <div class="col-lg-2 col-md-6 filter-item">
+                <span class="filter-item-label">ORDENAR</span>
+                <select name="orden" id="id_orden" class="filter-select-minimal" onchange="document.getElementById('filterForm').submit()">
+                    <option value="novedades" {% if filtro_orden == 'novedades' %}selected{% endif %}>Novedades de Bóveda</option>
+                    <option value="precio_asc" {% if filtro_orden == 'precio_asc' %}selected{% endif %}>Precio: Menor a Mayor</option>
+                    <option value="precio_desc" {% if filtro_orden == 'precio_desc' %}selected{% endif %}>Precio: Mayor a Menor</option>
+                    <option value="nombre_asc" {% if filtro_orden == 'nombre_asc' %}selected{% endif %}>Referencia (A - Z)</option>
+                </select>
+            </div>
+
+            <!-- ACCIÓN APLICAR Y RESET -->
+            <div class="col-lg-2 col-md-12 d-flex align-items-center justify-content-end px-3 filter-item-actions">
+                <button type="submit" class="btn-filter-apply" title="Aplicar criterios de búsqueda">
+                    APLICAR &rarr;
+                </button>
+                {% if filtro_marca or filtro_movimiento or filtro_orden or busqueda %}
+                    <a href="{% url 'catalogo:index' %}" class="btn-filter-clear ms-3" title="Restablecer filtros">
+                        [ LIMPIAR ]
+                    </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+    <!-- Indicador de Resultados Discreto -->
+    <div class="d-flex justify-content-between align-items-baseline mb-5 pb-2 border-bottom" style="border-color: var(--border-line-subtle) !important;">
+        <span class="filter-item-label text-secondary mb-0">
+            INVENTARIO REGISTRADO &bull; {{ total_resultados }} PIEZA{{ total_resultados|pluralize }}
+        </span>
+
+        {% if busqueda or filtro_marca or filtro_movimiento %}
+            <div class="d-flex align-items-center gap-2 small">
+                <span class="text-technical" style="font-size: 0.65rem; letter-spacing: 0.16em;">CRITERIO ACTIVO:</span>
+                {% if busqueda %}
+                    <span class="text-secondary font-monospace" style="font-size: 0.72rem;">"{{ busqueda }}"</span>
+                {% endif %}
+                {% if filtro_marca %}
+                    <span class="text-bronze font-monospace" style="font-size: 0.72rem;">Marca #{{ filtro_marca }}</span>
+                {% endif %}
+                {% if filtro_movimiento %}
+                    <span class="text-secondary font-monospace" style="font-size: 0.72rem;">{{ filtro_movimiento }}</span>
+                {% endif %}
+                <a href="{% url 'catalogo:index' %}" class="text-technical text-decoration-none ms-2" style="font-size: 0.65rem; letter-spacing: 0.14em;">[ RESTABLECER ]</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- 3. Galería Editorial de 3 Columnas (Sin Cards, Líneas Verticales Finas, Fotografía Protagonista) -->
+    {% if relojes %}
+        <div class="catalog-gallery-editorial">
+            {% for reloj in relojes %}
+                <article class="editorial-watch-col">
+                    <!-- 1. MARCA -->
+                    <div class="watch-brand-name">
+                        {{ reloj.marca.nombre }}
+                    </div>
+
+                    <!-- 2. MODELO (Cormorant Garamond Prominente) -->
+                    <h2 class="watch-model-title">
+                        <a href="{% url 'catalogo:detalle' reloj.pk %}">
+                            {{ reloj.nombre }}
+                        </a>
+                    </h2>
+
+                    <!-- 3. FOTOGRAFÍA GRANDE (Directamente sobre el lienzo #111214) -->
+                    <div class="watch-photo-canvas">
+                        <a href="{% url 'catalogo:detalle' reloj.pk %}" class="watch-photo-link" aria-label="Ver ficha técnica de {{ reloj.nombre }}">
+                            {% if reloj.imagen_url %}
+                                <img src="{{ reloj.imagen_url }}" alt="{{ reloj.nombre }}" class="watch-canvas-img" loading="lazy" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600';">
+                            {% else %}
+                                <div class="watch-canvas-placeholder">
+                                    <span class="text-technical small letter-spacing-2">[ ARCHIVO RESERVADO ]</span>
+                                </div>
+                            {% endif %}
+                        </a>
+
+                        <!-- Indicador Discreto de Stock Editorial -->
+                        {% if reloj.stock == 0 %}
+                            <span class="watch-stock-subtle text-technical">[ AGOTADO ]</span>
+                        {% elif reloj.stock == 1 %}
+                            <span class="watch-stock-subtle text-bronze">[ PIEZA ÚNICA ]</span>
+                        {% elif reloj.stock <= 3 %}
+                            <span class="watch-stock-subtle text-secondary">[ {{ reloj.stock }} DISPONIBLES ]</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- 4. ESPECIFICACIONES TÉCNICAS (Centrado, Conciso) -->
+                    <div class="watch-tech-specs">
+                        {{ reloj.get_movimiento_display }} &bull; {{ reloj.diametro_caja_mm }} MM &bull; {{ reloj.resistencia_agua_m }} M
+                    </div>
+
+                    <!-- 5. PRECIO -->
+                    <div class="watch-price-tag">
+                        ${{ reloj.precio|floatformat:2 }} <span class="watch-price-currency">USD</span>
+                    </div>
+
+                    <!-- 6. ACCIONES EDITORIALES DISCRETAS -->
+                    <div class="watch-actions-editorial mt-3">
+                        {% if reloj.stock > 0 %}
+                            <button type="button" class="btn-action-minimal" onclick="CronosCart.add({{ reloj.id }})" title="Añadir guardatiempo a la bolsa de adquisición">
+                                RESERVAR PIEZA &rarr;
+                            </button>
+                        {% else %}
+                            <span class="text-technical small d-block py-2" style="letter-spacing: 0.16em; font-size: 0.68rem;">[ BAJO ENCARGO PRIVADO ]</span>
+                        {% endif %}
+
+                        <div class="mt-2">
+                            <button type="button" class="btn-compare-minimal btn-compare-trigger" data-reloj-id="{{ reloj.id }}" onclick="CronosComparator.toggle({{ reloj.id }}, '{{ reloj.nombre|escapejs }}', '{{ reloj.marca.nombre|escapejs }}', '{{ reloj.imagen_url|default:''|escapejs }}')" title="Añadir a matriz comparativa">
+                                + COMPARAR
+                            </button>
+                        </div>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- Estado Vacío Editorial -->
+        <div class="py-5 text-center my-5" style="border-top: 1px solid var(--border-line); border-bottom: 1px solid var(--border-line);">
+            <span class="watch-brand-name d-block mb-2">INVENTARIO VACÍO</span>
+            <h3 class="editorial-headline fs-4 mb-3">Sin piezas registradas bajo este criterio</h3>
+            <p class="text-secondary small mx-auto mb-4" style="max-width: 480px; line-height: 1.8;">
+                No se encontraron guardatiempos que coincidan con la búsqueda o filtros aplicados en la bóveda. Restablezca los criterios para explorar la colección completa.
+            </p>
+            <a href="{% url 'catalogo:index' %}" class="btn-action-minimal">
+                RESTABLECER CATÁLOGO &rarr;
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

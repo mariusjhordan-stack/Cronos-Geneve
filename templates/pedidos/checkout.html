@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block title %}Protocole d'Acquisition | Cronos Genève{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Encabezado Editorial -->
+    <div class="py-4 text-center text-md-start">
+        <span class="editorial-eyebrow">REGISTRE DE CUSTODIE ET TITULARITÉ</span>
+        <h1 class="editorial-headline fs-2 mb-2">PROTOCOLE D'ACQUISITION</h1>
+        <p class="text-secondary small mb-0" style="letter-spacing: 0.04em;">
+            Consignación oficial de procedencia y emisión de certificado notarial de manufactura.
+        </p>
+    </div>
+
+    <hr class="my-4" style="border-color: var(--border-line);">
+
+    <div class="row g-5 py-3">
+        <!-- Columna Izquierda: Formulario Notarial de Titularidad -->
+        <div class="col-lg-7">
+            <div class="p-4 p-md-5 border" style="border-color: var(--border-line) !important; background-color: var(--bg-surface);">
+                <div class="mb-4 pb-3 border-bottom" style="border-color: var(--border-line) !important;">
+                    <span class="watch-brand-name d-block mb-1">TITULAR DEL REGISTRO</span>
+                    <h2 class="editorial-title fs-5 text-white mb-0">DATOS OFICIALES DE CUSTODIA</h2>
+                </div>
+
+                <form method="POST" action="{% url 'pedidos:checkout' %}">
+                    {% csrf_token %}
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <label for="id_nombre" class="filter-label-editorial">NOMBRE Y APELLIDOS DEL TITULAR *</label>
+                            <input type="text" name="nombre" id="id_nombre" class="form-control bg-transparent text-white border p-3 font-sans" style="border-color: var(--border-line) !important; font-size: 0.85rem;" placeholder="Ej: Dr. Fernando de Almenara y Riva" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="id_email" class="filter-label-editorial">CORREO ELECTRÓNICO CONFIDENCIAL *</label>
+                            <input type="email" name="email" id="id_email" class="form-control bg-transparent text-white border p-3 font-sans" style="border-color: var(--border-line) !important; font-size: 0.85rem;" placeholder="titular@manufactura.ch" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="id_telefono" class="filter-label-editorial">TELÉFONO DE ENLACE SEGURO *</label>
+                            <input type="tel" name="telefono" id="id_telefono" class="form-control bg-transparent text-white border p-3 font-sans" style="border-color: var(--border-line) !important; font-size: 0.85rem;" placeholder="+41 22 819 0000" required>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="id_direccion" class="filter-label-editorial">DIRECCIÓN DE ENTREGA O BÓVEDA PRIVADA *</label>
+                            <textarea name="direccion" id="id_direccion" rows="2" class="form-control bg-transparent text-white border p-3 font-sans" style="border-color: var(--border-line) !important; font-size: 0.85rem;" placeholder="Avenida, residencia o bóveda corporativa..." required></textarea>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="id_ciudad" class="filter-label-editorial">CIUDAD / JURISDICCIÓN</label>
+                            <input type="text" name="ciudad" id="id_ciudad" class="form-control bg-transparent text-white border p-3 font-sans" style="border-color: var(--border-line) !important; font-size: 0.85rem;" value="San Isidro, Lima" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="filter-label-editorial">MODALIDAD DE DESPACHO</label>
+                            <input type="text" class="form-control bg-transparent text-technical border p-3 font-sans" style="border-color: var(--border-line) !important; font-size: 0.85rem;" value="Transporte Blindado con Custodia" readonly>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="id_notas" class="filter-label-editorial">INSTRUCCIONES NOTARIALES O PROTOCOLO ESPECIAL</label>
+                            <textarea name="notas" id="id_notas" rows="2" class="form-control bg-transparent text-white border p-3 font-sans" style="border-color: var(--border-line) !important; font-size: 0.85rem;" placeholder="Instrucciones confidenciales de entrega personal..."></textarea>
+                        </div>
+
+                        <div class="col-12 mt-4">
+                            <div class="p-3 border mb-4 font-sans small text-secondary" style="border-color: var(--border-line) !important; background-color: var(--bg-surface-2); font-size: 0.78rem; line-height: 1.7;">
+                                <div class="form-check">
+                                    <input class="form-check-input bg-dark" type="checkbox" id="check_garantia" required checked style="border-color: var(--border-line);">
+                                    <label class="form-check-label ms-1" for="check_garantia">
+                                        Declaro conocer que las piezas seleccionadas serán debitadas de la bóveda de inventario y se emitirá el Certificado Oficial de Autenticidad suiza con número de registro único e inmutable.
+                                    </label>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn-editorial-primary w-100 py-3">
+                                CONFIRMAR ADQUISICIÓN EN BÓVEDA &rarr;
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Columna Derecha: Resumen de la Selección -->
+        <div class="col-lg-5">
+            <div class="p-4 p-md-5 border sticky-top" style="top: 100px; border-color: var(--border-line) !important; background-color: var(--bg-surface);">
+                <div class="d-flex justify-content-between align-items-baseline pb-3 mb-3 border-bottom" style="border-color: var(--border-line) !important;">
+                    <span class="filter-label-editorial mb-0">RESUMEN DE BÓVEDA</span>
+                    <span class="stock-editorial-tag position-static">{{ cart.total_unidades }} PIEZA{{ cart.total_unidades|pluralize }}</span>
+                </div>
+
+                <!-- Lista de Ítems en Carrito -->
+                <div class="overflow-auto pe-1 mb-4" style="max-height: 380px;">
+                    {% for item in cart.items %}
+                        <div class="d-flex gap-3 align-items-center py-3 border-bottom" style="border-color: var(--border-line-subtle) !important;">
+                            <div class="bg-black p-2 d-flex align-items-center justify-content-center" style="width: 54px; height: 54px; flex-shrink: 0; border: 1px solid var(--border-line);">
+                                {% if item.imagen_url %}
+                                    <img src="{{ item.imagen_url }}" alt="{{ item.nombre }}" class="img-fluid object-fit-contain h-100">
+                                {% endif %}
+                            </div>
+                            <div class="flex-grow-1 min-w-0">
+                                <span class="watch-brand-name d-block" style="font-size: 0.62rem;">{{ item.marca }}</span>
+                                <h3 class="watch-model-title fs-6 text-truncate mb-1">{{ item.nombre }}</h3>
+                                <span class="text-technical small d-block font-monospace">{{ item.cantidad }} &times; ${{ item.precio|floatformat:2 }} USD</span>
+                            </div>
+                            <div class="text-end">
+                                <span class="text-primary fw-medium font-monospace small">${{ item.subtotal|floatformat:2 }}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Desglose Económico -->
+                <div class="py-2 border-bottom mb-4" style="border-color: var(--border-line) !important;">
+                    <div class="d-flex justify-content-between py-1 small">
+                        <span class="text-secondary font-sans" style="font-size: 0.75rem;">Suma de Calibres:</span>
+                        <span class="text-primary font-monospace">${{ cart.total|floatformat:2 }} USD</span>
+                    </div>
+                    <div class="d-flex justify-content-between py-1 small">
+                        <span class="text-secondary font-sans" style="font-size: 0.75rem;">Tránsito Blindado Asegurado:</span>
+                        <span class="text-bronze font-sans" style="font-size: 0.75rem; letter-spacing: 0.08em;">CORTESÍA DE BÓVEDA</span>
+                    </div>
+                    <div class="d-flex justify-content-between py-1 small">
+                        <span class="text-secondary font-sans" style="font-size: 0.75rem;">Certificados Notariales Suizos:</span>
+                        <span class="text-secondary font-sans" style="font-size: 0.75rem;">INCLUIDOS</span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-baseline mb-4">
+                    <span class="filter-label-editorial mb-0">INVERSIÓN TOTAL:</span>
+                    <span class="text-primary fs-4 fw-medium font-monospace">
+                        ${{ cart.total|floatformat:2 }} <span class="fs-6 text-technical">USD</span>
+                    </span>
+                </div>
+
+                <p class="small text-technical mb-0" style="font-size: 0.72rem; line-height: 1.6;">
+                    Cada pieza es expedida en estuche de roble o caoba maciza con tarjeta NFC de garantía oficial de manufactura por cinco años.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

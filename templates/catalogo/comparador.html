@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+
+{% block title %}Matriz Horológica Comparativa | Cronos Genève{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header Editorial del Comparador -->
+    <div class="text-center py-5">
+        <span class="editorial-eyebrow">ANÁLISIS COMPARATIVO DE CALIBRES</span>
+        <h1 class="editorial-headline mb-3">MATRIZ HOROLÓGICA</h1>
+        <p class="editorial-lead">
+            Contraste analítico de tolerancias mecánicas, arquitectura de caja y cotizaciones de manufacturas suizas de prestigio.
+        </p>
+    </div>
+
+    <!-- Selectores Horizontales de Piezas (Hasta 3) -->
+    <div class="filter-bar-editorial mb-5">
+        <form method="GET" action="{% url 'catalogo:comparador' %}" class="row g-0 align-items-stretch">
+            <!-- Pieza 1 -->
+            <div class="col-md-4 filter-cell">
+                <label for="id_reloj_1" class="filter-label-editorial">PIEZA 01</label>
+                <select name="reloj_1" id="id_reloj_1" class="filter-control-editorial" required>
+                    <option value="">-- Seleccionar Guardatiempo --</option>
+                    {% for r in todos_los_relojes %}
+                        <option value="{{ r.id }}" {% if id_reloj_1 == r.id %}selected{% endif %}>
+                            {{ r.marca.nombre }} - {{ r.nombre }} (${{ r.precio|floatformat:0 }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Pieza 2 -->
+            <div class="col-md-4 filter-cell">
+                <label for="id_reloj_2" class="filter-label-editorial">PIEZA 02</label>
+                <select name="reloj_2" id="id_reloj_2" class="filter-control-editorial" required>
+                    <option value="">-- Seleccionar Guardatiempo --</option>
+                    {% for r in todos_los_relojes %}
+                        <option value="{{ r.id }}" {% if id_reloj_2 == r.id %}selected{% endif %}>
+                            {{ r.marca.nombre }} - {{ r.nombre }} (${{ r.precio|floatformat:0 }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Pieza 3 (Opcional) y Botón Comparar -->
+            <div class="col-md-4 d-flex">
+                <div class="filter-cell flex-grow-1">
+                    <label for="id_reloj_3" class="filter-label-editorial">PIEZA 03 (OPCIONAL)</label>
+                    <select name="reloj_3" id="id_reloj_3" class="filter-control-editorial">
+                        <option value="">-- Sin tercera pieza --</option>
+                        {% for r in todos_los_relojes %}
+                            <option value="{{ r.id }}" {% if id_reloj_3 == r.id %}selected{% endif %}>
+                                {{ r.marca.nombre }} - {{ r.nombre }} (${{ r.precio|floatformat:0 }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="filter-btn-apply" style="width: auto; padding: 0 1.8rem;" title="Actualizar matriz">
+                    CONTRASTAR
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Tabla Matriz Editorial Lado a Lado -->
+    {% if relojes_comparados and total_comparados >= 2 %}
+        <div class="table-responsive mb-5">
+            <table class="comparator-editorial-table">
+                <!-- Fila de Encabezados -->
+                <thead>
+                    <tr>
+                        <th class="attr-col">
+                            ESPECIFICACIÓN
+                        </th>
+                        {% for r in relojes_comparados %}
+                            <th class="text-center" style="width: {% if total_comparados == 2 %}39%{% else %}26%{% endif %};">
+                                <span class="watch-brand-name d-block mb-1">{{ r.marca.nombre }}</span>
+                                <h3 class="watch-model-title fs-5 mb-2">{{ r.nombre }}</h3>
+                                <div class="watch-price-tag fs-6 text-white font-monospace">
+                                    ${{ r.precio|floatformat:2 }} <span class="watch-price-currency">USD</span>
+                                </div>
+                            </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Escenario Fotográfico -->
+                    <tr>
+                        <td class="attr-col">REGISTRO FOTOGRÁFICO</td>
+                        {% for r in relojes_comparados %}
+                            <td class="text-center p-4">
+                                <div class="watch-photo-stage mb-0 mx-auto" style="height: 240px; max-width: 260px;">
+                                    {% if r.imagen_url %}
+                                        <img src="{{ r.imagen_url }}" alt="{{ r.nombre }}" class="img-fluid">
+                                    {% endif %}
+                                </div>
+                            </td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Manufactura -->
+                    <tr>
+                        <td class="attr-col">MANUFACTURA &bull; ORIGEN</td>
+                        {% for r in relojes_comparados %}
+                            <td class="text-center font-sans">
+                                <span class="text-primary fw-medium">{{ r.marca.nombre }}</span>
+                                <span class="text-technical small d-block">{{ r.marca.pais_origen|default:"Suiza" }}</span>
+                            </td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Movimiento -->
+                    <tr>
+                        <td class="attr-col">CALIBRE / MOVIMIENTO</td>
+                        {% for r in relojes_comparados %}
+                            <td class="text-center font-sans text-primary">
+                                {{ r.get_movimiento_display }}
+                            </td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Diámetro -->
+                    <tr>
+                        <td class="attr-col">DIÁMETRO DE CAJA</td>
+                        {% for r in relojes_comparados %}
+                            <td class="text-center font-monospace text-primary">
+                                {{ r.diametro_caja_mm }} MM
+                            </td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Cristal -->
+                    <tr>
+                        <td class="attr-col">CRISTAL PROTECTOR</td>
+                        {% for r in relojes_comparados %}
+                            <td class="text-center font-sans text-secondary small">
+                                {{ r.cristal }}
+                            </td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Hermeticidad -->
+                    <tr>
+                        <td class="attr-col">HERMETICIDAD BAROMÉTRICA</td>
+                        {% for r in relojes_comparados %}
+                            <td class="text-center font-monospace text-primary">
+                                {{ r.resistencia_agua_m }} M / {{ r.resistencia_agua_m|floatformat:0 }} ATM
+                            </td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Brazalete -->
+                    <tr>
+                        <td class="attr-col">MATERIAL DE BRAZALETE</td>
+                        {% for r in relojes_comparados %}
+                            <td class="text-center font-sans text-secondary small">
+                                {{ r.material_correa }}
+                            </td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Disponibilidad -->
+                    <tr>
+                        <td class="attr-col">DISPONIBILIDAD EN BÓVEDA</td>
+                        {% for r in relojes_comparados %}
+                            <td class="text-center font-sans">
+                                {% if r.stock == 0 %}
+                                    <span class="stock-editorial-tag tag-out position-static">[ AGOTADO ]</span>
+                                {% elif r.stock == 1 %}
+                                    <span class="stock-editorial-tag tag-unique position-static">[ PIEZA ÚNICA ]</span>
+                                {% elif r.stock <= 3 %}
+                                    <span class="stock-editorial-tag tag-low position-static">[ {{ r.stock }} DISPONIBLES ]</span>
+                                {% else %}
+                                    <span class="stock-editorial-tag position-static">[ EN BÓVEDA ]</span>
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Acciones -->
+                    <tr>
+                        <td class="attr-col">ACCIONES DE ADQUISICIÓN</td>
+                        {% for r in relojes_comparados %}
+                            <td class="text-center p-3">
+                                <div class="d-flex flex-column gap-2 mx-auto" style="max-width: 240px;">
+                                    {% if r.stock > 0 %}
+                                        <button type="button" class="btn-editorial-primary w-100" onclick="CronosCart.add({{ r.id }})">
+                                            AÑADIR A LA BOLSA &rarr;
+                                        </button>
+                                    {% else %}
+                                        <button type="button" class="btn-editorial-primary w-100 disabled" disabled>
+                                            PIEZA AGOTADA
+                                        </button>
+                                    {% endif %}
+                                    <a href="{% url 'catalogo:detalle' r.pk %}" class="btn-editorial-ghost w-100">
+                                        VER FICHA COMPLETA &rarr;
+                                    </a>
+                                </div>
+                            </td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <!-- Estado Vacío del Comparador -->
+        <div class="py-5 text-center border" style="border-color: var(--border-line) !important; background-color: var(--bg-surface);">
+            <span class="watch-brand-name d-block mb-2">ANÁLISIS HOROLÓGICO</span>
+            <h3 class="editorial-title fs-4 mb-3">Seleccione 2 o 3 guardatiempos</h3>
+            <p class="text-secondary small mx-auto mb-4" style="max-width: 480px;">
+                Utilice los selectores superiores o active el botón "Comparar" en las fichas del catálogo para contrastar especificaciones mecánicas y cotizaciones oficiales.
+            </p>
+            <a href="{% url 'catalogo:index' %}" class="btn-editorial-primary">
+                EXPLORAR COLECCIÓN &rarr;
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block title %}Certificat d'Authenticité {{ codigo_orden }} | Cronos Genève{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Barra Superior de Acciones en Pantalla -->
+    <div class="d-flex flex-wrap justify-content-between align-items-baseline mb-4 no-print">
+        <div>
+            <span class="editorial-eyebrow mb-1">TRANSACTION CONFIRMÉE</span>
+            <h1 class="editorial-title fs-4 mb-0">CERTIFICAT OFFICIEL D'AUTHENTICITÉ</h1>
+        </div>
+
+        <div class="d-flex gap-2 mt-3 mt-md-0">
+            <a href="{% url 'catalogo:index' %}" class="btn-editorial-ghost">
+                &larr; RETORNAR AL CATÁLOGO
+            </a>
+            <button type="button" class="btn-editorial-primary" onclick="window.print()">
+                IMPRIMIR CERTIFICADO (PDF) &rarr;
+            </button>
+        </div>
+    </div>
+
+    <!-- Documento Notarial / Certificado de Autenticidad Horológica -->
+    <div class="certificate-swiss my-4">
+        <div class="p-4 p-md-5 border" style="border-color: var(--border-line) !important;">
+            <!-- Cabecera Notarial de Ginebra -->
+            <div class="text-center py-4 mb-4">
+                <span class="brand-subtitle d-block mb-2" style="font-size: 0.72rem; letter-spacing: 0.36em;">
+                    MANUFACTURE D'HORLOGERIE GENÈVE &bull; SUISSE
+                </span>
+                <h2 class="editorial-headline fs-1 mb-2" style="letter-spacing: 0.12em;">
+                    CERTIFICAT D'AUTHENTICITÉ
+                </h2>
+                <span class="text-technical small text-uppercase" style="letter-spacing: 0.22em; font-size: 0.68rem;">
+                    ACTE NOTARIÉ DE CUSTODIE ET TRANSFERT HORLOGER
+                </span>
+            </div>
+
+            <!-- Registro y Códigos Únicos -->
+            <div class="row g-3 py-4 mb-4 text-center border-top border-bottom" style="border-color: var(--border-line) !important;">
+                <div class="col-sm-4">
+                    <span class="filter-label-editorial mb-1">CÓDIGO DE ORDEN</span>
+                    <span class="text-bronze font-monospace fs-5 fw-medium">{{ codigo_orden }}</span>
+                </div>
+                <div class="col-sm-4">
+                    <span class="filter-label-editorial mb-1">REGISTRO DE BÓVEDA</span>
+                    <span class="text-primary font-monospace fs-5 fw-medium">{{ numero_serie }}</span>
+                </div>
+                <div class="col-sm-4">
+                    <span class="filter-label-editorial mb-1">FECHA DE CONSIGNACIÓN</span>
+                    <span class="text-secondary small d-block font-sans mt-1">{{ orden.creado_en|date:"d \d\e F \d\e Y, H:i" }} UTC</span>
+                </div>
+            </div>
+
+            <!-- Declaración de Autenticidad -->
+            <p class="text-secondary mx-auto mb-4 text-start font-sans" style="max-width: 820px; font-size: 0.92rem; line-height: 1.9;">
+                Por medio del presente instrumento notarial, la Casa <strong>Cronos Genève</strong> certifica que los guardatiempos consignados a continuación han sido retirados de nuestra bóveda de preservación, inspeccionados bajo tolerancias cronométricas oficiales de la manufactura y asignados con carácter solemne e inmutable a su titular:
+            </p>
+
+            <!-- Datos del Titular -->
+            <div class="p-4 border mb-5 mx-auto" style="max-width: 820px; border-color: var(--border-line) !important; background-color: var(--bg-surface);">
+                <div class="row g-3 font-sans small text-secondary">
+                    <div class="col-sm-6">Titular: <strong class="text-primary">{{ orden.cliente_nombre }}</strong></div>
+                    <div class="col-sm-6">Correo Certificado: <strong class="text-primary">{{ orden.cliente_email }}</strong></div>
+                    <div class="col-sm-6">Teléfono de Enlace: <strong class="text-primary">{{ orden.cliente_telefono }}</strong></div>
+                    <div class="col-sm-6">Destino Registrado: <strong class="text-primary">{{ orden.direccion_envio }}, {{ orden.ciudad }}</strong></div>
+                    <div class="col-sm-6">Modalidad de Custodia: <span class="text-bronze">Transporte Blindado Asegurado</span></div>
+                    <div class="col-sm-6">Estado de Bóveda: <span class="text-primary">{{ orden.get_estado_display }}</span></div>
+                </div>
+            </div>
+
+            <!-- Tabla de Calibres y Piezas Horológicas -->
+            <div class="table-responsive mx-auto mb-5" style="max-width: 820px;">
+                <table class="table table-dark border-0 align-middle text-start small mb-0 font-sans" style="background: transparent;">
+                    <thead>
+                        <tr class="text-technical border-bottom" style="border-color: var(--border-line) !important; font-size: 0.68rem; letter-spacing: 0.16em;">
+                            <th class="py-3">MANUFACTURA & REFERENCIA</th>
+                            <th class="text-center py-3">UNIDADES</th>
+                            <th class="text-end py-3">COTIZACIÓN</th>
+                            <th class="text-end py-3">SUBTOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in orden.detalles.all %}
+                            <tr class="border-bottom" style="border-color: var(--border-line-subtle) !important;">
+                                <td class="py-3">
+                                    <span class="watch-brand-name d-block" style="font-size: 0.65rem;">{{ item.reloj.marca.nombre }}</span>
+                                    <strong class="text-primary fs-6 font-serif">{{ item.reloj.nombre }}</strong>
+                                    <span class="d-block text-technical small mt-1">
+                                        Calibre: {{ item.reloj.get_movimiento_display }} &bull; Caja: {{ item.reloj.diametro_caja_mm }} MM &bull; Hermeticidad: {{ item.reloj.resistencia_agua_m }} M WR
+                                    </span>
+                                </td>
+                                <td class="text-center text-primary font-monospace">{{ item.cantidad }}</td>
+                                <td class="text-end text-secondary font-monospace">${{ item.precio_unitario|floatformat:2 }}</td>
+                                <td class="text-end text-primary font-monospace fw-medium">${{ item.subtotal|floatformat:2 }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="text-end text-secondary pt-4 font-sans text-uppercase" style="letter-spacing: 0.14em; font-size: 0.72rem;">
+                                INVERSIÓN TOTAL ASIGNADA:
+                            </td>
+                            <td class="text-end text-primary fs-4 fw-medium pt-4 font-monospace">
+                                ${{ orden.total|floatformat:2 }} <span class="fs-6 text-technical">USD</span>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <!-- Firmas Notariales de Ginebra -->
+            <div class="row pt-5 my-3 border-top text-center mx-auto" style="max-width: 820px; border-color: var(--border-line) !important;">
+                <div class="col-6">
+                    <div class="d-inline-block border-bottom pb-2 mb-2" style="width: 220px; border-color: var(--border-line) !important;">
+                        <span class="font-serif text-primary fs-6 d-block">Marc-Antoine Vacheron</span>
+                    </div>
+                    <span class="d-block text-technical small" style="font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;">
+                        Maître Horloger &bull; Conservador de Bóveda
+                    </span>
+                </div>
+                <div class="col-6">
+                    <div class="d-inline-block border-bottom pb-2 mb-2" style="width: 220px; border-color: var(--border-line) !important;">
+                        <span class="font-serif text-primary fs-6 d-block">Jean-Luc Dufour</span>
+                    </div>
+                    <span class="d-block text-technical small" style="font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;">
+                        Notario &bull; Chambre Horlogère de Genève
+                    </span>
+                </div>
+            </div>
+
+            <div class="text-center pt-4">
+                <span class="text-technical small" style="font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase;">
+                    DOCUMENTO OFICIAL VALIDADOR DE AUTENTICIDAD &bull; GENÈVE, SUISSE
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
