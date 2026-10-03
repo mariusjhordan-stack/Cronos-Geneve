@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -19,35 +20,37 @@ export function Sheet({ open, onOpenChange, children }) {
     }
   }, [open, onOpenChange]);
 
-  if (!open) return null;
+  if (!open || typeof document === 'undefined') return null;
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex justify-end">
-      {/* Backdrop overlay */}
+      {/* Velo traslúcido institucional */}
       <div
-        className="fixed inset-0 bg-black/75 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-[#171717]/40 backdrop-blur-[2px] transition-opacity"
         onClick={() => onOpenChange(false)}
       />
 
-      {/* Drawer Container */}
-      <div className="relative z-50 flex h-full w-full max-w-md flex-col border-l border-cronos-line bg-cronos-surface text-cronos-text shadow-2xl">
+      {/* Contenedor lateral con borde milimétrico */}
+      <div className="relative z-50 flex h-full w-full max-w-md flex-col rounded-none border-l border-cronos-line bg-white text-cronos-text shadow-modal">
         {children}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
 export function SheetHeader({ className, children, onClose }) {
   return (
-    <div className={cn('flex items-center justify-between border-b border-cronos-line p-5', className)}>
+    <div className={cn('flex items-center justify-between border-b border-cronos-line p-6', className)}>
       <div>{children}</div>
       {onClose && (
         <button
+          type="button"
           onClick={onClose}
-          className="text-cronos-muted hover:text-white transition-colors p-1.5 focus:outline-none"
-          title="Fermer"
+          className="text-cronos-muted hover:text-cronos-text transition-colors p-1.5 focus:outline-none"
+          aria-label="Cerrar panel lateral"
         >
-          <X className="h-4 w-4 stroke-[1.5]" />
+          <X className="h-4 w-4 stroke-[1.4]" />
         </button>
       )}
     </div>
@@ -56,7 +59,7 @@ export function SheetHeader({ className, children, onClose }) {
 
 export function SheetTitle({ className, children }) {
   return (
-    <h2 className={cn('font-serif text-xl tracking-[0.08em] text-white uppercase', className)}>
+    <h2 className={cn('font-serif text-xl tracking-[0.08em] text-cronos-text uppercase', className)}>
       {children}
     </h2>
   );
@@ -64,7 +67,7 @@ export function SheetTitle({ className, children }) {
 
 export function SheetDescription({ className, children }) {
   return (
-    <p className={cn('text-[11px] font-mono tracking-widest text-cronos-muted uppercase mt-0.5', className)}>
+    <p className={cn('text-[10px] font-mono tracking-widest text-cronos-muted uppercase mt-1', className)}>
       {children}
     </p>
   );
@@ -72,7 +75,7 @@ export function SheetDescription({ className, children }) {
 
 export function SheetContent({ className, children }) {
   return (
-    <div className={cn('flex-1 overflow-y-auto p-5', className)}>
+    <div className={cn('flex-1 overflow-y-auto p-6', className)}>
       {children}
     </div>
   );
@@ -80,7 +83,7 @@ export function SheetContent({ className, children }) {
 
 export function SheetFooter({ className, children }) {
   return (
-    <div className={cn('border-t border-cronos-line p-5 bg-cronos-surface-2/60', className)}>
+    <div className={cn('border-t border-cronos-line p-6 bg-cronos-surface-2', className)}>
       {children}
     </div>
   );

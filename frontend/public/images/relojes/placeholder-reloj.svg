@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
+  <defs>
+    <radialGradient id="pGlow" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#1B1D22" />
+      <stop offset="100%" stop-color="#111214" />
+    </radialGradient>
+    <linearGradient id="pGold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#C5A880" stop-opacity="0.7" />
+      <stop offset="100%" stop-color="#A58A68" stop-opacity="0.2" />
+    </linearGradient>
+  </defs>
+  <rect width="500" height="500" fill="url(#pGlow)" />
+  <rect x="12" y="12" width="476" height="476" fill="none" stroke="#25272D" stroke-width="1" />
+  <rect x="24" y="24" width="452" height="452" fill="none" stroke="#1C1E23" stroke-width="1" stroke-dasharray="4 4" />
+  <circle cx="250" cy="235" r="135" fill="none" stroke="#2B2E35" stroke-width="1.5" />
+  <circle cx="250" cy="235" r="110" fill="none" stroke="url(#pGold)" stroke-width="1" stroke-dasharray="3 4" />
+  <circle cx="250" cy="235" r="75" fill="none" stroke="#2B2E35" stroke-width="1" />
+  <line x1="250" y1="80" x2="250" y2="390" stroke="#23252C" stroke-width="1" stroke-dasharray="3 3" />
+  <line x1="95" y1="235" x2="405" y2="235" stroke="#23252C" stroke-width="1" stroke-dasharray="3 3" />
+  <line x1="250" y1="235" x2="250" y2="145" stroke="#C5A880" stroke-width="2" stroke-linecap="round" />
+  <line x1="250" y1="235" x2="315" y2="195" stroke="#C5A880" stroke-width="2" stroke-linecap="round" />
+  <circle cx="250" cy="235" r="3.5" fill="#C5A880" />
+  <path d="M 185 110 L 195 90 L 305 90 L 315 110" fill="none" stroke="#2B2E35" stroke-width="1.5" />
+  <path d="M 185 360 L 195 380 L 305 380 L 315 360" fill="none" stroke="#2B2E35" stroke-width="1.5" />
+  <text x="250" y="415" font-family="monospace" font-size="9" letter-spacing="4" fill="#C5A880" text-anchor="middle">CRONOS GENÈVE · ARCHIVO TÉCNICO</text>
+  <text x="250" y="435" font-family="serif" font-size="14" letter-spacing="2" fill="#ECEAE5" text-anchor="middle">PIEZA EN CATALOGACIÓN</text>
+  <text x="250" y="455" font-family="monospace" font-size="8" letter-spacing="3" fill="#6B6D74" text-anchor="middle">FICHA Y REGISTRO EN BÓVEDA</text>
+</svg>

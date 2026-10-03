@@ -13,7 +13,7 @@ export function Table({ className, children, ...props }) {
 
 export function TableHeader({ className, children, ...props }) {
   return (
-    <thead className={cn('border-b border-cronos-line text-cronos-muted uppercase font-mono text-[11px] tracking-[0.16em]', className)} {...props}>
+    <thead className={cn('border-b border-cronos-line text-cronos-muted uppercase font-mono text-[10px] tracking-[0.18em]', className)} {...props}>
       {children}
     </thead>
   );
@@ -29,7 +29,7 @@ export function TableBody({ className, children, ...props }) {
 
 export function TableRow({ className, children, ...props }) {
   return (
-    <tr className={cn('border-b border-cronos-line/60 transition-colors hover:bg-white/[0.02]', className)} {...props}>
+    <tr className={cn('border-b border-cronos-line transition-colors hover:bg-cronos-surface-2/50', className)} {...props}>
       {children}
     </tr>
   );
@@ -37,7 +37,7 @@ export function TableRow({ className, children, ...props }) {
 
 export function TableHead({ className, children, ...props }) {
   return (
-    <th className={cn('h-11 px-4 text-left font-normal align-middle text-cronos-muted font-mono tracking-widest', className)} {...props}>
+    <th className={cn('h-11 px-4 text-left font-normal align-middle text-cronos-muted font-mono tracking-widest text-[10px] uppercase', className)} {...props}>
       {children}
     </th>
   );
@@ -45,7 +45,7 @@ export function TableHead({ className, children, ...props }) {
 
 export function TableCell({ className, children, ...props }) {
   return (
-    <td className={cn('p-4 align-middle font-sans', className)} {...props}>
+    <td className={cn('p-4 align-middle font-sans text-xs text-cronos-text', className)} {...props}>
       {children}
     </td>
   );

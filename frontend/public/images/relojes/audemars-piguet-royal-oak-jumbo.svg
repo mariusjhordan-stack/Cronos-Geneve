@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
+  <defs>
+    <radialGradient id="bgLight" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#1B1D22" />
+      <stop offset="100%" stop-color="#111214" />
+    </radialGradient>
+  </defs>
+  <rect width="500" height="500" fill="url(#bgLight)" />
+  <rect x="8" y="8" width="484" height="484" fill="none" stroke="#212328" stroke-width="1" />
+  
+            <rect x="182" y="25" width="136" height="115" fill="#292B30" stroke="#3D4046" stroke-width="1.5" />
+            <line x1="182" y1="52" x2="318" y2="52" stroke="#18191C" stroke-width="2" />
+            <line x1="182" y1="80" x2="318" y2="80" stroke="#18191C" stroke-width="2" />
+            <line x1="182" y1="108" x2="318" y2="108" stroke="#18191C" stroke-width="2" />
+            <rect x="220" y="25" width="60" height="115" fill="#35383E" stroke="#484C54" stroke-width="1" />
+            <rect x="182" y="360" width="136" height="115" fill="#292B30" stroke="#3D4046" stroke-width="1.5" />
+            <line x1="182" y1="388" x2="318" y2="388" stroke="#18191C" stroke-width="2" />
+            <line x1="182" y1="416" x2="318" y2="416" stroke="#18191C" stroke-width="2" />
+            <line x1="182" y1="444" x2="318" y2="444" stroke="#18191C" stroke-width="2" />
+            <rect x="220" y="360" width="60" height="115" fill="#35383E" stroke="#484C54" stroke-width="1" />
+            
+  
+            <polygon points="380,242 392,246 392,254 380,258" fill="#C2C5CD" />
+            <circle cx="250" cy="250" r="144" fill="#C2C5CD" />
+            <polygon points="377.5,302.8 302.8,377.5 197.2,377.5 122.5,302.8 122.5,197.2 197.2,122.5 302.8,122.5 377.5,197.2" fill="#C0C4CC" stroke="#1F2124" stroke-width="3" />
+            <polygon points="368.3,299.0 299.0,368.3 201.0,368.3 131.7,299.0 131.7,201.0 201.0,131.7 299.0,131.7 368.3,201.0" fill="#C2C5CD" stroke="#161719" stroke-width="1.5" />
+            
+  
+    <!-- 8 Hexagonal Screws on Bezel -->
+    <circle cx="340" cy="160" r="4" fill="#E8ECEF" stroke="#333" stroke-width="0.5" />
+    <circle cx="370" cy="250" r="4" fill="#E8ECEF" stroke="#333" stroke-width="0.5" />
+    <circle cx="340" cy="340" r="4" fill="#E8ECEF" stroke="#333" stroke-width="0.5" />
+    <circle cx="250" cy="378" r="4" fill="#E8ECEF" stroke="#333" stroke-width="0.5" />
+    <circle cx="160" cy="340" r="4" fill="#E8ECEF" stroke="#333" stroke-width="0.5" />
+    <circle cx="130" cy="250" r="4" fill="#E8ECEF" stroke="#333" stroke-width="0.5" />
+    <circle cx="160" cy="160" r="4" fill="#E8ECEF" stroke="#333" stroke-width="0.5" />
+    <circle cx="250" cy="122" r="4" fill="#E8ECEF" stroke="#333" stroke-width="0.5" />
+    <!-- Petite Tapisserie Blue Dial -->
+    <circle cx="250" cy="250" r="102" fill="#13263E" stroke="#0B1624" stroke-width="2" />
+    <!-- Grid -->
+    <pattern id="tapisserie" width="10" height="10" patternUnits="userSpaceOnUse">
+      <rect width="9" height="9" fill="#173151" stroke="#0D1B2B" stroke-width="0.5" />
+    </pattern>
+    <circle cx="250" cy="250" r="100" fill="url(#tapisserie)" />
+    <!-- Double Baton at 12 -->
+    <rect x="245" y="160" width="4" height="16" fill="#E8ECEF" />
+    <rect x="251" y="160" width="4" height="16" fill="#E8ECEF" />
+    <!-- Date at 3 -->
+    <rect x="318" y="242" width="22" height="16" fill="#FFF" />
+    <text x="329" y="254" font-family="sans-serif" font-size="11" font-weight="bold" fill="#000" text-anchor="middle">12</text>
+    <!-- Royal Oak Hands -->
+    <line x1="250" y1="250" x2="205" y2="215" stroke="#E8ECEF" stroke-width="4.5" stroke-linecap="round" />
+    <line x1="250" y1="250" x2="265" y2="175" stroke="#E8ECEF" stroke-width="3" stroke-linecap="round" />
+    <circle cx="250" cy="250" r="4" fill="#E8ECEF" />
+    
+  <text x="250" y="482" font-family="'Cinzel', 'Playfair Display', serif" font-size="9" letter-spacing="3" fill="#6B6E76" text-anchor="middle" text-transform="uppercase">AUDEMARS PIGUET · ROYAL OAK 'JUMBO' EXTRA-THIN</text>
+</svg>

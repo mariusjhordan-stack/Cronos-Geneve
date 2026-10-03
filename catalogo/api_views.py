@@ -1,10 +1,11 @@
-from rest_framework import viewsets, filters
+from rest_framework import viewsets
+from rest_framework.permissions import AllowAny, IsAdminUser
 from django.db.models import Q
 from .models import Marca, Categoria, Reloj
 from .serializers import MarcaSerializer, CategoriaSerializer, RelojSerializer
 
 
-class CategoriaViewSet(viewsets.ReadOnlyModelViewSet):
+class CategoriaViewSet(viewsets.ModelViewSet):
     """
     API endpoint para consultar las categorías horológicas.
     GET /api/categorias/
@@ -13,8 +14,13 @@ class CategoriaViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Categoria.objects.all().order_by('nombre')
     serializer_class = CategoriaSerializer
 
+    def get_permissions(self):
+        if self.action in ('list', 'retrieve'):
+            return [AllowAny()]
+        return [IsAdminUser()]
 
-class MarcaViewSet(viewsets.ReadOnlyModelViewSet):
+
+class MarcaViewSet(viewsets.ModelViewSet):
     """
     API endpoint para consultar las manufacturas y marcas.
     GET /api/marcas/
@@ -23,19 +29,27 @@ class MarcaViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Marca.objects.all().order_by('nombre')
     serializer_class = MarcaSerializer
 
+    def get_permissions(self):
+        if self.action in ('list', 'retrieve'):
+            return [AllowAny()]
+        return [IsAdminUser()]
+
 
 class RelojViewSet(viewsets.ModelViewSet):
     """
-    API endpoint completo para operaciones CRUD en el catálogo de relojes.
-    GET /api/relojes/ - Lista paginada con filtros
-    POST /api/relojes/ - Creación de nueva pieza
-    GET /api/relojes/<id>/ - Detalle de un reloj
-    PUT /api/relojes/<id>/ - Actualización total
-    PATCH /api/relojes/<id>/ - Actualización parcial (ej: actualizar stock)
-    DELETE /api/relojes/<id>/ - Eliminación
+    API endpoint del catálogo de relojes.
+    GET /api/relojes/ - Lista paginada con filtros (público)
+    GET /api/relojes/<id>/ - Detalle de un reloj (público)
+    POST/PUT/PATCH/DELETE - Solo personal de administración (IsAdminUser).
+    La administración principal se realiza vía Django Admin.
     """
-    queryset = Reloj.objects.select_related('marca').prefetch_related('categorias').all().order_by('-creado_en')
+    queryset = Reloj.objects.select_related('marca').prefetch_related('categorias', 'imagenes').all().order_by('-creado_en')
     serializer_class = RelojSerializer
+
+    def get_permissions(self):
+        if self.action in ('list', 'retrieve'):
+            return [AllowAny()]
+        return [IsAdminUser()]
 
     def get_queryset(self):
         queryset = super().get_queryset()

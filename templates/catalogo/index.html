@@ -23,16 +23,16 @@
                 <!-- Detalle técnico suizo al pie del manifiesto -->
                 <div class="hero-manifesto-meta d-flex gap-4 mt-5 pt-4 border-top" style="border-color: var(--border-line-subtle) !important;">
                     <div>
-                        <span class="d-block text-technical" style="font-size: 0.6rem; letter-spacing: 0.24em;">ORIGINE</span>
-                        <span class="text-secondary small font-monospace">GENÈVE, SUISSE</span>
+                        <span class="d-block text-technical" style="font-size: 0.6rem; letter-spacing: 0.24em;">HOROLOGÍA</span>
+                        <span class="text-secondary small font-monospace">HAUTE HORLOGERIE</span>
                     </div>
                     <div>
-                        <span class="d-block text-technical" style="font-size: 0.6rem; letter-spacing: 0.24em;">CERTIFICATION</span>
-                        <span class="text-secondary small font-monospace">METAS &bull; COSC</span>
+                        <span class="d-block text-technical" style="font-size: 0.6rem; letter-spacing: 0.24em;">CALIBRES</span>
+                        <span class="text-secondary small font-monospace">MECÁNICO &bull; PRECISION</span>
                     </div>
                     <div>
-                        <span class="d-block text-technical" style="font-size: 0.6rem; letter-spacing: 0.24em;">INVENTAIRE</span>
-                        <span class="text-bronze small font-monospace">{{ total_resultados }} PIÈCES</span>
+                        <span class="d-block text-technical" style="font-size: 0.6rem; letter-spacing: 0.24em;">INVENTARIO</span>
+                        <span class="text-bronze small font-monospace">{{ total_resultados }} PIEZAS</span>
                     </div>
                 </div>
             </div>
@@ -43,7 +43,7 @@
                     {% if relojes %}
                         {% with hero_piece=relojes.0 %}
                             <a href="{% url 'catalogo:detalle' hero_piece.pk %}" class="d-inline-block text-decoration-none">
-                                <img src="{{ hero_piece.imagen_url }}" alt="{{ hero_piece.nombre }}" class="hero-protagonist-image" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=900';">
+                                <img src="{{ hero_piece.imagen_url }}" alt="{{ hero_piece.nombre }}" class="hero-protagonist-image" onerror="this.onerror=null;this.src='/images/relojes/placeholder-reloj.svg';">
                             </a>
                             <div class="hero-protagonist-caption">
                                 <span class="hero-caption-tag">PIÈCE MAÎTRESSE</span>
@@ -51,7 +51,7 @@
                             </div>
                         {% endwith %}
                     {% else %}
-                        <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=900" alt="Chronographe d'Exception" class="hero-protagonist-image">
+                        <img src="/images/relojes/rolex-daytona-panda.svg" alt="Chronographe d'Exception" class="hero-protagonist-image">
                         <div class="hero-protagonist-caption">
                             <span class="hero-caption-tag">PIÈCE MAÎTRESSE</span>
                             <span class="hero-caption-title">ROLEX &mdash; COSMOGRAPH DAYTONA</span>
@@ -169,7 +169,7 @@
                     <div class="watch-photo-canvas">
                         <a href="{% url 'catalogo:detalle' reloj.pk %}" class="watch-photo-link" aria-label="Ver ficha técnica de {{ reloj.nombre }}">
                             {% if reloj.imagen_url %}
-                                <img src="{{ reloj.imagen_url }}" alt="{{ reloj.nombre }}" class="watch-canvas-img" loading="lazy" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600';">
+                                <img src="{{ reloj.imagen_url }}" alt="{{ reloj.nombre }}" class="watch-canvas-img" loading="lazy" onerror="this.onerror=null;this.src='/images/relojes/placeholder-reloj.svg';">
                             {% else %}
                                 <div class="watch-canvas-placeholder">
                                     <span class="text-technical small letter-spacing-2">[ ARCHIVO RESERVADO ]</span>

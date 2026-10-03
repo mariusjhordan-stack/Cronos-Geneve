@@ -1,5 +1,12 @@
 from django.contrib import admin
-from .models import Marca, Categoria, Reloj
+from .models import Marca, Categoria, Reloj, ImagenReloj
+
+
+class ImagenRelojInline(admin.TabularInline):
+    model = ImagenReloj
+    extra = 1
+    fields = ('orden', 'url', 'alt_text')
+    ordering = ('orden',)
 
 
 @admin.register(Marca)
@@ -57,6 +64,7 @@ class RelojAdmin(admin.ModelAdmin):
     list_per_page = 15
     filter_horizontal = ('categorias',)
     readonly_fields = ('creado_en',)
+    inlines = [ImagenRelojInline]
 
     fieldsets = (
         ('Información Comercial', {
@@ -81,3 +89,12 @@ class RelojAdmin(admin.ModelAdmin):
         return obj.stock > 0
     en_stock_badge.boolean = True
     en_stock_badge.short_description = "¿Disponible?"
+
+
+@admin.register(ImagenReloj)
+class ImagenRelojAdmin(admin.ModelAdmin):
+    list_display = ('reloj', 'orden', 'url', 'alt_text', 'creado_en')
+    list_filter = ('reloj__marca', 'orden')
+    search_fields = ('reloj__nombre', 'alt_text', 'url')
+    list_editable = ('orden',)
+    ordering = ('reloj', 'orden')

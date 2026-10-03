@@ -5,42 +5,37 @@ import { Button } from '@/components/ui/Button';
 export function ProductGrid({ relojes = [], onResetFilters }) {
   if (relojes.length === 0) {
     return (
-      <div className="border-y border-cronos-line py-20 text-center my-8 bg-cronos-surface/40">
-        <span className="font-mono text-[10px] tracking-widest text-cronos-bronze uppercase block mb-2">
-          INVENTARIO VACÍO
+      <div className="border border-cronos-line py-24 px-6 text-center my-8 bg-white shadow-editorial">
+        <span className="font-mono text-[10px] tracking-[0.24em] text-cronos-bronze uppercase block mb-2">
+          CONSULTA DE CATÁLOGO
         </span>
-        <h3 className="font-serif text-2xl text-white mb-3">
-          Sin piezas registradas bajo este criterio
+        <h3 className="font-serif text-2xl sm:text-3xl text-cronos-text mb-3">
+          Ninguna pieza coincide con los criterios
         </h3>
         <p className="mx-auto max-w-md text-xs text-cronos-muted leading-relaxed font-sans mb-6">
-          No se encontraron guardatiempos que coincidan con la búsqueda o filtros aplicados en la bóveda. Restablezca los criterios para explorar la colección completa.
+          Pruebe con otra manufactura, complicación o referencia, o restablezca los filtros para explorar la colección completa.
         </p>
         <Button variant="outline" size="sm" onClick={onResetFilters}>
-          RESTABLECER CATÁLOGO &rarr;
+          RESTAURAR FILTROS &rarr;
         </Button>
       </div>
     );
   }
 
   return (
-    <div className="border-t border-b border-cronos-line">
+    <div className="border-t border-l border-cronos-line bg-white shadow-editorial">
       {/* 
-        Responsive Gallery Grid:
-        Mobile: 1 column
-        Tablet: 2 columns
-        Desktop: 3 columns
-        Separated by 1px borders
+        Vitrina Editorial Suiza:
+        Mobile: 1 columna
+        Tablet: 2 columnas
+        Desktop: 3 columnas
+        Filetes milimétricos continuos de 1px sin solapamientos
       */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-cronos-line">
-        {relojes.map((reloj, index) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        {relojes.map((reloj) => (
           <div
             key={reloj.id}
-            className={`
-              ${index >= 1 ? 'border-t md:border-t-0' : ''}
-              ${index >= 2 ? 'md:border-t lg:border-t-0' : ''}
-              ${index >= 3 ? 'lg:border-t' : ''}
-              border-cronos-line
-            `}
+            className="border-r border-b border-cronos-line"
           >
             <ProductCard reloj={reloj} />
           </div>
@@ -49,3 +44,5 @@ export function ProductGrid({ relojes = [], onResetFilters }) {
     </div>
   );
 }
+
+export default ProductGrid;

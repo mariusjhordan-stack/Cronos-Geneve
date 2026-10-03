@@ -22,16 +22,17 @@ class OrdenAdmin(admin.ModelAdmin):
         'cliente_nombre',
         'cliente_email',
         'cliente_telefono',
+        'usuario',
         'ciudad',
         'estado',
         'total_formateado',
         'creado_en',
     )
-    list_filter = ('estado', 'creado_en', 'ciudad')
+    list_filter = ('estado', 'creado_en', 'ciudad', 'usuario')
     search_fields = ('cliente_nombre', 'cliente_email', 'id')
     list_editable = ('estado',)
     inlines = [DetalleOrdenInline]
-    readonly_fields = ('total', 'creado_en', 'actualizado_en')
+    readonly_fields = ('total', 'token_acceso', 'garantia_aceptada', 'creado_en', 'actualizado_en')
 
     def total_formateado(self, obj):
         return f"${obj.total:,.2f}"

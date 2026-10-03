@@ -131,3 +131,44 @@ class Reloj(models.Model):
     @property
     def en_stock(self):
         return self.stock > 0
+
+
+class ImagenReloj(models.Model):
+    """
+    Galería de imágenes asociadas a una pieza horológica.
+    Permite administrar múltiples vistas (frontal, lateral, movimiento, etc.)
+    ordenadas jerárquicamente para su visualización en el catálogo y detalle.
+    """
+    reloj = models.ForeignKey(
+        Reloj,
+        on_delete=models.CASCADE,
+        related_name='imagenes',
+        verbose_name="Reloj"
+    )
+    url = models.URLField(
+        max_length=1000,
+        verbose_name="URL de la Imagen"
+    )
+    orden = models.PositiveIntegerField(
+        default=1,
+        verbose_name="Orden de Visualización",
+        help_text="1 para imagen principal, 2 en adelante para vistas complementarias"
+    )
+    alt_text = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+        verbose_name="Texto Alternativo (Alt)"
+    )
+    creado_en = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Fecha de Creación"
+    )
+
+    class Meta:
+        verbose_name = "Imagen de Reloj"
+        verbose_name_plural = "Imágenes de Reloj"
+        ordering = ['orden', 'id']
+
+    def __str__(self):
+        return f"{self.reloj.nombre} - Imagen {self.orden}"

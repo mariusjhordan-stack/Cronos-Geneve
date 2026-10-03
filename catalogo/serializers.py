@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Marca, Categoria, Reloj
+from .models import Marca, Categoria, Reloj, ImagenReloj
 
 
 class MarcaSerializer(serializers.ModelSerializer):
@@ -31,6 +31,15 @@ class CategoriaSerializer(serializers.ModelSerializer):
         fields = ['id', 'nombre', 'slug', 'descripcion']
 
 
+class ImagenRelojSerializer(serializers.ModelSerializer):
+    """
+    Serializador para las imágenes de la galería de cada reloj.
+    """
+    class Meta:
+        model = ImagenReloj
+        fields = ['id', 'url', 'orden', 'alt_text']
+
+
 class RelojSerializer(serializers.ModelSerializer):
     """
     Serializador principal para el catálogo de relojes.
@@ -41,6 +50,8 @@ class RelojSerializer(serializers.ModelSerializer):
     categorias_detalle = CategoriaSerializer(source='categorias', many=True, read_only=True)
     movimiento_display = serializers.CharField(source='get_movimiento_display', read_only=True)
     en_stock = serializers.BooleanField(read_only=True)
+    imagenes = ImagenRelojSerializer(many=True, read_only=True)
+    imagen_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Reloj
@@ -63,5 +74,13 @@ class RelojSerializer(serializers.ModelSerializer):
             'material_correa',
             'descripcion',
             'imagen_url',
+            'imagenes',
             'creado_en',
         ]
+
+    def get_imagen_url(self, obj):
+        # Si tiene imágenes en galería, la primera (orden 1) es la principal
+        imgs = obj.imagenes.all()
+        if imgs:
+            return imgs[0].url
+        return obj.imagen_url

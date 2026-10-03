@@ -17,6 +17,9 @@ urlpatterns = [
 
     # Endpoints de API REST (DRF) para Frontend desacoplado
     path('api/', include('catalogo.api_urls')),
+    path('api/auth/', include('usuarios.auth_urls')),
+    path('api/me/', include('pedidos.me_urls')),
+    path('api/', include('usuarios.api_urls')),
     path('api/pedidos/', include('pedidos.api_urls')),
 
     # Módulo de Pedidos y Transacciones (Templates Django legados)

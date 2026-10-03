@@ -200,7 +200,7 @@
                     <span class="brand-title d-block mb-1" style="font-size: 1.15rem;">CRONOS GENÈVE</span>
                     <span class="brand-subtitle d-block mb-3">MANUFACTURE D'HORLOGERIE</span>
                     <p class="small text-secondary mb-3" style="line-height: 1.8; font-size: 0.8rem;">
-                        Preservación y custodia de alta horología suiza. Inspección cronométrica, trazabilidad de calibres y certificación notarial de procedencia.
+                        Colección selecta de piezas de alta manufactura. Fichas técnicas detalladas, arquitectura mecánica y catálogo digital de guardatiempos.
                     </p>
                 </div>
 
@@ -215,20 +215,20 @@
                 </div>
 
                 <div class="col-6 col-lg-3">
-                    <span class="filter-label-editorial mb-3">ESTÁNDARES</span>
+                    <span class="filter-label-editorial mb-3">HOROLOGÍA</span>
                     <ul class="list-unstyled small text-secondary" style="font-size: 0.78rem;">
-                        <li class="mb-2">&bull; Poinçon de Genève</li>
-                        <li class="mb-2">&bull; Master Chronometer METAS</li>
-                        <li class="mb-2">&bull; Swiss Luxury Minimalist UI</li>
-                        <li class="mb-2">&bull; Custodia Asegurada</li>
+                        <li class="mb-2">&bull; Fichas Técnicas Verificadas</li>
+                        <li class="mb-2">&bull; Calibres de Manufactura</li>
+                        <li class="mb-2">&bull; Arquitectura Mecánica</li>
+                        <li class="mb-2">&bull; Catálogo Académico</li>
                     </ul>
                 </div>
 
                 <div class="col-lg-3">
                     <span class="filter-label-editorial mb-3">CONCIERGE</span>
-                    <p class="small text-secondary mb-1" style="font-size: 0.78rem;">Rue du Rhône 42, Genève &bull; San Isidro, Lima</p>
-                    <p class="small text-secondary mb-1" style="font-size: 0.78rem;">concierge@cronos-geneve.com</p>
-                    <p class="small text-secondary" style="font-size: 0.78rem;">+41 22 819 00 00</p>
+                    <p class="small text-secondary mb-1" style="font-size: 0.78rem;">Atención y consultas técnicas</p>
+                    <p class="small text-secondary mb-1" style="font-size: 0.78rem;">concierge@cronos-geneve.ch</p>
+                    <p class="small text-secondary" style="font-size: 0.78rem;">Lunes a Viernes: 09:00 - 18:00</p>
                 </div>
             </div>
 
@@ -513,7 +513,7 @@
 
                     if (thumbsContainer) {
                         thumbsContainer.innerHTML = items.map(item => `
-                            <img src="${item.imgUrl || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100'}" alt="${item.nombre}" class="comparator-mini-thumb" title="${item.marca} - ${item.nombre}">
+                            <img src="${item.imgUrl || '/images/relojes/placeholder-reloj.svg'}" alt="${item.nombre}" class="comparator-mini-thumb" title="${item.marca} - ${item.nombre}">
                         `).join('');
                     }
 

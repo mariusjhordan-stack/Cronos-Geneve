@@ -1,3 +1,5 @@
+import uuid
+from django.conf import settings
 from django.db import models
 from decimal import Decimal
 
@@ -7,8 +9,10 @@ class Orden(models.Model):
     Entidad que registra una transacción comercial y el despacho de piezas.
     """
     class EstadoOrden(models.TextChoices):
-        PENDIENTE = 'PENDIENTE', 'Pendiente de Pago'
-        PAGADO = 'PAGADO', 'Pago Confirmado'
+        # Estado académico: solicitud/protocolo de adquisición, NO pago bancario real.
+        SOLICITADA = 'SOLICITADA', 'Solicitud Registrada (Protocolo Académico)'
+        PENDIENTE = 'PENDIENTE', 'Pendiente de Revisión'
+        PAGADO = 'PAGADO', 'Pago Confirmado (Legado)'
         EN_PREPARACION = 'EN_PREPARACION', 'En Preparación de Bóveda'
         ENVIADO = 'ENVIADO', 'Enviado por Transporte Asegurado'
         ENTREGADO = 'ENTREGADO', 'Entregado al Cliente'
@@ -33,6 +37,24 @@ class Orden(models.Model):
         verbose_name="Monto Total (USD)"
     )
     notas = models.TextField(blank=True, verbose_name="Instrucciones Especiales de Entrega")
+    garantia_aceptada = models.BooleanField(
+        default=False,
+        verbose_name="Declaración de Custodia / Garantía Aceptada"
+    )
+    token_acceso = models.UUIDField(
+        default=uuid.uuid4,
+        unique=True,
+        editable=False,
+        verbose_name="Token de Acceso al Certificado"
+    )
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='ordenes',
+        verbose_name='Usuario asociado',
+    )
     creado_en = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Creación")
     actualizado_en = models.DateTimeField(auto_now=True, verbose_name="Última Actualización")
 

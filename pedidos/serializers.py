@@ -45,10 +45,12 @@ class OrdenSerializer(serializers.ModelSerializer):
             'estado_display',
             'total',
             'notas',
+            'garantia_aceptada',
             'detalles',
             'creado_en',
             'actualizado_en',
         ]
+        read_only_fields = ['garantia_aceptada']
 
     def get_codigo_orden(self, obj):
         return f"#CRONOS-{obj.id:05d}-2026"

@@ -3,44 +3,140 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
+
+  /* Design Tokens — Light Horology */
+  --cronos-bg: #F4F2EE;
+  --cronos-surface: #FFFFFF;
+  --cronos-surface-1: #FAF9F6;
+  --cronos-surface-2: #EBE7DF;
+  --cronos-text: #171717;
+  --cronos-muted: #6F6B64;
+  --cronos-tertiary: #8F8B83;
+  --cronos-line: #D8D4CC;
+  --cronos-line-subtle: #E8E5DD;
+  --cronos-accent: #A58A68;
+  --cronos-accent-hover: #8F7555;
 }
 
 body {
-  background-color: #111214;
-  color: #F1F0ED;
+  background-color: #F4F2EE;
+  color: #171717;
   font-family: 'Inter', sans-serif;
   margin: 0;
   padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom Scrollbar for Luxury Editorial feel */
+/* Custom Scrollbar for Light Horology Editorial feel */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #111214;
+  background: #F4F2EE;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: #D8D4CC;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #A58A68;
 }
 
-/* Print Styles for Certificate of Authenticity */
+/* Print utility classes in screen media */
+.print-only {
+  display: none !important;
+}
+
+/* Print Styles for Order Receipt */
 @media print {
-  body {
-    background-color: #ffffff !important;
-    color: #111111 !important;
+  @page {
+    margin: 1.5cm;
+    size: auto;
   }
 
-  .no-print {
+  html,
+  body {
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    color: #111111 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: auto !important;
+    height: auto !important;
+    font-size: 11pt;
+    line-height: 1.4;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Reset outer layout wrappers to prevent overflow and height clipping */
+  #root,
+  .min-h-screen,
+  main {
+    display: block !important;
+    background-color: transparent !important;
+    background: transparent !important;
+    color: #111111 !important;
+    min-height: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+  }
+
+  /* Ocultar elementos estructurales e interactivos de la aplicación */
+  header,
+  footer,
+  nav,
+  button,
+  [data-sonner-toaster],
+  [data-radix-portal],
+  .no-print,
+  .screen-only {
     display: none !important;
+  }
+
+  /* Mostrar exclusivamente el comprobante de impresión */
+  .print-only {
+    display: block !important;
+  }
+
+  .print-receipt {
+    display: block !important;
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    color: #111111 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  .print-receipt * {
+    color: #111111 !important;
+    border-color: #d1d5db !important;
+  }
+
+  .print-receipt table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    table-layout: auto !important;
+  }
+
+  /* Evitar cortes incómodos entre filas y secciones */
+  .print-receipt tr,
+  .print-receipt .print-avoid-break {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
   }
 
   .certificate-print-container {

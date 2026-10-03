@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Certificat d'Authenticité {{ codigo_orden }} | Cronos Genève{% endblock %}
+{% block title %}Comprobante de Orden {{ codigo_orden }} | Cronos Genève{% endblock %}
 
 {% block content %}
 <div class="container py-5">
@@ -8,7 +8,7 @@
     <div class="d-flex flex-wrap justify-content-between align-items-baseline mb-4 no-print">
         <div>
             <span class="editorial-eyebrow mb-1">TRANSACTION CONFIRMÉE</span>
-            <h1 class="editorial-title fs-4 mb-0">CERTIFICAT OFFICIEL D'AUTHENTICITÉ</h1>
+            <h1 class="editorial-title fs-4 mb-0">COMPROBANTE DE ORDEN</h1>
         </div>
 
         <div class="d-flex gap-2 mt-3 mt-md-0">
@@ -16,24 +16,24 @@
                 &larr; RETORNAR AL CATÁLOGO
             </a>
             <button type="button" class="btn-editorial-primary" onclick="window.print()">
-                IMPRIMIR CERTIFICADO (PDF) &rarr;
+                IMPRIMIR COMPROBANTE (PDF) &rarr;
             </button>
         </div>
     </div>
 
-    <!-- Documento Notarial / Certificado de Autenticidad Horológica -->
+    <!-- Comprobante de Orden -->
     <div class="certificate-swiss my-4">
         <div class="p-4 p-md-5 border" style="border-color: var(--border-line) !important;">
-            <!-- Cabecera Notarial de Ginebra -->
+            <!-- Cabecera de Comprobante -->
             <div class="text-center py-4 mb-4">
                 <span class="brand-subtitle d-block mb-2" style="font-size: 0.72rem; letter-spacing: 0.36em;">
                     MANUFACTURE D'HORLOGERIE GENÈVE &bull; SUISSE
                 </span>
                 <h2 class="editorial-headline fs-1 mb-2" style="letter-spacing: 0.12em;">
-                    CERTIFICAT D'AUTHENTICITÉ
+                    COMPROBANTE DE ORDEN
                 </h2>
                 <span class="text-technical small text-uppercase" style="letter-spacing: 0.22em; font-size: 0.68rem;">
-                    ACTE NOTARIÉ DE CUSTODIE ET TRANSFERT HORLOGER
+                    CONFIRMACIÓN DE COMPRA Y DETALLE DE LA ORDEN
                 </span>
             </div>
 
@@ -44,29 +44,29 @@
                     <span class="text-bronze font-monospace fs-5 fw-medium">{{ codigo_orden }}</span>
                 </div>
                 <div class="col-sm-4">
-                    <span class="filter-label-editorial mb-1">REGISTRO DE BÓVEDA</span>
+                    <span class="filter-label-editorial mb-1">REFERENCIA DE COMPRA</span>
                     <span class="text-primary font-monospace fs-5 fw-medium">{{ numero_serie }}</span>
                 </div>
                 <div class="col-sm-4">
-                    <span class="filter-label-editorial mb-1">FECHA DE CONSIGNACIÓN</span>
+                    <span class="filter-label-editorial mb-1">FECHA DE ORDEN</span>
                     <span class="text-secondary small d-block font-sans mt-1">{{ orden.creado_en|date:"d \d\e F \d\e Y, H:i" }} UTC</span>
                 </div>
             </div>
 
-            <!-- Declaración de Autenticidad -->
+            <!-- Confirmación de Orden -->
             <p class="text-secondary mx-auto mb-4 text-start font-sans" style="max-width: 820px; font-size: 0.92rem; line-height: 1.9;">
-                Por medio del presente instrumento notarial, la Casa <strong>Cronos Genève</strong> certifica que los guardatiempos consignados a continuación han sido retirados de nuestra bóveda de preservación, inspeccionados bajo tolerancias cronométricas oficiales de la manufactura y asignados con carácter solemne e inmutable a su titular:
+                La Casa <strong>Cronos Genève</strong> confirma la recepción y registro de su orden. Los guardatiempos seleccionados se detallan a continuación con sus especificaciones de manufactura:
             </p>
 
             <!-- Datos del Titular -->
             <div class="p-4 border mb-5 mx-auto" style="max-width: 820px; border-color: var(--border-line) !important; background-color: var(--bg-surface);">
                 <div class="row g-3 font-sans small text-secondary">
                     <div class="col-sm-6">Titular: <strong class="text-primary">{{ orden.cliente_nombre }}</strong></div>
-                    <div class="col-sm-6">Correo Certificado: <strong class="text-primary">{{ orden.cliente_email }}</strong></div>
-                    <div class="col-sm-6">Teléfono de Enlace: <strong class="text-primary">{{ orden.cliente_telefono }}</strong></div>
+                    <div class="col-sm-6">Correo Electrónico: <strong class="text-primary">{{ orden.cliente_email }}</strong></div>
+                    <div class="col-sm-6">Teléfono: <strong class="text-primary">{{ orden.cliente_telefono }}</strong></div>
                     <div class="col-sm-6">Destino Registrado: <strong class="text-primary">{{ orden.direccion_envio }}, {{ orden.ciudad }}</strong></div>
-                    <div class="col-sm-6">Modalidad de Custodia: <span class="text-bronze">Transporte Blindado Asegurado</span></div>
-                    <div class="col-sm-6">Estado de Bóveda: <span class="text-primary">{{ orden.get_estado_display }}</span></div>
+                    <div class="col-sm-6">Términos de la Orden: <span class="text-bronze">Envío coordinado según disponibilidad</span></div>
+                    <div class="col-sm-6">Estado: <span class="text-primary">{{ orden.get_estado_display }}</span></div>
                 </div>
             </div>
 
@@ -100,7 +100,7 @@
                     <tfoot>
                         <tr>
                             <td colspan="3" class="text-end text-secondary pt-4 font-sans text-uppercase" style="letter-spacing: 0.14em; font-size: 0.72rem;">
-                                INVERSIÓN TOTAL ASIGNADA:
+                                TOTAL DE LA ORDEN:
                             </td>
                             <td class="text-end text-primary fs-4 fw-medium pt-4 font-monospace">
                                 ${{ orden.total|floatformat:2 }} <span class="fs-6 text-technical">USD</span>
@@ -110,29 +110,19 @@
                 </table>
             </div>
 
-            <!-- Firmas Notariales de Ginebra -->
-            <div class="row pt-5 my-3 border-top text-center mx-auto" style="max-width: 820px; border-color: var(--border-line) !important;">
-                <div class="col-6">
-                    <div class="d-inline-block border-bottom pb-2 mb-2" style="width: 220px; border-color: var(--border-line) !important;">
-                        <span class="font-serif text-primary fs-6 d-block">Marc-Antoine Vacheron</span>
-                    </div>
+            <!-- Identificación Institucional -->
+            <div class="row pt-4 my-3 border-top text-center mx-auto" style="max-width: 820px; border-color: var(--border-line) !important;">
+                <div class="col-12">
+                    <span class="font-serif text-primary fs-6 d-block mb-1">Cronos Genève</span>
                     <span class="d-block text-technical small" style="font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;">
-                        Maître Horloger &bull; Conservador de Bóveda
-                    </span>
-                </div>
-                <div class="col-6">
-                    <div class="d-inline-block border-bottom pb-2 mb-2" style="width: 220px; border-color: var(--border-line) !important;">
-                        <span class="font-serif text-primary fs-6 d-block">Jean-Luc Dufour</span>
-                    </div>
-                    <span class="d-block text-technical small" style="font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;">
-                        Notario &bull; Chambre Horlogère de Genève
+                        Haute Horlogerie &bull; Servicio al Cliente
                     </span>
                 </div>
             </div>
 
             <div class="text-center pt-4">
                 <span class="text-technical small" style="font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase;">
-                    DOCUMENTO OFICIAL VALIDADOR DE AUTENTICIDAD &bull; GENÈVE, SUISSE
+                    COMPROBANTE DE ORDEN REGISTRADA &bull; CRONOS GENÈVE
                 </span>
             </div>
         </div>

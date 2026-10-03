@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.http import JsonResponse
+from django.urls import reverse
+from django.http import Http404, JsonResponse
 from django.db import transaction
+from django.utils.crypto import constant_time_compare
 from decimal import Decimal
 import json
+from urllib.parse import urlencode
 
 from catalogo.models import Reloj
 from .models import Orden, DetalleOrden
@@ -321,7 +324,7 @@ def checkout(request):
                             f"unidad(es) disponible(s) en bóveda y usted solicitó {cantidad_solicitada}."
                         )
 
-                # 2. Creación de la Orden Maestra
+                # 2. Creación de la Orden Maestra (solicitud académica, sin pago real)
                 orden = Orden.objects.create(
                     cliente_nombre=nombre,
                     cliente_email=email,
@@ -329,7 +332,8 @@ def checkout(request):
                     direccion_envio=direccion,
                     ciudad=ciudad,
                     notas=notas,
-                    estado=Orden.EstadoOrden.PAGADO,
+                    estado=Orden.EstadoOrden.SOLICITADA,
+                    usuario=request.user if request.user.is_authenticated else None,
                 )
 
                 # 3. Creación de cada DetalleOrden y descuento atómico de inventario
@@ -357,7 +361,9 @@ def checkout(request):
                 request.session.modified = True
 
             messages.success(request, f"¡Transacción autorizada con éxito! Su orden #CRONOS-{orden.id:05d}-2026 ha sido emitida.")
-            return redirect('pedidos:confirmacion', orden_id=orden.id)
+            confirmation_url = reverse('pedidos:confirmacion', kwargs={'orden_id': orden.id})
+            token_query = urlencode({'token': str(orden.token_acceso)})
+            return redirect(f'{confirmation_url}?{token_query}')
 
         except ValueError as err:
             messages.error(request, str(err))
@@ -378,6 +384,12 @@ def pedido_confirmacion(request, orden_id):
         Orden.objects.prefetch_related('detalles__reloj__marca', 'detalles__reloj__categorias'),
         pk=orden_id
     )
+
+    is_owner = request.user.is_authenticated and orden.usuario_id == request.user.pk
+    access_token = request.GET.get('token', '')
+    has_guest_access = bool(access_token) and constant_time_compare(access_token, str(orden.token_acceso))
+    if not is_owner and not has_guest_access:
+        raise Http404('Certificado no disponible.')
 
     # Generación de número de serie y registro notarial de bóveda
     numero_serie = f"CE-GENEVE-{orden.id:05d}-{orden.creado_en.strftime('%Y%m%d')}"
