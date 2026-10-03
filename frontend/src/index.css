@@ -158,3 +158,97 @@ body {
     border-color: #cccccc !important;
   }
 }
+
+/* ==========================================================================
+   Brand Intro Keyframes & Utilities (Phase 9.7.1 — Maison Opening)
+   ========================================================================== */
+@keyframes cronosIntroDialIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes cronosIntroTextUp {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cronosIntroLineIn {
+  0% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes cronosIntroSecondSweep {
+  0% {
+    transform: rotate(0deg);
+  }
+  20% {
+    transform: rotate(5deg);
+  }
+  45% {
+    transform: rotate(11deg);
+  }
+  75% {
+    transform: rotate(18deg);
+  }
+  100% {
+    transform: rotate(22deg);
+  }
+}
+
+.animate-intro-dial {
+  animation: cronosIntroDialIn 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-intro-text {
+  animation: cronosIntroTextUp 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.25s backwards;
+}
+
+.animate-intro-line {
+  animation: cronosIntroLineIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.4s backwards;
+  transform-origin: center;
+}
+
+.animate-intro-subtext {
+  animation: cronosIntroTextUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.5s backwards;
+}
+
+.animate-intro-tagline {
+  animation: cronosIntroTextUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.65s backwards;
+}
+
+.animate-intro-hand {
+  transform-origin: 80px 80px;
+  transform-box: view-box;
+  animation: cronosIntroSecondSweep 1.3s cubic-bezier(0.25, 0.1, 0.25, 1) 0.35s forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-intro-dial,
+  .animate-intro-text,
+  .animate-intro-line,
+  .animate-intro-subtext,
+  .animate-intro-tagline,
+  .animate-intro-hand {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

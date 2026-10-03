@@ -19,10 +19,14 @@ import { ProfilePage } from '@/pages/ProfilePage';
 import { AddressesPage } from '@/pages/AddressesPage';
 import { OrdersPage } from '@/pages/OrdersPage';
 import { FavoritesPage } from '@/pages/FavoritesPage';
+import { BrandIntro } from '@/components/brand/BrandIntro';
 
 export function App() {
   return (
     <BrowserRouter>
+      {/* Brand Intro Maison (Fase 9.7.1 — Apertura de marca, 1x por sesión) */}
+      <BrandIntro />
+
       <AuthProvider>
        <FavoritesProvider>
         <CartProvider>
