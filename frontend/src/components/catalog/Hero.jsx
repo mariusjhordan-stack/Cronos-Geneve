@@ -101,42 +101,32 @@ export function Hero({ protagonistPiece, totalPiezas = 0 }) {
                 className="group relative block w-full max-w-md focus:outline-none"
                 aria-label={`Ver pieza destacada: ${brandName} ${watchName}`}
               >
-                {/* Lienzo multimedia protagonista con soporte de video y poster */}
-                <div className="relative aspect-[4/5] sm:aspect-square w-full bg-cronos-surface-1 border border-cronos-line overflow-hidden flex items-center justify-center p-8 sm:p-12 transition-all duration-300 group-hover:border-cronos-text/40 shadow-xs">
-                  {/* Capa de video editorial o poster de alta relojería */}
-                  {!videoError && !prefersReducedMotion ? (
+                {/* Lienzo multimedia protagonista con soporte de video y fotografía editorial */}
+                <div className="relative aspect-[4/5] sm:aspect-square w-full bg-gradient-to-b from-cronos-surface-1 to-[#F0EDE6] border border-cronos-line overflow-hidden flex items-center justify-center p-8 sm:p-12 transition-all duration-300 group-hover:border-cronos-text/40 shadow-xs">
+                  {/* Capa de video editorial de fondo (preparado para /videos/hero-horology.mp4) */}
+                  {!videoError && !prefersReducedMotion && (
                     <video
                       ref={videoRef}
                       src="/videos/hero-horology.mp4"
-                      poster="/images/hero-horology-poster.jpg"
                       autoPlay
                       muted
                       loop
                       playsInline
                       onError={() => setVideoError(true)}
-                      className="absolute inset-0 h-full w-full object-cover opacity-85 transition-opacity duration-700 pointer-events-none"
-                    />
-                  ) : (
-                    <img
-                      src="/images/hero-horology-poster.jpg"
-                      alt="Mecanismo Horológico Suizo"
-                      className="absolute inset-0 h-full w-full object-cover opacity-80 pointer-events-none"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                      }}
+                      className="absolute inset-0 h-full w-full object-cover opacity-75 transition-opacity duration-700 pointer-events-none"
                     />
                   )}
 
-                  {/* Velo degradado sutil para asegurar contraste con la pieza */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-cronos-surface-1/90 via-cronos-surface-1/40 to-transparent pointer-events-none" />
+                  {/* Velo degradado sutil para asegurar armonía cromática y contraste */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#FAF9F6]/80 via-transparent to-[#FAF9F6]/30 pointer-events-none" />
 
-                  {/* Silueta de la pieza protagonista */}
+                  {/* Fotografía / Render de la pieza protagonista de alta relojería */}
                   {imgUrl ? (
                     <div className="relative z-10 p-4 flex items-center justify-center h-full w-full">
                       <img
                         src={imgUrl}
                         alt={`${brandName} ${watchName}`}
-                        className="max-h-full max-w-full object-contain filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.14)] transition-transform duration-700 ease-out group-hover:scale-105"
+                        className="max-h-full max-w-full object-contain filter drop-shadow-[0_16px_32px_rgba(0,0,0,0.12)] transition-transform duration-700 ease-out group-hover:scale-105"
                         loading="eager"
                       />
                     </div>

@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 const INTRO_SEEN_KEY = 'cronos_intro_seen';
-const DISPLAY_DURATION_MS = 1850;
-const FADE_OUT_DURATION_MS = 400;
+// Duración total objetivo: ~2.55s (dentro del rango 2.3s–2.8s, máximo 3.0s)
+const DISPLAY_DURATION_MS = 2100;
+const FADE_OUT_DURATION_MS = 450;
+
+const BRAND_LETTERS = ['C', 'R', 'O', 'N', 'O', 'S'];
 
 export function BrandIntro() {
   const [isMounted, setIsMounted] = useState(() => {
@@ -44,7 +47,7 @@ export function BrandIntro() {
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
-    // Manejo de prefers-reduced-motion: salida casi instantánea
+    // Manejo de prefers-reduced-motion: salida casi instantánea sin barreras
     const prefersReducedMotion =
       typeof window !== 'undefined' &&
       window.matchMedia &&
@@ -69,7 +72,7 @@ export function BrandIntro() {
     };
     window.addEventListener('keydown', handleKeyDown);
 
-    // Ciclo natural de animación y transición
+    // Ciclo natural de animación y transición (revelado de etapas + salida a los ~2.1s)
     dismissTimerRef.current = setTimeout(() => {
       handleDismiss();
     }, DISPLAY_DURATION_MS);
@@ -95,10 +98,10 @@ export function BrandIntro() {
       aria-label="Presentación de Cronos Genève"
       aria-modal="true"
       onClick={handleDismiss}
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#171717] px-4 transition-opacity select-none cursor-pointer ${
+      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#171717] px-4 transition-all select-none cursor-pointer ${
         isExiting
-          ? 'opacity-0 pointer-events-none'
-          : 'opacity-100'
+          ? 'opacity-0 scale-[1.008] pointer-events-none'
+          : 'opacity-100 scale-100'
       }`}
       style={{
         transitionDuration: `${FADE_OUT_DURATION_MS}ms`,
@@ -106,7 +109,7 @@ export function BrandIntro() {
       }}
     >
       <div className="flex flex-col items-center justify-center max-w-sm w-full">
-        {/* Esfera Horológica Minimalista (SVG Vectorial) */}
+        {/* ETAPA 1 — RELOJ: Esfera Horológica Minimalista (SVG Vectorial) */}
         <div className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-44 md:h-44 animate-intro-dial">
           <svg
             viewBox="0 0 160 160"
@@ -120,8 +123,20 @@ export function BrandIntro() {
               cy="80"
               r="74"
               stroke="#A58A68"
-              strokeOpacity="0.22"
+              strokeOpacity="0.25"
               strokeWidth="0.75"
+            />
+
+            {/* Brillo champagne sutil recorriendo parcialmente el borde del bisel */}
+            <circle
+              cx="80"
+              cy="80"
+              r="74"
+              stroke="#D8C2A7"
+              strokeWidth="1.25"
+              strokeLinecap="round"
+              className="animate-intro-gleam"
+              fill="none"
             />
 
             {/* Anillo de minutos concéntrico */}
@@ -178,7 +193,7 @@ export function BrandIntro() {
               transform="rotate(65 80 80)"
             />
 
-            {/* Micro-movimiento Horológico: Segundero con barrido suave */}
+            {/* Micro-movimiento Horológico: Segundero mecánico con barrido suave */}
             <g className="animate-intro-hand">
               {/* Vástago del segundero */}
               <line
@@ -221,20 +236,31 @@ export function BrandIntro() {
 
         {/* Tipografía de Marca: CRONOS GENÈVE */}
         <div className="flex flex-col items-center mt-6 sm:mt-7 text-center">
-          <h1 className="font-editorial text-3xl sm:text-4xl md:text-5xl font-light tracking-[0.28em] text-[#FAF9F6] uppercase leading-none animate-intro-text pl-[0.28em]">
-            Cronos
+          {/* ETAPA 2 — CRONOS: Dominante, en champagne, revelación progresiva letra a letra */}
+          <h1 className="font-editorial text-4xl sm:text-5xl md:text-6xl font-light tracking-[0.26em] pl-[0.26em] uppercase leading-none select-none text-[#A58A68]">
+            {BRAND_LETTERS.map((letter, idx) => (
+              <span
+                key={idx}
+                className="inline-block animate-intro-letter"
+                style={{
+                  animationDelay: `${680 + idx * 80}ms`,
+                }}
+              >
+                {letter}
+              </span>
+            ))}
           </h1>
 
           {/* Micro-línea divisoria champagne */}
           <div className="w-10 sm:w-12 h-[1px] bg-[#A58A68]/60 my-2.5 sm:my-3 animate-intro-line" />
 
-          {/* Sello de origen suizo */}
-          <span className="font-sans text-[10px] sm:text-[11px] tracking-[0.45em] text-[#A58A68] uppercase font-medium leading-none animate-intro-subtext pl-[0.45em]">
+          {/* ETAPA 3 — GENÈVE: Inter, tracking amplio, champagne sutil */}
+          <span className="font-sans text-[10px] sm:text-[11px] tracking-[0.48em] text-[#A58A68]/85 uppercase font-medium leading-none animate-intro-geneve pl-[0.48em]">
             Genève
           </span>
 
-          {/* Detalle editorial Haute Horlogerie */}
-          <span className="font-sans text-[8px] sm:text-[9px] tracking-[0.35em] text-[#8F8B83] uppercase mt-2.5 leading-none animate-intro-tagline pl-[0.35em]">
+          {/* ETAPA 4 — HAUTE HORLOGERIE: Inter, discreto editorial con expansión sutil de tracking */}
+          <span className="font-sans text-[8px] sm:text-[9px] text-[#8F8B83] uppercase mt-2.5 leading-none animate-intro-tagline pl-[0.38em]">
             Haute Horlogerie
           </span>
         </div>

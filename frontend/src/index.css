@@ -160,12 +160,12 @@ body {
 }
 
 /* ==========================================================================
-   Brand Intro Keyframes & Utilities (Phase 9.7.1 — Maison Opening)
+   Brand Intro Keyframes & Utilities (Phase 9.7.2 — Refined Maison Opening)
    ========================================================================== */
 @keyframes cronosIntroDialIn {
   0% {
     opacity: 0;
-    transform: scale(0.92);
+    transform: scale(0.94);
   }
   100% {
     opacity: 1;
@@ -173,28 +173,81 @@ body {
   }
 }
 
-@keyframes cronosIntroTextUp {
+/* Brillo champagne sutil recorriendo parcialmente el borde del bisel */
+@keyframes cronosIntroGleam {
   0% {
+    stroke-dashoffset: 465;
     opacity: 0;
-    transform: translateY(8px);
+  }
+  20% {
+    opacity: 0.9;
+  }
+  65% {
+    opacity: 0.8;
   }
   100% {
-    opacity: 1;
-    transform: translateY(0);
+    stroke-dashoffset: 220;
+    opacity: 0;
   }
 }
 
+/* Revelación progresiva letra a letra para "CRONOS" */
+@keyframes cronosIntroLetterIn {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.96);
+    filter: blur(1.5px);
+  }
+  60% {
+    opacity: 0.85;
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+/* Expansión de la micro-línea divisoria */
 @keyframes cronosIntroLineIn {
   0% {
     opacity: 0;
     transform: scaleX(0);
   }
   100% {
-    opacity: 1;
+    opacity: 0.65;
     transform: scaleX(1);
   }
 }
 
+/* Revelación sutil y técnica de "GENÈVE" */
+@keyframes cronosIntroGeneveIn {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 0.85;
+    transform: translateY(0);
+  }
+}
+
+/* Revelación editorial con expansión de tracking para "HAUTE HORLOGERIE" */
+@keyframes cronosIntroTaglineIn {
+  0% {
+    opacity: 0;
+    letter-spacing: 0.24em;
+    transform: translateY(3px);
+  }
+  100% {
+    opacity: 0.7;
+    letter-spacing: 0.38em;
+    transform: translateY(0);
+  }
+}
+
+/* Micro-movimiento de segundero mecánico */
 @keyframes cronosIntroSecondSweep {
   0% {
     transform: rotate(0deg);
@@ -209,46 +262,60 @@ body {
     transform: rotate(18deg);
   }
   100% {
-    transform: rotate(22deg);
+    transform: rotate(24deg);
   }
 }
 
 .animate-intro-dial {
-  animation: cronosIntroDialIn 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: cronosIntroDialIn 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.animate-intro-text {
-  animation: cronosIntroTextUp 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.25s backwards;
+.animate-intro-gleam {
+  stroke-dasharray: 60 405;
+  animation: cronosIntroGleam 1.1s cubic-bezier(0.25, 1, 0.5, 1) 0.15s forwards;
+}
+
+.animate-intro-letter {
+  opacity: 0;
+  animation: cronosIntroLetterIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
 .animate-intro-line {
-  animation: cronosIntroLineIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.4s backwards;
+  opacity: 0;
+  transform: scaleX(0);
+  animation: cronosIntroLineIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) 1.15s forwards;
   transform-origin: center;
 }
 
-.animate-intro-subtext {
-  animation: cronosIntroTextUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.5s backwards;
+.animate-intro-geneve {
+  opacity: 0;
+  animation: cronosIntroGeneveIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) 1.25s forwards;
 }
 
 .animate-intro-tagline {
-  animation: cronosIntroTextUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.65s backwards;
+  opacity: 0;
+  animation: cronosIntroTaglineIn 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) 1.48s forwards;
 }
 
 .animate-intro-hand {
   transform-origin: 80px 80px;
   transform-box: view-box;
-  animation: cronosIntroSecondSweep 1.3s cubic-bezier(0.25, 0.1, 0.25, 1) 0.35s forwards;
+  animation: cronosIntroSecondSweep 1.4s cubic-bezier(0.25, 0.1, 0.25, 1) 0.3s forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .animate-intro-dial,
-  .animate-intro-text,
+  .animate-intro-gleam,
+  .animate-intro-letter,
   .animate-intro-line,
-  .animate-intro-subtext,
+  .animate-intro-geneve,
   .animate-intro-tagline,
   .animate-intro-hand {
     animation-duration: 0.01ms !important;
     animation-delay: 0ms !important;
     transition-duration: 0.01ms !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
   }
 }
