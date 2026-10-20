@@ -13,7 +13,6 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cronos_elite.settings')
 django.setup()
 
 from catalogo.models import Marca, Categoria, Reloj, ImagenReloj
-from pedidos.models import Orden, DetalleOrden
 
 
 def poblar():
@@ -75,13 +74,8 @@ def poblar():
                 "descripcion": m["descripcion"]
             }
         )
-        if not created:
-            obj.pais_origen = m["pais_origen"]
-            obj.sitio_web = m["sitio_web"]
-            obj.descripcion = m["descripcion"]
-            obj.save()
         marcas_dict[m["nombre"]] = obj
-        action = "creada" if created else "actualizada"
+        action = "creada" if created else "existente; se conservan sus datos actuales"
         print(f" [+] Marca {action}: {obj.nombre}")
 
     # 2. Crear Categorías Horológicas
@@ -99,11 +93,8 @@ def poblar():
             nombre=c["nombre"],
             defaults={"descripcion": c["descripcion"]}
         )
-        if not created:
-            obj.descripcion = c["descripcion"]
-            obj.save()
         categorias_dict[c["nombre"]] = obj
-        action = "creada" if created else "actualizada"
+        action = "creada" if created else "existente; se conservan sus datos actuales"
         print(f" [+] Categoría {action}: {obj.nombre}")
 
     # 3. Catálogo Oficial: 24 Guardatiempos de Manufactura
@@ -461,22 +452,19 @@ def poblar():
 
     for data in relojes_data:
         cats = data.pop("categorias")
-        # Actualizar si existe o crear si es nuevo
+        # Crear las piezas ausentes sin sobrescribir datos o stock existentes.
         obj, created = Reloj.objects.get_or_create(
             nombre=data["nombre"],
             marca=data["marca"],
             defaults=data
         )
-        if not created:
-            for key, val in data.items():
-                setattr(obj, key, val)
-            obj.save()
-        obj.categorias.set(cats)
-        action = "registrado" if created else "actualizado"
+        if created:
+            obj.categorias.set(cats)
+        action = "creado" if created else "existente; se conservan sus datos y categorías"
         print(f" [+] Reloj {action}: {obj.marca.nombre} {obj.nombre} (${obj.precio}) -> {obj.imagen_url}")
 
     # 4. Carga de Galería de Imágenes Oficiales (FASE 1.5 - 2 imágenes por reloj)
-    print("\nActualizando galería de alta resolución en ImagenReloj...")
+    print("\nCompletando galerías sin sobrescribir imágenes existentes...")
     import json
     try:
         with open('scratch/url_validation_results.json', 'r', encoding='utf-8') as f:
@@ -484,7 +472,7 @@ def poblar():
             for item in galeria_data:
                 reloj_obj = Reloj.objects.filter(id=item['watch_id']).first()
                 if reloj_obj:
-                    img_obj, img_created = ImagenReloj.objects.update_or_create(
+                    _, img_created = ImagenReloj.objects.get_or_create(
                         reloj=reloj_obj,
                         orden=item['orden'],
                         defaults={
@@ -496,29 +484,6 @@ def poblar():
             print(f" [+] Total imágenes registradas en galería: {total_galeria} (24 piezas x 2 vistas)")
     except Exception as e:
         print(f" [!] Advertencia al sincronizar galería: {e}")
-
-    # 5. Asegurar que existe al menos una orden de prueba
-    if not Orden.objects.exists():
-        reloj_demo = Reloj.objects.first()
-        orden = Orden.objects.create(
-            cliente_nombre="Ignacio De La Torre",
-            cliente_email="ignacio.torre@clubfinanciero.pe",
-            cliente_telefono="+51 999 888 777",
-            direccion_envio="Malecón de la Reserva 715, Piso 14",
-            ciudad="Miraflores, Lima",
-            pais="Perú",
-            estado=Orden.EstadoOrden.PAGADO,
-            garantia_aceptada=True,
-            notas="Entrega confidencial con escolta privada."
-        )
-        DetalleOrden.objects.create(
-            orden=orden,
-            reloj=reloj_demo,
-            precio_unitario=reloj_demo.precio,
-            cantidad=1
-        )
-        orden.actualizar_total()
-        print(f" [+] Orden de prueba generada: Orden #{orden.id:05d} para {orden.cliente_nombre}")
 
     total_relojes = Reloj.objects.count()
     print(f"\n¡Base de datos de Cronos Genève poblada exitosamente con catálogo oficial de {total_relojes} piezas!")

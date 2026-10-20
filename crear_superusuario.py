@@ -1,18 +1,10 @@
-"""
-Script para crear superusuario predeterminado en entornos de desarrollo académico.
-Usuario: admin
-Contraseña: admin123password
-"""
+"""Invoca el flujo interactivo de Django para crear un superusuario."""
 import os
 import django
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cronos_elite.settings')
 django.setup()
 
-from django.contrib.auth.models import User
+from django.core.management import call_command
 
-if not User.objects.filter(username='admin').exists():
-    User.objects.create_superuser('admin', 'admin@cronoselite.com', 'admin123password')
-    print("Superusuario 'admin' creado exitosamente (Clave: admin123password).")
-else:
-    print("El superusuario 'admin' ya existe en la base de datos.")
+call_command('createsuperuser', interactive=True)
