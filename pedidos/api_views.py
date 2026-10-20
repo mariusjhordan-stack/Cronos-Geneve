@@ -318,6 +318,11 @@ class CarritoValidateAPIView(APIView):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             qty_map[rid] = qty_map.get(rid, 0) + qty
+            if qty_map[rid] > MAX_CANTIDAD_POR_LINEA:
+                return Response(
+                    {'error': f'La pieza con ID {rid} supera la cantidad máxima por orden.'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
         try:
             relojes = Reloj.objects.select_related('marca').filter(id__in=list(qty_map.keys()))

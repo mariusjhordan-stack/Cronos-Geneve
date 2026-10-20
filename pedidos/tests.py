@@ -185,3 +185,77 @@ class CheckoutCasosEntradaTests(APITestCase):
         payload = self.base_payload()
         del payload['garantia_aceptada']
         self.assert_rechazado_sin_efectos(payload, 400)
+
+    def test_validar_carrito_rechaza_cantidad_consolidada_fuera_de_limite(self):
+        response = self.client.post('/api/pedidos/carrito/validar/', {
+            'items': [
+                {'reloj_id': self.reloj.id, 'cantidad': 30},
+                {'reloj_id': self.reloj.id, 'cantidad': 30},
+            ],
+        }, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+class LegacyCheckoutValidationTests(TestCase):
+    """Cierre de riesgos: checkout legacy valida correo/garantía y solo muta por POST."""
+
+    def setUp(self):
+        self.marca = Marca.objects.create(nombre='Maison Legacy')
+        self.reloj = Reloj.objects.create(
+            nombre='Référence Legacy', marca=self.marca, precio='7000.00', stock=5,
+            diametro_caja_mm='38.0', descripcion='Reloj de prueba legacy',
+        )
+        session = self.client.session
+        session['carrito'] = {str(self.reloj.id): 1}
+        session.save()
+
+    def payload(self, **overrides):
+        data = {
+            'nombre': 'Cliente Legacy',
+            'email': 'legacy@example.com',
+            'telefono': '+51123456789',
+            'direccion': 'Av. Lima 10',
+            'ciudad': 'Lima',
+            'notas': '',
+            'garantia_aceptada': '1',
+        }
+        data.update(overrides)
+        return data
+
+    def cart_session(self):
+        return dict(self.client.session.get('carrito', {}))
+
+    def test_checkout_requires_guarantee_and_persists_it(self):
+        response = self.client.post(reverse('pedidos:checkout'), self.payload(garantia_aceptada=''))
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Orden.objects.exists())
+        self.assertEqual(Reloj.objects.get(pk=self.reloj.pk).stock, 5)
+
+        response = self.client.post(reverse('pedidos:checkout'), self.payload())
+        self.assertEqual(response.status_code, 302)
+        orden = Orden.objects.get()
+        self.assertTrue(orden.garantia_aceptada)
+        self.assertEqual(orden.estado, Orden.EstadoOrden.SOLICITADA)
+        self.assertEqual(Reloj.objects.get(pk=self.reloj.pk).stock, 4)
+        self.assertEqual(self.cart_session(), {})
+
+    def test_checkout_rejects_invalid_email_without_creating_order(self):
+        response = self.client.post(reverse('pedidos:checkout'), self.payload(email='no-es-correo'))
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Orden.objects.exists())
+        self.assertEqual(Reloj.objects.get(pk=self.reloj.pk).stock, 5)
+        self.assertEqual(self.cart_session(), {str(self.reloj.id): 1})
+
+    def test_cart_mutations_reject_get_and_keep_session_state(self):
+        add_url = reverse('pedidos:agregar_carrito', args=[self.reloj.id])
+        update_url = reverse('pedidos:actualizar_cantidad', args=[self.reloj.id])
+        remove_url = reverse('pedidos:eliminar_carrito', args=[self.reloj.id])
+
+        self.assertEqual(self.client.get(add_url).status_code, 405)
+        self.assertEqual(self.client.get(f'{update_url}?accion=incrementar').status_code, 405)
+        self.assertEqual(self.client.get(remove_url).status_code, 405)
+        self.assertEqual(self.client.get(reverse('pedidos:vaciar_carrito')).status_code, 405)
+        self.assertEqual(self.cart_session(), {str(self.reloj.id): 1})
+
+        self.assertEqual(self.client.get(reverse('pedidos:obtener_carrito_json')).status_code, 200)
+        self.assertEqual(self.client.post(reverse('pedidos:obtener_carrito_json')).status_code, 405)

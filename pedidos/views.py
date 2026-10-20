@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.urls import reverse
 from django.http import Http404, JsonResponse
 from django.db import transaction
 from django.utils.crypto import constant_time_compare
+from django.views.decorators.http import require_GET, require_POST
 from decimal import Decimal
 import json
 from urllib.parse import urlencode
@@ -80,6 +83,7 @@ def _serializar_carrito(request):
     }
 
 
+@require_POST
 def agregar_al_carrito(request, reloj_id):
     """
     Añade una pieza o incrementa su cantidad en el carrito de sesión.
@@ -150,6 +154,7 @@ def agregar_al_carrito(request, reloj_id):
     return redirect(referer if referer else 'catalogo:index')
 
 
+@require_POST
 def actualizar_cantidad(request, reloj_id):
     """
     Permite incrementar (+1), decrementar (-1) o establecer cantidad exacta
@@ -162,7 +167,7 @@ def actualizar_cantidad(request, reloj_id):
     if reloj_id_str not in carrito:
         return JsonResponse({'success': False, 'mensaje': 'La pieza no se encuentra en su bolsa.'}, status=404)
 
-    accion = request.POST.get('accion') or request.GET.get('accion')
+    accion = request.POST.get('accion')
     cantidad_actual = int(carrito[reloj_id_str])
 
     if accion == 'incrementar':
@@ -182,9 +187,9 @@ def actualizar_cantidad(request, reloj_id):
         else:
             del carrito[reloj_id_str]
             mensaje = f"'{reloj.nombre}' retirado de su selección privada."
-    elif 'cantidad' in request.POST or 'cantidad' in request.GET:
+    elif 'cantidad' in request.POST:
         try:
-            nueva_cant = int(request.POST.get('cantidad') or request.GET.get('cantidad'))
+            nueva_cant = int(request.POST.get('cantidad'))
             if nueva_cant <= 0:
                 del carrito[reloj_id_str]
                 mensaje = f"'{reloj.nombre}' retirado de su bolsa."
@@ -215,6 +220,7 @@ def actualizar_cantidad(request, reloj_id):
     return redirect(request.META.get('HTTP_REFERER', 'catalogo:index'))
 
 
+@require_POST
 def eliminar_del_carrito(request, reloj_id):
     """
     Remueve por completo una pieza horológica de la bolsa de compras.
@@ -244,6 +250,7 @@ def eliminar_del_carrito(request, reloj_id):
     return redirect(request.META.get('HTTP_REFERER', 'catalogo:index'))
 
 
+@require_POST
 def vaciar_carrito(request):
     """
     Limpia todos los ítems de la sesión activa.
@@ -263,6 +270,7 @@ def vaciar_carrito(request):
     return redirect(request.META.get('HTTP_REFERER', 'catalogo:index'))
 
 
+@require_GET
 def obtener_carrito_json(request):
     """
     Endpoint que devuelve el estado actual del carrito serializado en JSON.
@@ -300,6 +308,16 @@ def checkout(request):
             messages.error(request, "Por favor complete todos los datos obligatorios para el protocolo de entrega segura.")
             return render(request, 'pedidos/checkout.html', {'cart': cart_data})
 
+        try:
+            validate_email(email)
+        except ValidationError:
+            messages.error(request, "El correo electrónico no tiene un formato válido.")
+            return render(request, 'pedidos/checkout.html', {'cart': cart_data})
+
+        if not request.POST.get('garantia_aceptada'):
+            messages.error(request, "Debe aceptar los términos de la orden para continuar.")
+            return render(request, 'pedidos/checkout.html', {'cart': cart_data})
+
         carrito = request.session.get('carrito', {})
         relojes_ids = [int(rid) for rid in carrito.keys() if str(rid).isdigit()]
 
@@ -332,6 +350,7 @@ def checkout(request):
                     direccion_envio=direccion,
                     ciudad=ciudad,
                     notas=notas,
+                    garantia_aceptada=True,
                     estado=Orden.EstadoOrden.SOLICITADA,
                     usuario=request.user if request.user.is_authenticated else None,
                 )
