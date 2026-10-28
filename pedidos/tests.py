@@ -1,14 +1,24 @@
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
+from unittest.mock import patch
 
 from catalogo.models import Marca, Reloj
 
 from .models import Orden
 
 User = get_user_model()
+
+PAYMENT_TEST_SETTINGS = {
+    'MERCADOPAGO_ACCESS_TOKEN': 'TEST-only-token',
+    'MERCADOPAGO_WEBHOOK_SECRET': 'test-webhook-secret',
+    'MERCADOPAGO_WEBHOOK_URL': 'https://shop.example.test/api/pedidos/webhooks/mercadopago/',
+    'MERCADOPAGO_RETURN_BASE_URL': 'https://shop.example.test',
+    'MERCADOPAGO_USD_PEN_RATE': '3.75',
+    'MERCADOPAGO_RESERVATION_MINUTES': 30,
+}
 
 
 class LegacyOrderCertificateAccessTests(TestCase):
@@ -99,6 +109,7 @@ class OrdenCertificadoAccesoTests(APITestCase):
         )
 
 
+@override_settings(**PAYMENT_TEST_SETTINGS)
 class CheckoutCasosEntradaTests(APITestCase):
     """Fase 2.1 §4 — Checkout: entradas inválidas no crean orden ni descuentan stock."""
 
@@ -151,7 +162,8 @@ class CheckoutCasosEntradaTests(APITestCase):
         self.assert_rechazado_sin_efectos(
             self.base_payload(items=[{'reloj_id': self.reloj.id, 'cantidad': 51}]), 400)
 
-    def test_ids_duplicados_dentro_de_limite_consolidan(self):
+    @patch('pedidos.api_views.create_preference', return_value='https://sandbox.mercadopago.com/checkout/mock')
+    def test_ids_duplicados_dentro_de_limite_consolidan(self, create_preference_mock):
         ordenes_antes = Orden.objects.count()
         payload = self.base_payload(items=[
             {'reloj_id': self.reloj.id, 'cantidad': 1},
@@ -196,6 +208,7 @@ class CheckoutCasosEntradaTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
+@override_settings(**PAYMENT_TEST_SETTINGS)
 class LegacyCheckoutValidationTests(TestCase):
     """Cierre de riesgos: checkout legacy valida correo/garantía y solo muta por POST."""
 
@@ -225,7 +238,8 @@ class LegacyCheckoutValidationTests(TestCase):
     def cart_session(self):
         return dict(self.client.session.get('carrito', {}))
 
-    def test_checkout_requires_guarantee_and_persists_it(self):
+    @patch('pedidos.views.create_preference', return_value='https://sandbox.mercadopago.com/checkout/mock')
+    def test_checkout_requires_guarantee_and_persists_it(self, create_preference_mock):
         response = self.client.post(reverse('pedidos:checkout'), self.payload(garantia_aceptada=''))
         self.assertEqual(response.status_code, 200)
         self.assertFalse(Orden.objects.exists())
@@ -235,7 +249,7 @@ class LegacyCheckoutValidationTests(TestCase):
         self.assertEqual(response.status_code, 302)
         orden = Orden.objects.get()
         self.assertTrue(orden.garantia_aceptada)
-        self.assertEqual(orden.estado, Orden.EstadoOrden.SOLICITADA)
+        self.assertEqual(orden.estado, Orden.EstadoOrden.PENDIENTE)
         self.assertEqual(Reloj.objects.get(pk=self.reloj.pk).stock, 4)
         self.assertEqual(self.cart_session(), {})
 

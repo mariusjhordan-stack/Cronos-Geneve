@@ -12,6 +12,7 @@ import { ProductDetailPage } from '@/pages/ProductDetailPage';
 import { ComparePage } from '@/pages/ComparePage';
 import { CheckoutPage } from '@/pages/CheckoutPage';
 import { ConfirmationPage } from '@/pages/ConfirmationPage';
+import { PaymentReturnPage } from '@/pages/PaymentReturnPage';
 import { AuthProvider, ProtectedRoute } from '@/context/AuthContext';
 import { LoginPage } from '@/pages/LoginPage';
 import { RegisterPage } from '@/pages/RegisterPage';
@@ -42,6 +43,7 @@ export function App() {
                 <Route path="/reloj/:id" element={<ProductDetailPage />} />
                 <Route path="/comparador" element={<ComparePage />} />
                 <Route path="/checkout" element={<CheckoutPage />} />
+                <Route path="/pago/retorno" element={<PaymentReturnPage />} />
                 <Route path="/confirmacion/:id" element={<ConfirmationPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />

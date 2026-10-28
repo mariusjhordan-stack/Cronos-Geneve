@@ -1,10 +1,10 @@
 import logging
+from uuid import UUID
 
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.validators import validate_email
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import constant_time_compare
-from django.db import transaction
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -13,9 +13,22 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 from catalogo.models import Reloj
-from .models import Orden, DetalleOrden
+from .models import Orden
 from .serializers import OrdenSerializer
 from .views import _serializar_carrito
+from .payments import (
+    PaymentConfigurationError,
+    PaymentProviderError,
+    ProductUnavailableError,
+    create_preference,
+    fetch_payment,
+    payment_config,
+    payment_status_for_reference,
+    reconcile_payment,
+    release_reservation,
+    reserve_order,
+    verify_webhook_signature,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -48,14 +61,14 @@ def _texto(data, clave, requerido=True, default=''):
 
 
 class CheckoutAPIView(APIView):
-    """
-    Endpoint REST para el protocolo académico de adquisición desde React SPA.
-    NO procesa un pago bancario real: registra una solicitud/protocolo de
-    adquisición y emite el comprobante de la orden.
-    """
+    """Reserva inventario y crea una preferencia de pago Checkout Pro sandbox."""
     permission_classes = [AllowAny]
 
     def post(self, request):
+        try:
+            payment_config()
+        except PaymentConfigurationError as exc:
+            return Response({'error': str(exc)}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
         data = request.data
         if not isinstance(data, dict):
             return Response(
@@ -163,78 +176,67 @@ class CheckoutAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        raw_idempotency_key = request.headers.get('Idempotency-Key', '')
         try:
-            with transaction.atomic():
-                relojes_qs = Reloj.objects.select_for_update().filter(id__in=reloj_ids)
-                reloj_map = {r.id: r for r in relojes_qs}
+            idempotency_key = UUID(raw_idempotency_key) if raw_idempotency_key else None
+        except (TypeError, ValueError):
+            return Response({'error': 'Clave de idempotencia inválida.'}, status=status.HTTP_400_BAD_REQUEST)
 
-                # 1. Validar existencia y stock de cada pieza
-                for rid, qty in item_qty_map.items():
-                    reloj = reloj_map.get(rid)
-                    if not reloj:
-                        return Response(
-                            {'error': f"La pieza con ID {rid} ya no se encuentra en el inventario activo."},
-                            status=status.HTTP_404_NOT_FOUND,
-                        )
-                    if reloj.stock < qty:
-                        return Response(
-                            {
-                                'error': f"Disponibilidad insuficiente para '{reloj.marca.nombre} {reloj.nombre}'. "
-                                         f"Quedan {reloj.stock} unidad(es) en bóveda."
-                            },
-                            status=status.HTTP_400_BAD_REQUEST,
-                        )
-
-                # 2. Crear Orden como SOLICITUD académica (no es un pago bancario real).
-                orden = Orden.objects.create(
-                    cliente_nombre=cliente_nombre,
-                    cliente_email=cliente_email,
-                    cliente_telefono=cliente_telefono,
-                    direccion_envio=direccion_envio,
-                    ciudad=ciudad or 'San Isidro, Lima',
-                    pais=pais or 'Perú',
-                    notas=notas,
-                    garantia_aceptada=True,
-                    estado=Orden.EstadoOrden.SOLICITADA,
-                    usuario=request.user if request.user.is_authenticated else None,
+        order_data = {
+            'cliente_nombre': cliente_nombre,
+            'cliente_email': cliente_email,
+            'cliente_telefono': cliente_telefono,
+            'direccion_envio': direccion_envio,
+            'ciudad': ciudad or 'San Isidro, Lima',
+            'pais': pais or 'Perú',
+            'notas': notas,
+            'garantia_aceptada': True,
+        }
+        order = None
+        try:
+            order, created = reserve_order(order_data, item_qty_map, request.user, idempotency_key)
+            if order.url_pago and order.preferencia_pago_id:
+                checkout_url = order.url_pago
+            elif not created:
+                return Response(
+                    {'error': 'El checkout de esta solicitud ya está en proceso. Intente nuevamente en unos segundos.'},
+                    status=status.HTTP_409_CONFLICT,
                 )
-
-                # 3. Crear detalles y descontar inventario físico
-                for rid, qty in item_qty_map.items():
-                    reloj = reloj_map[rid]
-                    DetalleOrden.objects.create(
-                        orden=orden,
-                        reloj=reloj,
-                        precio_unitario=reloj.precio,
-                        cantidad=qty,
-                    )
-                    reloj.stock -= qty
-                    reloj.save(update_fields=['stock'])
-
-                orden.actualizar_total()
-
-                # Limpiar sesión en caso se haya usado también sesión de Django
-                if hasattr(request, 'session') and 'carrito' in request.session:
-                    request.session['carrito'] = {}
-                    request.session.modified = True
-
-                serializer = OrdenSerializer(orden)
-                response_data = {
-                    'success': True,
-                    'mensaje': f"Solicitud registrada con éxito. Comprobante {serializer.data['codigo_orden']}. "
-                               f"Protocolo académico: no se ha procesado ningún pago bancario real.",
-                    'orden': serializer.data,
-                }
-                if not request.user.is_authenticated:
-                    response_data['token_acceso'] = str(orden.token_acceso)
-                return Response(response_data, status=status.HTTP_201_CREATED)
-
-        except Exception:
-            logger.exception('Error al procesar la solicitud de adquisición en bóveda')
+            else:
+                checkout_url = create_preference(order)
+        except ProductUnavailableError as exc:
+            return Response({'error': str(exc)}, status=status.HTTP_404_NOT_FOUND)
+        except ValueError as exc:
+            return Response({'error': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+        except (PaymentConfigurationError, PaymentProviderError):
+            if order and order.stock_reservado:
+                release_reservation(order.id, Orden.EstadoPago.ERROR)
+            logger.exception('No se pudo iniciar el pago de Checkout Pro.')
             return Response(
-                {'error': 'Ocurrió un error al procesar la solicitud. Por favor intente nuevamente.'},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                {'error': 'No se pudo iniciar el pago. El inventario reservado fue liberado.'},
+                status=status.HTTP_502_BAD_GATEWAY,
             )
+        except Exception:
+            if order and order.stock_reservado:
+                release_reservation(order.id, Orden.EstadoPago.ERROR)
+            logger.exception('Error interno al iniciar Checkout Pro.')
+            return Response({'error': 'No se pudo iniciar el pago.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        if hasattr(request, 'session') and 'carrito' in request.session:
+            request.session['carrito'] = {}
+            request.session.modified = True
+        serializer = OrdenSerializer(order)
+        response_data = {
+            'success': True,
+            'mensaje': 'Orden creada. Continúe al checkout seguro de Mercado Pago para completar el pago.',
+            'orden': serializer.data,
+            'checkout_url': checkout_url,
+            'external_reference': str(order.referencia_pago),
+            'estado_pago': order.estado_pago,
+        }
+        if not request.user.is_authenticated:
+            response_data['token_acceso'] = str(order.token_acceso)
+        return Response(response_data, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
 
 
 class OrdenDetailAPIView(APIView):
@@ -272,6 +274,48 @@ class OrdenDetailAPIView(APIView):
             )
         serializer = OrdenSerializer(orden)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class MercadoPagoWebhookAPIView(APIView):
+    """Valida la firma y consulta siempre el pago en la API autenticada."""
+    permission_classes = [AllowAny]
+    authentication_classes = []
+
+    def post(self, request):
+        data = request.data if isinstance(request.data, dict) else {}
+        notification_type = request.query_params.get('type') or data.get('type') or request.query_params.get('topic')
+        notification_data = data.get('data')
+        if not isinstance(notification_data, dict):
+            notification_data = {}
+        data_id = request.query_params.get('data.id') or notification_data.get('id')
+        signature = request.headers.get('x-signature', '')
+        request_id = request.headers.get('x-request-id', '')
+        if not verify_webhook_signature(signature, request_id, data_id):
+            return Response({'error': 'Firma de notificación inválida.'}, status=status.HTTP_401_UNAUTHORIZED)
+        if notification_type != 'payment':
+            return Response({'received': True, 'ignored': True}, status=status.HTTP_200_OK)
+        try:
+            payment = fetch_payment(data_id)
+            if str(payment.get('id')) != str(data_id):
+                return Response({'error': 'Notificación inválida.'}, status=status.HTTP_400_BAD_REQUEST)
+            reconcile_payment(payment)
+        except PaymentProviderError:
+            logger.warning('No se pudo reconciliar una notificación de pago verificada.')
+            return Response({'error': 'No fue posible verificar el pago.'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        return Response({'received': True}, status=status.HTTP_200_OK)
+
+
+class PaymentStatusAPIView(APIView):
+    """Estado mínimo para el retorno; external_reference es una capability UUID."""
+    permission_classes = [AllowAny]
+    authentication_classes = []
+
+    def get(self, request, reference):
+        try:
+            result = payment_status_for_reference(reference, request.query_params.get('payment_id'))
+        except PaymentProviderError as exc:
+            return Response({'error': str(exc)}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        return Response(result, status=status.HTTP_200_OK)
 
 
 class CarritoValidateAPIView(APIView):

@@ -241,10 +241,19 @@ export const api = {
   },
   getMiOrden(id) { return request(`/api/me/ordenes/${id}/`); },
 
-  async checkout(orderData) {
-    const result = await request('/api/pedidos/checkout/', { method: 'POST', body: jsonBody(orderData) });
+  async checkout(orderData, idempotencyKey) {
+    const result = await request('/api/pedidos/checkout/', {
+      method: 'POST',
+      headers: idempotencyKey ? { 'Idempotency-Key': idempotencyKey } : {},
+      body: jsonBody(orderData),
+    });
     if (result?.orden?.id && result?.token_acceso) saveOrderToken(result.orden.id, result.token_acceso);
     return result;
+  },
+
+  getPaymentStatus(reference, paymentId = '') {
+    const qs = paymentId ? `?payment_id=${encodeURIComponent(paymentId)}` : '';
+    return request(`/api/pedidos/pagos/${encodeURIComponent(reference)}/${qs}`, {}, { auth: false });
   },
 
   validateCart(items) {

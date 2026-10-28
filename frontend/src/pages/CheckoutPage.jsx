@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { ShieldCheck, ArrowRight, AlertCircle, ShoppingBag, UserCheck } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -47,7 +47,7 @@ function formatAddressLine(addr) {
 export function CheckoutPage() {
   const { items, totalUnidades, totalMonto, clearCart, replaceCart } = useCart();
   const { user, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
+  const idempotencyKeyRef = useRef(null);
 
   const [formData, setFormData] = useState({
     cliente_nombre: '',
@@ -219,16 +219,25 @@ export function CheckoutPage() {
         })),
       };
 
-      const result = await api.checkout(payload);
+      if (!idempotencyKeyRef.current) {
+        idempotencyKeyRef.current = globalThis.crypto?.randomUUID?.()
+          || 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (char) => {
+            const random = Math.random() * 16 | 0;
+            return (char === 'x' ? random : (random & 0x3 | 0x8)).toString(16);
+          });
+      }
+      const result = await api.checkout(payload, idempotencyKeyRef.current);
+      if (!result.checkout_url || !result.external_reference) {
+        throw new Error('Mercado Pago no devolvió un enlace de pago válido.');
+      }
 
-      // 3. Registro exitoso: vaciar bolsa y navegar a confirmación
+      // La API ya guardó la referencia y el token de invitado en sessionStorage.
       clearCart();
-      const orderId = result.orden?.id || result.orden_id;
-      const token = result.token_acceso || result.orden?.token_acceso || '';
-      navigate(token ? `/confirmacion/${orderId}?token=${encodeURIComponent(token)}` : `/confirmacion/${orderId}`);
+      window.location.assign(result.checkout_url);
     } catch (err) {
       setValidating(false);
       setErrorMsg(err.message || 'Error al procesar la solicitud de pedido');
+      if (err.status === 502 || err.status === 503) idempotencyKeyRef.current = null;
       setSubmitting(false);
     }
   };
@@ -268,7 +277,7 @@ export function CheckoutPage() {
           SOLICITUD DE ADQUISICIÓN
         </h1>
         <p className="text-xs sm:text-sm text-cronos-muted font-sans max-w-2xl leading-relaxed">
-          Complete la información de contacto y entrega para registrar su orden de adquisición. Proyecto académico: no se efectúan cobros bancarios reales.
+          Complete los datos de entrega y continúe al checkout de prueba de Mercado Pago. No ingrese datos reales de tarjeta fuera del entorno sandbox.
         </p>
       </div>
 
@@ -500,10 +509,10 @@ export function CheckoutPage() {
                   className="w-full h-auto min-h-[48px] py-3.5 px-4 text-xs font-semibold tracking-[0.16em] sm:tracking-[0.2em] font-mono flex items-center justify-center gap-2 uppercase leading-relaxed text-center"
                 >
                   {submitting ? (
-                    <span className="text-center">{validating ? 'VALIDANDO DISPONIBILIDAD...' : 'PROCESANDO SOLICITUD...'}</span>
+                    <span className="text-center">{validating ? 'VALIDANDO DISPONIBILIDAD...' : 'PREPARANDO PAGO SEGURO...'}</span>
                   ) : (
                     <>
-                      <span className="text-center">CONFIRMAR SOLICITUD DE ADQUISICIÓN</span>
+                      <span className="text-center">CONTINUAR A MERCADO PAGO</span>
                       <ArrowRight className="h-4 w-4 shrink-0" />
                     </>
                   )}
@@ -578,7 +587,7 @@ export function CheckoutPage() {
 
             <div className="mt-6 pt-4 border-t border-cronos-line/60 flex items-center gap-2.5 text-[10px] font-mono text-cronos-muted">
               <ShieldCheck className="h-4 w-4 text-cronos-bronze shrink-0 stroke-[1.4]" />
-              <span>Solicitud académica resguardada; no se procesa pago bancario real.</span>
+              <span>Pago procesado en el entorno de prueba seguro de Mercado Pago.</span>
             </div>
           </div>
         </div>

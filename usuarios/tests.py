@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
+from django.test import override_settings
 from rest_framework import status
 from rest_framework.test import APITestCase
+from unittest.mock import patch
 
 from catalogo.models import Marca, Reloj
 from pedidos.models import Orden
@@ -8,7 +10,17 @@ from .models import Direccion, Perfil
 
 User = get_user_model()
 
+PAYMENT_TEST_SETTINGS = {
+    'MERCADOPAGO_ACCESS_TOKEN': 'TEST-only-token',
+    'MERCADOPAGO_WEBHOOK_SECRET': 'test-webhook-secret',
+    'MERCADOPAGO_WEBHOOK_URL': 'https://shop.example.test/api/pedidos/webhooks/mercadopago/',
+    'MERCADOPAGO_RETURN_BASE_URL': 'https://shop.example.test',
+    'MERCADOPAGO_USD_PEN_RATE': '3.75',
+    'MERCADOPAGO_RESERVATION_MINUTES': 30,
+}
 
+
+@override_settings(**PAYMENT_TEST_SETTINGS)
 class CuentaApiTests(APITestCase):
     password = 'CronosGeneve!9274'
 
@@ -119,7 +131,8 @@ class CuentaApiTests(APITestCase):
         self.assertEqual(self.client.get(f'/api/me/ordenes/{own.id}/').status_code, status.HTTP_200_OK)
         self.assertEqual(self.client.get(f'/api/me/ordenes/{foreign.id}/').status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_guest_and_authenticated_checkout_validate_terms_and_stock(self):
+    @patch('pedidos.api_views.create_preference', return_value='https://sandbox.mercadopago.com/checkout/mock')
+    def test_guest_and_authenticated_checkout_validate_terms_and_stock(self, create_preference_mock):
         payload = {
             'cliente_nombre': 'Cliente Invitado', 'cliente_email': 'invitado@example.com',
             'cliente_telefono': '+51123456789', 'direccion_envio': 'Av. Lima 10',

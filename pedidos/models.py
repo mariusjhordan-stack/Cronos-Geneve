@@ -9,7 +9,6 @@ class Orden(models.Model):
     Entidad que registra una transacción comercial y el despacho de piezas.
     """
     class EstadoOrden(models.TextChoices):
-        # Estado académico: solicitud/protocolo de adquisición, NO pago bancario real.
         SOLICITADA = 'SOLICITADA', 'Solicitud Registrada (Protocolo Académico)'
         PENDIENTE = 'PENDIENTE', 'Pendiente de Revisión'
         PAGADO = 'PAGADO', 'Pago Confirmado (Legado)'
@@ -17,6 +16,17 @@ class Orden(models.Model):
         ENVIADO = 'ENVIADO', 'Enviado por Transporte Asegurado'
         ENTREGADO = 'ENTREGADO', 'Entregado al Cliente'
         CANCELADO = 'CANCELADO', 'Cancelado'
+
+    class EstadoPago(models.TextChoices):
+        NO_INICIADO = 'NO_INICIADO', 'No iniciado'
+        PENDIENTE = 'PENDIENTE', 'Pendiente'
+        APROBADO = 'APROBADO', 'Aprobado'
+        RECHAZADO = 'RECHAZADO', 'Rechazado'
+        CANCELADO = 'CANCELADO', 'Cancelado'
+        EXPIRADO = 'EXPIRADO', 'Expirado'
+        ERROR = 'ERROR', 'Error de integración'
+        REEMBOLSADO = 'REEMBOLSADO', 'Reembolsado'
+        CONTRACARGO = 'CONTRACARGO', 'Contracargo'
 
     cliente_nombre = models.CharField(max_length=150, verbose_name="Nombre Completo del Cliente")
     cliente_email = models.EmailField(verbose_name="Correo Electrónico")
@@ -55,6 +65,22 @@ class Orden(models.Model):
         related_name='ordenes',
         verbose_name='Usuario asociado',
     )
+    referencia_pago = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    clave_idempotencia = models.UUIDField(null=True, blank=True, unique=True)
+    estado_pago = models.CharField(
+        max_length=20,
+        choices=EstadoPago.choices,
+        default=EstadoPago.NO_INICIADO,
+    )
+    monto_pago = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    moneda_pago = models.CharField(max_length=3, blank=True, default='')
+    preferencia_pago_id = models.CharField(max_length=100, null=True, blank=True, unique=True)
+    url_pago = models.URLField(max_length=1000, blank=True)
+    pago_gateway_id = models.CharField(max_length=100, null=True, blank=True, unique=True)
+    stock_reservado = models.BooleanField(default=False)
+    reserva_expira_en = models.DateTimeField(null=True, blank=True)
+    conflicto_stock_pago = models.BooleanField(default=False)
+    pago_actualizado_en = models.DateTimeField(null=True, blank=True)
     creado_en = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Creación")
     actualizado_en = models.DateTimeField(auto_now=True, verbose_name="Última Actualización")
 
@@ -119,3 +145,22 @@ class DetalleOrden(models.Model):
         super().save(*args, **kwargs)
         # Actualiza el total de la orden cabecera
         self.orden.actualizar_total()
+
+
+class PagoMercadoPago(models.Model):
+    """Registro mínimo e idempotente de cada intento de pago verificado."""
+    orden = models.ForeignKey(Orden, on_delete=models.CASCADE, related_name='pagos_gateway')
+    payment_id = models.CharField(max_length=100, unique=True)
+    estado = models.CharField(max_length=30)
+    detalle_estado = models.CharField(max_length=100, blank=True)
+    monto = models.DecimalField(max_digits=12, decimal_places=2)
+    moneda = models.CharField(max_length=3)
+    external_reference = models.UUIDField(db_index=True)
+    actualizado_en = models.DateTimeField(auto_now=True)
+    creado_en = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-actualizado_en']
+
+    def __str__(self):
+        return f'Pago {self.payment_id} — orden #{self.orden_id}'

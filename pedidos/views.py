@@ -2,17 +2,23 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from django.urls import reverse
 from django.http import Http404, JsonResponse
-from django.db import transaction
 from django.utils.crypto import constant_time_compare
 from django.views.decorators.http import require_GET, require_POST
 from decimal import Decimal
+from uuid import UUID, uuid4
 import json
-from urllib.parse import urlencode
 
 from catalogo.models import Reloj
-from .models import Orden, DetalleOrden
+from .models import Orden
+from .payments import (
+    PaymentConfigurationError,
+    PaymentProviderError,
+    create_preference,
+    payment_config,
+    release_reservation,
+    reserve_order,
+)
 
 
 def _serializar_carrito(request):
@@ -280,16 +286,7 @@ def obtener_carrito_json(request):
 
 
 def checkout(request):
-    """
-    Flujo de checkout multi-ítem integral.
-    En un único bloque transaccional atómico (transaction.atomic):
-    1. Bloquea las filas de inventario correspondientes con select_for_update().
-    2. Valida la disponibilidad de stock de cada reloj solicitado.
-    3. Crea la cabecera Orden.
-    4. Genera los registros DetalleOrden con sus respectivos precios unitarios congelados.
-    5. Descuenta el stock físico de cada pieza en inventario.
-    6. Vacía el carrito de sesión y redirige al Certificado Oficial de Adquisición.
-    """
+    """Checkout legado: reserva inventario y redirige al Checkout Pro de prueba."""
     cart_data = _serializar_carrito(request)
 
     if not cart_data['tiene_items']:
@@ -318,78 +315,51 @@ def checkout(request):
             messages.error(request, "Debe aceptar los términos de la orden para continuar.")
             return render(request, 'pedidos/checkout.html', {'cart': cart_data})
 
-        carrito = request.session.get('carrito', {})
-        relojes_ids = [int(rid) for rid in carrito.keys() if str(rid).isdigit()]
-
         try:
-            with transaction.atomic():
-                # Bloqueo pesimista de filas para evitar condiciones de carrera concurrentes
-                relojes_qs = Reloj.objects.select_for_update().filter(id__in=relojes_ids)
-                reloj_map = {r.id: r for r in relojes_qs}
-
-                # 1. Validación estricta de stock disponible para todas las piezas
-                for rid_str, cant in carrito.items():
-                    rid = int(rid_str)
-                    cantidad_solicitada = int(cant)
-                    reloj = reloj_map.get(rid)
-
-                    if not reloj:
-                        raise ValueError(f"Una de las piezas seleccionadas ya no está catalogada.")
-
-                    if reloj.stock < cantidad_solicitada:
-                        raise ValueError(
-                            f"La manufactura '{reloj.marca.nombre} {reloj.nombre}' solo cuenta con {reloj.stock} "
-                            f"unidad(es) disponible(s) en bóveda y usted solicitó {cantidad_solicitada}."
-                        )
-
-                # 2. Creación de la Orden Maestra (solicitud académica, sin pago real)
-                orden = Orden.objects.create(
-                    cliente_nombre=nombre,
-                    cliente_email=email,
-                    cliente_telefono=telefono,
-                    direccion_envio=direccion,
-                    ciudad=ciudad,
-                    notas=notas,
-                    garantia_aceptada=True,
-                    estado=Orden.EstadoOrden.SOLICITADA,
-                    usuario=request.user if request.user.is_authenticated else None,
-                )
-
-                # 3. Creación de cada DetalleOrden y descuento atómico de inventario
-                for rid_str, cant in carrito.items():
-                    rid = int(rid_str)
-                    cantidad_solicitada = int(cant)
-                    reloj = reloj_map[rid]
-
-                    DetalleOrden.objects.create(
-                        orden=orden,
-                        reloj=reloj,
-                        precio_unitario=reloj.precio,
-                        cantidad=cantidad_solicitada
-                    )
-
-                    # Descuento en inventario
-                    reloj.stock -= cantidad_solicitada
-                    reloj.save(update_fields=['stock'])
-
-                # 4. Cálculo final del total de la orden
-                orden.actualizar_total()
-
-                # 5. Limpieza de sesión
-                request.session['carrito'] = {}
-                request.session.modified = True
-
-            messages.success(request, f"¡Transacción autorizada con éxito! Su orden #CRONOS-{orden.id:05d}-2026 ha sido emitida.")
-            confirmation_url = reverse('pedidos:confirmacion', kwargs={'orden_id': orden.id})
-            token_query = urlencode({'token': str(orden.token_acceso)})
-            return redirect(f'{confirmation_url}?{token_query}')
-
+            payment_config()
+            raw_key = request.session.get('checkout_idempotency_key')
+            idempotency_key = UUID(raw_key) if raw_key else uuid4()
+            request.session['checkout_idempotency_key'] = str(idempotency_key)
+            item_qty_map = {item['id']: item['cantidad'] for item in cart_data['items']}
+            order_data = {
+                'cliente_nombre': nombre,
+                'cliente_email': email,
+                'cliente_telefono': telefono,
+                'direccion_envio': direccion,
+                'ciudad': ciudad or 'Lima',
+                'pais': request.POST.get('pais', 'Perú').strip() or 'Perú',
+                'notas': notas,
+                'garantia_aceptada': True,
+            }
+            orden, created = reserve_order(order_data, item_qty_map, request.user, idempotency_key)
+            if orden.preferencia_pago_id and orden.url_pago:
+                checkout_url = orden.url_pago
+            elif created:
+                checkout_url = create_preference(orden)
+            else:
+                raise PaymentProviderError('El checkout ya está siendo procesado.')
         except ValueError as err:
             messages.error(request, str(err))
             return render(request, 'pedidos/checkout.html', {'cart': _serializar_carrito(request)})
-        except Exception as e:
-            messages.error(request, "Ocurrió un error al procesar la transacción en bóveda. Por favor intente nuevamente.")
+        except (PaymentConfigurationError, PaymentProviderError):
+            if 'orden' in locals() and orden.stock_reservado:
+                release_reservation(orden.id, Orden.EstadoPago.ERROR)
+            request.session.pop('checkout_idempotency_key', None)
+            messages.error(request, 'No se pudo iniciar el pago de prueba. La reserva fue liberada; inténtelo nuevamente más tarde.')
             return render(request, 'pedidos/checkout.html', {'cart': _serializar_carrito(request)})
+        except Exception:
+            if 'orden' in locals() and orden.stock_reservado:
+                release_reservation(orden.id, Orden.EstadoPago.ERROR)
+            request.session.pop('checkout_idempotency_key', None)
+            logging.getLogger(__name__).exception('Error interno al iniciar Checkout Pro en checkout legado.')
+            messages.error(request, 'No se pudo iniciar el pago. Inténtelo nuevamente más tarde.')
+            return render(request, 'pedidos/checkout.html', {'cart': _serializar_carrito(request)})
+
+        request.session['carrito'] = {}
+        request.session.pop('checkout_idempotency_key', None)
+        request.session.modified = True
+        messages.info(request, 'La orden quedó reservada temporalmente. Complete el pago de prueba en Mercado Pago.')
+        return redirect(checkout_url)
 
     return render(request, 'pedidos/checkout.html', {'cart': cart_data})
 

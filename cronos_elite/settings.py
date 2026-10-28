@@ -128,6 +128,17 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ALLOW_CREDENTIALS = True
 
+# Mercado Pago Checkout Pro: exclusivamente tokens TEST hasta una decisión
+# explícita de salida a producción. El tipo de cambio debe configurarse
+# manualmente; el proyecto almacena los precios del catálogo en USD.
+MERCADOPAGO_ACCESS_TOKEN = os.environ.get('MERCADOPAGO_ACCESS_TOKEN', '').strip()
+MERCADOPAGO_WEBHOOK_SECRET = os.environ.get('MERCADOPAGO_WEBHOOK_SECRET', '').strip()
+MERCADOPAGO_WEBHOOK_URL = os.environ.get('MERCADOPAGO_WEBHOOK_URL', '').strip()
+MERCADOPAGO_RETURN_BASE_URL = os.environ.get('MERCADOPAGO_RETURN_BASE_URL', '').strip()
+MERCADOPAGO_USD_PEN_RATE = os.environ.get('MERCADOPAGO_USD_PEN_RATE', '').strip()
+MERCADOPAGO_RESERVATION_MINUTES = int(os.environ.get('MERCADOPAGO_RESERVATION_MINUTES', '30'))
+MERCADOPAGO_API_BASE_URL = 'https://api.mercadopago.com'
+
 # ==========================================
 # CONFIGURACIÓN DE DJANGO REST FRAMEWORK (DRF)
 # ==========================================
