@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, ArrowRight, AlertCircle } from 'lucide-react';
+import { ArrowRight, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -17,8 +17,10 @@ export function RegisterPage() {
     password_confirm: '',
   });
 
+  const [passwordStarted, setPasswordStarted] = useState(false);
+  const [confirmationStarted, setConfirmationStarted] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
@@ -32,6 +34,8 @@ export function RegisterPage() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    if (name === 'password') setPasswordStarted(true);
+    if (name === 'password_confirm') setConfirmationStarted(true);
     setForm((prev) => ({ ...prev, [name]: value }));
     if (fieldErrors[name]) {
       setFieldErrors((prev) => {
@@ -42,6 +46,20 @@ export function RegisterPage() {
     }
     if (error) setError('');
   };
+
+  const passwordRules = [
+    { label: 'Al menos 8 caracteres', passed: form.password.length >= 8, started: passwordStarted },
+    { label: 'Al menos una mayúscula', passed: /[A-Z]/.test(form.password), started: passwordStarted },
+    { label: 'Al menos una minúscula', passed: /[a-z]/.test(form.password), started: passwordStarted },
+    { label: 'Al menos un número', passed: /[0-9]/.test(form.password), started: passwordStarted },
+    { label: 'Al menos un símbolo especial', passed: /[^A-Za-z0-9\s]/.test(form.password), started: passwordStarted },
+    {
+      label: 'Confirmación: ambas contraseñas coinciden',
+      passed: Boolean(form.password && form.password_confirm && form.password === form.password_confirm),
+      started: passwordStarted || confirmationStarted,
+    },
+  ];
+  const passwordRequirementsMet = passwordRules.every((rule) => rule.passed);
 
   const validateForm = () => {
     const errors = {};
@@ -57,13 +75,13 @@ export function RegisterPage() {
       errors.email = 'Por favor, ingrese un formato de correo electrónico válido.';
     }
 
-    if (!form.password) {
-      errors.password = 'La contraseña es obligatoria.';
+    if (!passwordRules.slice(0, 5).every((rule) => rule.passed)) {
+      errors.password = 'La contraseña debe cumplir todos los requisitos de seguridad.';
     }
 
     if (!form.password_confirm) {
       errors.password_confirm = 'Por favor, confirme su contraseña.';
-    } else if (form.password !== form.password_confirm) {
+    } else if (!passwordRules[5].passed) {
       errors.password_confirm = 'Las contraseñas no coinciden.';
     }
 
@@ -204,6 +222,18 @@ export function RegisterPage() {
 
           {/* Contraseña */}
           <div className="space-y-1.5">
+            <ul className="list-disc space-y-0.5 pl-4 font-sans text-[10px] leading-relaxed sm:text-[11px]">
+              {passwordRules.slice(0, 5).map((rule) => {
+                const statusStyle = !rule.started
+                  ? 'text-cronos-muted'
+                  : rule.passed
+                    ? 'text-emerald-700'
+                    : 'text-red-600';
+                return (
+                  <li key={rule.label} className={statusStyle}>{rule.label}</li>
+                );
+              })}
+            </ul>
             <label
               htmlFor="password"
               className="block font-mono text-[10px] tracking-widest text-cronos-muted uppercase"
@@ -225,16 +255,16 @@ export function RegisterPage() {
               />
               <button
                 type="button"
-                disabled={busy}
-                onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-cronos-muted hover:text-cronos-text transition-colors p-1 cursor-pointer focus:outline-none disabled:opacity-40"
                 aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                aria-controls="password"
+                aria-pressed={showPassword}
+                onClick={() => setShowPassword((visible) => !visible)}
+                disabled={busy}
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-cronos-muted transition-colors hover:text-cronos-text focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cronos-text disabled:opacity-40"
               >
-                {showPassword ? (
-                  <EyeOff className="h-4 w-4 stroke-[1.4]" />
-                ) : (
-                  <Eye className="h-4 w-4 stroke-[1.4]" />
-                )}
+                {showPassword
+                  ? <EyeOff aria-hidden="true" className="h-4 w-4 stroke-[1.4]" />
+                  : <Eye aria-hidden="true" className="h-4 w-4 stroke-[1.4]" />}
               </button>
             </div>
             {fieldErrors.password && (
@@ -246,6 +276,11 @@ export function RegisterPage() {
 
           {/* Confirmar Contraseña */}
           <div className="space-y-1.5">
+            {passwordRules[5].passed && (
+              <p className="font-sans text-[11px] text-emerald-700">
+                ✓ Las contraseñas coinciden
+              </p>
+            )}
             <label
               htmlFor="password_confirm"
               className="block font-mono text-[10px] tracking-widest text-cronos-muted uppercase"
@@ -256,7 +291,7 @@ export function RegisterPage() {
               <Input
                 id="password_confirm"
                 name="password_confirm"
-                type={showConfirmPassword ? 'text' : 'password'}
+                type={showPasswordConfirm ? 'text' : 'password'}
                 autoComplete="new-password"
                 required
                 disabled={busy}
@@ -267,16 +302,16 @@ export function RegisterPage() {
               />
               <button
                 type="button"
+                aria-label={showPasswordConfirm ? 'Ocultar confirmación' : 'Mostrar confirmación'}
+                aria-controls="password_confirm"
+                aria-pressed={showPasswordConfirm}
+                onClick={() => setShowPasswordConfirm((visible) => !visible)}
                 disabled={busy}
-                onClick={() => setShowConfirmPassword((prev) => !prev)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-cronos-muted hover:text-cronos-text transition-colors p-1 cursor-pointer focus:outline-none disabled:opacity-40"
-                aria-label={showConfirmPassword ? 'Ocultar confirmación' : 'Mostrar confirmación'}
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-cronos-muted transition-colors hover:text-cronos-text focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cronos-text disabled:opacity-40"
               >
-                {showConfirmPassword ? (
-                  <EyeOff className="h-4 w-4 stroke-[1.4]" />
-                ) : (
-                  <Eye className="h-4 w-4 stroke-[1.4]" />
-                )}
+                {showPasswordConfirm
+                  ? <EyeOff aria-hidden="true" className="h-4 w-4 stroke-[1.4]" />
+                  : <Eye aria-hidden="true" className="h-4 w-4 stroke-[1.4]" />}
               </button>
             </div>
             {fieldErrors.password_confirm && (
@@ -289,7 +324,7 @@ export function RegisterPage() {
           <div className="pt-3">
             <Button
               type="submit"
-              disabled={busy}
+              disabled={busy || !passwordRequirementsMet}
               className="w-full py-4 text-xs font-semibold tracking-[0.2em] font-mono flex items-center justify-center gap-2 uppercase"
             >
               {busy ? (

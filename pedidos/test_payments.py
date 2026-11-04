@@ -1,27 +1,54 @@
 import hashlib
 import hmac
+import os
+from io import BytesIO
 from datetime import timedelta
 from decimal import Decimal
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from urllib.error import HTTPError
 from unittest.mock import patch
 
 from django.core.management import call_command
-from django.test import TestCase, override_settings
+from django.test import SimpleTestCase, TestCase, override_settings
 from django.utils import timezone
 from rest_framework.test import APIClient
 
 from catalogo.models import Marca, Reloj
+from cronos_elite.settings import _load_local_payment_env
 from pedidos.models import Orden, PagoMercadoPago
-from pedidos.payments import PaymentProviderError, create_preference, reconcile_payment, reserve_order
+from pedidos.payments import PaymentProviderError, _api_request, create_preference, payment_config, reconcile_payment, reserve_order
 
 
 MP_TEST_SETTINGS = {
-    'MERCADOPAGO_ACCESS_TOKEN': 'TEST-access-token',
+    'MERCADOPAGO_ACCESS_TOKEN': 'APP_USR-test-credential',
+    'MERCADOPAGO_ENVIRONMENT': 'test',
     'MERCADOPAGO_WEBHOOK_SECRET': 'webhook-test-secret',
     'MERCADOPAGO_WEBHOOK_URL': 'https://shop.example.test/api/pedidos/webhooks/mercadopago/',
     'MERCADOPAGO_RETURN_BASE_URL': 'https://shop.example.test',
     'MERCADOPAGO_USD_PEN_RATE': '3.75',
     'MERCADOPAGO_RESERVATION_MINUTES': 30,
 }
+
+
+class LocalPaymentEnvironmentTests(SimpleTestCase):
+    def test_local_dotenv_values_are_loaded_without_overriding_process_values(self):
+        with TemporaryDirectory(dir=Path.cwd()) as temp_dir, patch.dict(os.environ, {
+            'MERCADOPAGO_ACCESS_TOKEN': '',
+            'MERCADOPAGO_ENVIRONMENT': '',
+            'MERCADOPAGO_WEBHOOK_SECRET': 'process-secret-placeholder',
+        }):
+            env_path = Path(temp_dir) / '.env'
+            env_path.write_text(
+                'MERCADOPAGO_ACCESS_TOKEN="APP_USR-fixture-token"\n'
+                'MERCADOPAGO_ENVIRONMENT=test\n'
+                'MERCADOPAGO_WEBHOOK_SECRET=file-secret-placeholder\n',
+                encoding='utf-8',
+            )
+            _load_local_payment_env(env_path)
+            self.assertEqual(os.environ['MERCADOPAGO_ENVIRONMENT'], 'test')
+            self.assertEqual(os.environ['MERCADOPAGO_ACCESS_TOKEN'], 'APP_USR-fixture-token')
+            self.assertEqual(os.environ['MERCADOPAGO_WEBHOOK_SECRET'], 'process-secret-placeholder')
 
 
 @override_settings(**MP_TEST_SETTINGS)
@@ -130,13 +157,45 @@ class MercadoPagoCheckoutTests(TestCase):
         self.assertEqual(Reloj.objects.get(pk=self.watch.pk).stock, 5)
         self.assertNotEqual(order.estado, Orden.EstadoOrden.PAGADO)
 
+    def test_configuration_accepts_app_usr_token_when_environment_is_test(self):
+        with override_settings(
+            MERCADOPAGO_ACCESS_TOKEN='APP_USR-test-token',
+            MERCADOPAGO_ENVIRONMENT='test',
+        ):
+            config = payment_config()
+        self.assertEqual(config['token'], 'APP_USR-test-token')
+        self.assertEqual(config['environment'], 'test')
+
     @patch('pedidos.payments._api_request')
-    def test_configuration_rejects_non_test_access_token(self, mp_request):
-        with override_settings(MERCADOPAGO_ACCESS_TOKEN='APP_USR-production-like-token'):
+    def test_configuration_rejects_production_or_unknown_environment(self, mp_request):
+        for environment in ('', 'production', 'live', 'unexpected'):
+            with self.subTest(environment=environment), override_settings(
+                MERCADOPAGO_ACCESS_TOKEN='APP_USR-credential',
+                MERCADOPAGO_ENVIRONMENT=environment,
+            ):
+                response = self.client.post('/api/pedidos/checkout/', self.payload(), format='json')
+                self.assertEqual(response.status_code, 503)
+                self.assertFalse(Orden.objects.exists())
+        mp_request.assert_not_called()
+
+    def test_configuration_rejects_missing_access_token(self):
+        with override_settings(MERCADOPAGO_ACCESS_TOKEN='', MERCADOPAGO_ENVIRONMENT='test'):
             response = self.client.post('/api/pedidos/checkout/', self.payload(), format='json')
         self.assertEqual(response.status_code, 503)
         self.assertFalse(Orden.objects.exists())
-        mp_request.assert_not_called()
+
+    @patch('pedidos.payments.urlopen')
+    def test_api_sends_bearer_token_and_distinguishes_provider_auth_errors(self, urlopen_mock):
+        urlopen_mock.side_effect = HTTPError(
+            'https://api.mercadopago.com/users/me', 401, 'Unauthorized', {}, BytesIO(b'{}')
+        )
+        with self.assertRaises(PaymentProviderError) as raised:
+            _api_request('GET', '/users/me')
+
+        request = urlopen_mock.call_args.args[0]
+        self.assertEqual(request.get_header('Authorization'), 'Bearer APP_USR-test-credential')
+        self.assertEqual(raised.exception.category, 'authentication')
+        self.assertEqual(raised.exception.status_code, 401)
 
     def test_payment_transitions_pending_approved_and_rejected_are_verified(self):
         order = self.create_order()

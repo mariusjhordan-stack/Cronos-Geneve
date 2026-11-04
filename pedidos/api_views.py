@@ -208,12 +208,24 @@ class CheckoutAPIView(APIView):
             return Response({'error': str(exc)}, status=status.HTTP_404_NOT_FOUND)
         except ValueError as exc:
             return Response({'error': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
-        except (PaymentConfigurationError, PaymentProviderError):
+        except PaymentConfigurationError as exc:
             if order and order.stock_reservado:
                 release_reservation(order.id, Orden.EstadoPago.ERROR)
-            logger.exception('No se pudo iniciar el pago de Checkout Pro.')
+            logger.warning('Checkout Pro rechazado por configuración inválida.')
             return Response(
-                {'error': 'No se pudo iniciar el pago. El inventario reservado fue liberado.'},
+                {'error': str(exc)},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
+        except PaymentProviderError as exc:
+            if order and order.stock_reservado:
+                release_reservation(order.id, Orden.EstadoPago.ERROR)
+            logger.warning(
+                'Fallo de proveedor Checkout Pro (categoría=%s, HTTP=%s).',
+                exc.category,
+                exc.status_code or '-',
+            )
+            return Response(
+                {'error': str(exc)},
                 status=status.HTTP_502_BAD_GATEWAY,
             )
         except Exception:

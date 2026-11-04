@@ -5,10 +5,51 @@ Desarrollado con fines académicos y de producción para arquitectura desacoplad
 
 from pathlib import Path
 import os
+import re
 from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+def _load_local_payment_env(env_path):
+    """Load only Mercado Pago settings from the local .env without overriding process env."""
+    payment_keys = {
+        'MERCADOPAGO_ACCESS_TOKEN',
+        'MERCADOPAGO_ENVIRONMENT',
+        'MERCADOPAGO_WEBHOOK_SECRET',
+        'MERCADOPAGO_WEBHOOK_URL',
+        'MERCADOPAGO_RETURN_BASE_URL',
+        'MERCADOPAGO_USD_PEN_RATE',
+        'MERCADOPAGO_RESERVATION_MINUTES',
+    }
+    try:
+        lines = env_path.read_text(encoding='utf-8-sig').splitlines()
+    except FileNotFoundError:
+        return
+
+    for line in lines:
+        entry = line.strip()
+        if not entry or entry.startswith('#'):
+            continue
+        if entry.startswith('export '):
+            entry = entry[7:].lstrip()
+        key, separator, value = entry.partition('=')
+        key = key.strip()
+        if not separator or key not in payment_keys:
+            continue
+        if os.environ.get(key, '').strip():
+            continue
+
+        value = value.strip()
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in ('"', "'"):
+            value = value[1:-1]
+        else:
+            value = re.split(r'\s+#', value, maxsplit=1)[0].rstrip()
+        os.environ[key] = value
+
+
+_load_local_payment_env(BASE_DIR / '.env')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-cronos-elite-secret-key-alta-relojeria-2026-academico'
@@ -95,6 +136,9 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+    {
+        'NAME': 'usuarios.password_validators.PasswordComplexityValidator',
+    },
 ]
 
 # Internationalization
@@ -132,6 +176,7 @@ CORS_ALLOW_CREDENTIALS = True
 # explícita de salida a producción. El tipo de cambio debe configurarse
 # manualmente; el proyecto almacena los precios del catálogo en USD.
 MERCADOPAGO_ACCESS_TOKEN = os.environ.get('MERCADOPAGO_ACCESS_TOKEN', '').strip()
+MERCADOPAGO_ENVIRONMENT = os.environ.get('MERCADOPAGO_ENVIRONMENT', '').strip().lower()
 MERCADOPAGO_WEBHOOK_SECRET = os.environ.get('MERCADOPAGO_WEBHOOK_SECRET', '').strip()
 MERCADOPAGO_WEBHOOK_URL = os.environ.get('MERCADOPAGO_WEBHOOK_URL', '').strip()
 MERCADOPAGO_RETURN_BASE_URL = os.environ.get('MERCADOPAGO_RETURN_BASE_URL', '').strip()

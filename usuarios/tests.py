@@ -63,6 +63,26 @@ class CuentaApiTests(APITestCase):
         payload['password_confirm'] = 'different'
         self.assertEqual(self.client.post('/api/auth/register/', payload, format='json').status_code, status.HTTP_400_BAD_REQUEST)
 
+    def test_register_rejects_each_missing_password_requirement(self):
+        invalid_passwords = (
+            'Aa1!abc',       # Menos de 8 caracteres.
+            'lowercase1!',   # Sin mayúscula.
+            'UPPERCASE1!',   # Sin minúscula.
+            'Lowercase!X',   # Sin número.
+            'Lowercase1X',   # Sin símbolo.
+            'Lower case1',  # Un espacio por sí solo no es un símbolo especial.
+        )
+        for index, password in enumerate(invalid_passwords):
+            with self.subTest(password_requirement=index):
+                response = self.client.post('/api/auth/register/', {
+                    'username': f'invalido{index}',
+                    'email': f'invalido{index}@example.com',
+                    'password': password,
+                    'password_confirm': password,
+                }, format='json')
+                self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+                self.assertIn('password', response.data)
+
     def test_login_valid_invalid_and_me_requires_authentication(self):
         ok = self.client.post('/api/auth/login/', {'username': 'cliente', 'password': self.password}, format='json')
         self.assertEqual(ok.status_code, status.HTTP_200_OK)

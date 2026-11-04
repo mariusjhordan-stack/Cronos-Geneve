@@ -28,6 +28,11 @@ class PaymentConfigurationError(Exception):
 class PaymentProviderError(Exception):
     """Mercado Pago no respondió con una operación válida."""
 
+    def __init__(self, message, *, category='api', status_code=None):
+        super().__init__(message)
+        self.category = category
+        self.status_code = status_code
+
 
 class ProductUnavailableError(ValueError):
     """El producto solicitado no existe en el catálogo."""
@@ -43,9 +48,14 @@ def _https_url(value, name):
 
 
 def payment_config(require_webhook=True):
-    token = getattr(settings, 'MERCADOPAGO_ACCESS_TOKEN', '')
-    if not token or not token.startswith('TEST-'):
-        raise PaymentConfigurationError('Configura un Access Token TEST de Mercado Pago.')
+    token = getattr(settings, 'MERCADOPAGO_ACCESS_TOKEN', '').strip()
+    environment = getattr(settings, 'MERCADOPAGO_ENVIRONMENT', '').strip().lower()
+    if environment != 'test':
+        raise PaymentConfigurationError(
+            'MERCADOPAGO_ENVIRONMENT debe ser "test"; el entorno de producción no está habilitado.'
+        )
+    if not token:
+        raise PaymentConfigurationError('Configura un Access Token de Mercado Pago del entorno de prueba.')
     secret = getattr(settings, 'MERCADOPAGO_WEBHOOK_SECRET', '')
     if require_webhook and not secret:
         raise PaymentConfigurationError('Configura la firma secreta del Webhook de Mercado Pago.')
@@ -62,6 +72,7 @@ def payment_config(require_webhook=True):
         raise PaymentConfigurationError('El plazo de reserva debe estar entre 5 y 1440 minutos.')
     return {
         'token': token,
+        'environment': environment,
         'secret': secret,
         'rate': rate,
         'return_base': return_base,
@@ -80,11 +91,31 @@ def _api_request(method, path, body=None):
     request = Request(f"{config['api_base']}{path}", data=data, headers=headers, method=method)
     try:
         with urlopen(request, timeout=12) as response:
-            parsed = json.loads(response.read().decode('utf-8'))
-    except (HTTPError, URLError, TimeoutError, OSError, ValueError) as exc:
+            response_body = response.read()
+    except HTTPError as exc:
+        if exc.code in (401, 403):
+            logger.warning('Mercado Pago rechazó autenticación HTTP %s.', exc.code)
+            raise PaymentProviderError(
+                'Mercado Pago rechazó el Access Token (HTTP 401/403). Verifica que corresponda al entorno de prueba.',
+                category='authentication',
+                status_code=exc.code,
+            ) from None
+        logger.warning('Mercado Pago respondió con error HTTP %s.', exc.code)
+        raise PaymentProviderError(
+            f'Mercado Pago respondió con un error de API (HTTP {exc.code}).',
+            category='api',
+            status_code=exc.code,
+        ) from None
+    except (URLError, TimeoutError, OSError) as exc:
         # No se registran encabezados, tokens, cuerpos de respuesta ni datos del comprador.
         logger.warning('Mercado Pago no completó la solicitud (%s).', type(exc).__name__)
-        raise PaymentProviderError('No fue posible comunicarse con Mercado Pago.') from None
+        raise PaymentProviderError(
+            'No fue posible comunicarse con Mercado Pago.', category='network'
+        ) from None
+    try:
+        parsed = json.loads(response_body.decode('utf-8'))
+    except (UnicodeDecodeError, ValueError):
+        raise PaymentProviderError('Mercado Pago devolvió una respuesta inválida.', category='api') from None
     if not isinstance(parsed, dict):
         raise PaymentProviderError('Mercado Pago devolvió una respuesta inválida.')
     return parsed

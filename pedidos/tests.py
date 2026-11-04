@@ -12,7 +12,8 @@ from .models import Orden
 User = get_user_model()
 
 PAYMENT_TEST_SETTINGS = {
-    'MERCADOPAGO_ACCESS_TOKEN': 'TEST-only-token',
+    'MERCADOPAGO_ACCESS_TOKEN': 'APP_USR-test-credential',
+    'MERCADOPAGO_ENVIRONMENT': 'test',
     'MERCADOPAGO_WEBHOOK_SECRET': 'test-webhook-secret',
     'MERCADOPAGO_WEBHOOK_URL': 'https://shop.example.test/api/pedidos/webhooks/mercadopago/',
     'MERCADOPAGO_RETURN_BASE_URL': 'https://shop.example.test',
