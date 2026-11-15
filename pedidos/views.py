@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.conf import settings
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
@@ -389,3 +390,21 @@ def pedido_confirmacion(request, orden_id):
         'codigo_orden': f"#CRONOS-{orden.id:05d}-2026",
     }
     return render(request, 'pedidos/confirmacion.html', context)
+
+
+def pago_retorno_redirect(request):
+    """
+    Redirecciona la solicitud de retorno del navegador al frontend desacoplado (React/Vite),
+    preservando todos los parámetros de Mercado Pago (external_reference, payment_id, status, etc.).
+    Garantiza que si el navegador llega directamente al backend Django, no resulte en error 404.
+    """
+    qs = request.META.get('QUERY_STRING', '')
+    frontend_url = (
+        getattr(settings, 'FRONTEND_URL', '').strip().rstrip('/')
+        or getattr(settings, 'PUBLIC_BASE_URL', '').strip().rstrip('/')
+        or 'http://localhost:5174'
+    )
+    target = f'{frontend_url}/pago/retorno'
+    if qs:
+        target = f"{target}?{qs}"
+    return redirect(target)

@@ -16,5 +16,6 @@ urlpatterns = [
     path('carrito/', CarritoSyncAPIView.as_view(), name='api_carrito_sync'),
     path('carrito/validar/', CarritoValidateAPIView.as_view(), name='api_carrito_validar'),
     path('webhooks/mercadopago/', MercadoPagoWebhookAPIView.as_view(), name='api_mercadopago_webhook'),
+    path('webhooks/mercadopago', MercadoPagoWebhookAPIView.as_view(), name='api_mercadopago_webhook_noslash'),
     path('pagos/<uuid:reference>/', PaymentStatusAPIView.as_view(), name='api_pago_estado'),
 ]

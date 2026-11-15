@@ -65,8 +65,26 @@ def payment_config(require_webhook=True):
         raise PaymentConfigurationError('Configura un tipo de cambio USD/PEN válido.') from None
     if not rate.is_finite() or rate <= 0:
         raise PaymentConfigurationError('El tipo de cambio USD/PEN debe ser mayor que cero.')
-    return_base = _https_url(getattr(settings, 'MERCADOPAGO_RETURN_BASE_URL', ''), 'MERCADOPAGO_RETURN_BASE_URL')
-    webhook_url = _https_url(getattr(settings, 'MERCADOPAGO_WEBHOOK_URL', ''), 'MERCADOPAGO_WEBHOOK_URL')
+    public_base = getattr(settings, 'PUBLIC_BASE_URL', '').strip().rstrip('/')
+    raw_return_base = getattr(settings, 'MERCADOPAGO_RETURN_BASE_URL', '').strip().rstrip('/')
+    frontend_base = getattr(settings, 'FRONTEND_URL', '').strip().rstrip('/')
+    backend_base = getattr(settings, 'BACKEND_PUBLIC_URL', '').strip().rstrip('/')
+    raw_webhook_url = getattr(settings, 'MERCADOPAGO_WEBHOOK_URL', '').strip()
+
+    effective_return_base = raw_return_base or frontend_base or public_base
+    if not effective_return_base:
+        raise PaymentConfigurationError(
+            'Configura MERCADOPAGO_RETURN_BASE_URL, FRONTEND_URL o PUBLIC_BASE_URL con una URL HTTPS pública.'
+        )
+    return_base = _https_url(effective_return_base, 'MERCADOPAGO_RETURN_BASE_URL')
+
+    effective_webhook_url = raw_webhook_url or (
+        f'{backend_base or public_base or return_base}/api/pedidos/webhooks/mercadopago/'
+    )
+    parsed_webhook_url = urlparse(_https_url(effective_webhook_url, 'MERCADOPAGO_WEBHOOK_URL'))
+    webhook_path = parsed_webhook_url.path.rstrip('/') + '/'
+    webhook_url = parsed_webhook_url._replace(path=webhook_path).geturl()
+
     minutes = int(getattr(settings, 'MERCADOPAGO_RESERVATION_MINUTES', 30))
     if not 5 <= minutes <= 1440:
         raise PaymentConfigurationError('El plazo de reserva debe estar entre 5 y 1440 minutos.')
@@ -79,6 +97,58 @@ def payment_config(require_webhook=True):
         'webhook_url': webhook_url,
         'minutes': minutes,
         'api_base': getattr(settings, 'MERCADOPAGO_API_BASE_URL', 'https://api.mercadopago.com').rstrip('/'),
+    }
+
+
+def get_payment_diagnostics():
+    """Genera un diagnóstico seguro y estructurado de la configuración efectiva de Mercado Pago."""
+    public_base = getattr(settings, 'PUBLIC_BASE_URL', '').strip().rstrip('/')
+    raw_return_base = getattr(settings, 'MERCADOPAGO_RETURN_BASE_URL', '').strip()
+    raw_webhook_url = getattr(settings, 'MERCADOPAGO_WEBHOOK_URL', '').strip()
+    token = getattr(settings, 'MERCADOPAGO_ACCESS_TOKEN', '').strip()
+    environment = getattr(settings, 'MERCADOPAGO_ENVIRONMENT', '').strip().lower()
+    secret = getattr(settings, 'MERCADOPAGO_WEBHOOK_SECRET', '').strip()
+
+    issues = []
+    effective_return_base = ''
+    effective_webhook_url = ''
+    urls_coherent = True
+    can_create_preferences = False
+
+    try:
+        cfg = payment_config(require_webhook=True)
+        effective_return_base = cfg['return_base']
+        effective_webhook_url = cfg['webhook_url']
+        can_create_preferences = True
+    except PaymentConfigurationError as exc:
+        issues.append(str(exc))
+        urls_coherent = False
+        try:
+            cfg_no_wh = payment_config(require_webhook=False)
+            effective_return_base = cfg_no_wh.get('return_base', '')
+            effective_webhook_url = cfg_no_wh.get('webhook_url', '')
+        except Exception:
+            effective_return_base = public_base or raw_return_base
+            effective_webhook_url = raw_webhook_url or (f'{public_base}/api/pedidos/webhooks/mercadopago/' if public_base else '')
+
+    if not token:
+        token_status = 'Ausente'
+    elif token.startswith('APP_USR-'):
+        token_status = 'Presente (APP_USR-*** [TEST])'
+    else:
+        token_status = 'Presente (*** [TEST])'
+
+    return {
+        'public_base_url': public_base or '(no configurado)',
+        'return_base_url': effective_return_base or '(no configurado)',
+        'return_url': f'{effective_return_base}/pago/retorno' if effective_return_base else '(no configurado)',
+        'webhook_url': effective_webhook_url or '(no configurado)',
+        'environment': environment or '(no configurado)',
+        'token_status': token_status,
+        'has_webhook_secret': bool(secret),
+        'urls_coherent': urls_coherent and bool(effective_return_base and effective_webhook_url),
+        'can_create_preferences': can_create_preferences,
+        'issues': issues,
     }
 
 
@@ -169,6 +239,7 @@ def reserve_order(order_data, item_qty_map, user=None, idempotency_key=None):
                 total_pen += unit_pen * detail.cantidad
             order.monto_pago = total_pen.quantize(CENTAVO, rounding=ROUND_HALF_UP)
             order.save(update_fields=['monto_pago'])
+            logger.info('[ORDER] Created/reserved order #%s with external_reference=%s (stock_reservado=%s)', order.id, order.referencia_pago, order.stock_reservado)
         return order, True
     except IntegrityError:
         if idempotency_key:
@@ -180,9 +251,15 @@ def reserve_order(order_data, item_qty_map, user=None, idempotency_key=None):
 
 def create_preference(order):
     """Crea una preferencia con importes calculados y congelados por el servidor."""
-    if order.url_pago and order.preferencia_pago_id:
-        return order.url_pago
     config = payment_config()
+    current_base = config['return_base']
+    if (
+        order.url_pago
+        and order.preferencia_pago_id
+        and getattr(order, 'preferencia_base_url', '') == current_base
+        and (not order.reserva_expira_en or order.reserva_expira_en > timezone.now())
+    ):
+        return order.url_pago
     items = []
     for detail in order.detalles.select_related('reloj').all():
         unit_pen = (detail.precio_unitario * config['rate']).quantize(CENTAVO, rounding=ROUND_HALF_UP)
@@ -227,7 +304,9 @@ def create_preference(order):
         raise PaymentProviderError('Mercado Pago no devolvió una URL de Checkout de prueba válida.')
     order.preferencia_pago_id = str(response['id'])
     order.url_pago = sandbox_url
-    order.save(update_fields=['preferencia_pago_id', 'url_pago'])
+    order.preferencia_base_url = current_base
+    order.save(update_fields=['preferencia_pago_id', 'url_pago', 'preferencia_base_url'])
+    logger.info('[MP] Preference created id=%s for external_reference=%s (base_url=%s)', response.get('id'), order.referencia_pago, current_base)
     return sandbox_url
 
 
@@ -256,20 +335,20 @@ def release_reservation(order_id, payment_status=Orden.EstadoPago.EXPIRADO):
 
 
 def verify_webhook_signature(signature, request_id, data_id, secret=None):
-    secret = secret if secret is not None else getattr(settings, 'MERCADOPAGO_WEBHOOK_SECRET', '')
+    secret = (secret if secret is not None else getattr(settings, 'MERCADOPAGO_WEBHOOK_SECRET', '')).strip().strip('"\'')
     if not signature or not request_id or not data_id or not secret:
         return False
     parts = {}
     for item in signature.split(','):
         key, separator, value = item.strip().partition('=')
         if separator:
-            parts[key] = value
+            parts[key.strip()] = value.strip()
     timestamp, received = parts.get('ts'), parts.get('v1')
     if not timestamp or not received:
         return False
-    manifest = f'id:{str(data_id).lower()};request-id:{request_id};ts:{timestamp};'
+    manifest = f'id:{str(data_id).strip().lower()};request-id:{str(request_id).strip()};ts:{timestamp.strip()};'
     calculated = hmac.new(secret.encode('utf-8'), manifest.encode('utf-8'), hashlib.sha256).hexdigest()
-    return hmac.compare_digest(calculated, received)
+    return hmac.compare_digest(calculated, received.strip())
 
 
 def _validated_payment(payment):
@@ -349,11 +428,32 @@ def reconcile_payment(payment):
                 order.pago_gateway_id = payment_id
                 order.stock_reservado = False
                 order.reserva_expira_en = None
+                logger.info('[ORDER] status -> PAGADO (order #%s, payment_id=%s)', order.id, payment_id)
+                logger.info('[STOCK] reservation confirmed for order #%s', order.id)
             elif approved:
                 order.estado_pago = Orden.EstadoPago.APROBADO
                 order.estado = Orden.EstadoOrden.PAGADO
                 order.stock_reservado = False
                 order.reserva_expira_en = None
+                logger.info('[ORDER] already approved (order #%s, payment_id=%s)', order.id, payment_id)
+            elif normalized_state in (Orden.EstadoPago.RECHAZADO, Orden.EstadoPago.CANCELADO):
+                if order.stock_reservado:
+                    details = list(order.detalles.select_related('reloj').all())
+                    watches = {
+                        watch.id: watch
+                        for watch in Reloj.objects.select_for_update().filter(id__in=[detail.reloj_id for detail in details])
+                    }
+                    for detail in details:
+                        watch = watches.get(detail.reloj_id)
+                        if watch:
+                            watch.stock += detail.cantidad
+                            watch.save(update_fields=['stock'])
+                    order.stock_reservado = False
+                    order.reserva_expira_en = None
+                    logger.info('[STOCK] reservation released (order #%s, state=%s)', order.id, normalized_state)
+                order.estado_pago = normalized_state
+                order.estado = Orden.EstadoOrden.CANCELADO
+                logger.info('[ORDER] status -> CANCELADO (order #%s, payment_state=%s)', order.id, normalized_state)
             else:
                 order.estado_pago = normalized_state
             order.pago_actualizado_en = timezone.now()
@@ -361,6 +461,7 @@ def reconcile_payment(payment):
                 'estado_pago', 'estado', 'pago_gateway_id', 'stock_reservado',
                 'reserva_expira_en', 'conflicto_stock_pago', 'pago_actualizado_en', 'actualizado_en',
             ])
+            logger.info('[MP] payment validated: payment_id=%s, state=%s, order #%s', payment_id, normalized_state, order.id)
             return order
     except Orden.DoesNotExist:
         raise PaymentProviderError('No existe una orden para la referencia del pago.') from None
@@ -369,6 +470,7 @@ def reconcile_payment(payment):
 def fetch_payment(payment_id):
     if not str(payment_id).isdigit():
         raise PaymentProviderError('Identificador de pago inválido.')
+    logger.info('[MP] payment queried: payment_id=%s', payment_id)
     return _api_request('GET', f'/v1/payments/{payment_id}')
 
 
@@ -396,8 +498,11 @@ def payment_status_for_reference(reference, payment_id=None):
             raise PaymentProviderError('El pago no corresponde a esta orden.')
         order = reconcile_payment(payment)
         order.refresh_from_db()
+    logger.info('[RETURN] status queried for external_reference=%s (payment_id=%s, order #%s)', reference, payment_id, order.id)
     return {
         'external_reference': str(order.referencia_pago),
+        'orden_id': order.id,
+        'token_acceso': str(order.token_acceso),
         'estado_pago': order.estado_pago,
         'estado_orden': order.estado,
         'monto': str(order.monto_pago or ''),

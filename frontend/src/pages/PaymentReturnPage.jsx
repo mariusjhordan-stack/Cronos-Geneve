@@ -1,24 +1,57 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { CheckCircle2, Clock3, XCircle } from 'lucide-react';
+import { CheckCircle2, Clock3, XCircle, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { api } from '@/services/api';
 import { useAuth } from '@/context/AuthContext';
 
 const PAYMENT_COPY = {
-  APROBADO: { label: 'PAGO APROBADO', description: 'Mercado Pago confirmó el pago. La orden quedó registrada.', Icon: CheckCircle2, style: 'text-emerald-700' },
-  PENDIENTE: { label: 'PAGO PENDIENTE', description: 'Mercado Pago aún está procesando el pago. El inventario permanece reservado temporalmente.', Icon: Clock3, style: 'text-amber-700' },
-  RECHAZADO: { label: 'PAGO RECHAZADO', description: 'Mercado Pago rechazó el intento. La reserva se liberará al vencer el plazo configurado.', Icon: XCircle, style: 'text-red-700' },
-  CANCELADO: { label: 'PAGO CANCELADO', description: 'El pago fue cancelado. La reserva se liberará al vencer el plazo configurado.', Icon: XCircle, style: 'text-red-700' },
-  EXPIRADO: { label: 'PAGO EXPIRADO', description: 'El plazo de pago venció y el inventario reservado fue liberado.', Icon: XCircle, style: 'text-cronos-muted' },
-  ERROR: { label: 'PAGO NO INICIADO', description: 'No se pudo crear el checkout. No se completó ningún cobro.', Icon: XCircle, style: 'text-red-700' },
+  APROBADO: {
+    label: 'PAGO APROBADO',
+    description: 'Mercado Pago confirmó el cobro. La orden y el certificado han sido emitidos con éxito.',
+    Icon: CheckCircle2,
+    style: 'text-emerald-700',
+  },
+  PENDIENTE: {
+    label: 'PAGO PENDIENTE',
+    description: 'Mercado Pago aún está procesando el pago. El inventario permanece reservado temporalmente mientras se acredita.',
+    Icon: Clock3,
+    style: 'text-amber-700',
+  },
+  RECHAZADO: {
+    label: 'PAGO RECHAZADO',
+    description: 'Mercado Pago rechazó el cobro. El inventario reservado ha sido liberado de inmediato para el catálogo.',
+    Icon: XCircle,
+    style: 'text-red-700',
+  },
+  CANCELADO: {
+    label: 'PAGO CANCELADO',
+    description: 'La transacción fue cancelada en la pasarela. El inventario reservado ha sido liberado.',
+    Icon: XCircle,
+    style: 'text-red-700',
+  },
+  EXPIRADO: {
+    label: 'PAGO EXPIRADO',
+    description: 'El plazo de pago venció y el inventario reservado fue liberado.',
+    Icon: XCircle,
+    style: 'text-cronos-muted',
+  },
+  ERROR: {
+    label: 'PAGO NO INICIADO',
+    description: 'No se pudo completar el checkout con la pasarela. No se efectuó ningún cobro.',
+    Icon: XCircle,
+    style: 'text-red-700',
+  },
 };
 
 export function PaymentReturnPage() {
   const [params] = useSearchParams();
   const { isAuthenticated } = useAuth();
+
+  // Parámetros estándares y de pasarela Checkout Pro devueltos en back_url
   const reference = params.get('external_reference') || '';
-  const paymentId = params.get('payment_id') || params.get('collection_id') || '';
+  const paymentId = params.get('payment_id') || params.get('collection_id') || params.get('data.id') || '';
+
   const [payment, setPayment] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
@@ -41,6 +74,12 @@ export function PaymentReturnPage() {
         if (!active) return;
         setPayment(result);
         setError('');
+
+        if (result?.orden_id && result?.token_acceso) {
+          api.saveOrderToken(result.orden_id, result.token_acceso);
+        }
+
+        // Si Mercado Pago aún está procesando (asíncrono), reintentar hasta 4 veces
         if (result.estado_pago === 'PENDIENTE' && attempts < 4) {
           attempts += 1;
           timer = window.setTimeout(check, 2500);
@@ -73,20 +112,46 @@ export function PaymentReturnPage() {
           <>
             <h1 className="mt-5 font-serif text-3xl text-cronos-text">ESTADO NO DISPONIBLE</h1>
             <p role="alert" className="mt-4 text-sm text-red-700">{error}</p>
-            <p className="mt-3 text-xs text-cronos-muted">El retorno del navegador no confirma el pago. Consulta nuevamente desde el mismo enlace o revisa tus órdenes.</p>
+            <p className="mt-3 text-xs text-cronos-muted">El retorno del navegador no confirma el pago de forma autónoma. Consulta nuevamente desde el mismo enlace o revisa tus órdenes.</p>
           </>
         ) : (
           <>
             <Icon className={`mx-auto mt-8 h-10 w-10 ${state?.style || 'text-cronos-bronze'}`} />
             <h1 className={`mt-4 font-serif text-3xl ${state?.style || 'text-cronos-text'}`}>{state?.label || 'PAGO EN REVISIÓN'}</h1>
             <p className="mt-4 text-sm text-cronos-muted">{state?.description || 'El estado sigue pendiente de confirmación server-side.'}</p>
-            {payment?.monto && <p className="mt-3 font-mono text-xs text-cronos-text">Importe verificado: {payment.monto} {payment.moneda}</p>}
+            {payment?.monto && (
+              <p className="mt-3 font-mono text-xs text-cronos-text">
+                Importe verificado: {payment.monto} {payment.moneda}
+              </p>
+            )}
+            {payment?.orden_id && (
+              <p className="mt-1 font-mono text-xs text-cronos-muted">
+                Orden #{String(payment.orden_id).padStart(5, '0')}
+              </p>
+            )}
           </>
         )}
         {reference && <p className="mt-5 break-all font-mono text-[10px] text-cronos-muted">Referencia: {reference}</p>}
         <div className="mt-8 flex flex-wrap justify-center gap-3">
-          {isAuthenticated && <Link to="/mis-ordenes"><Button variant="outline" size="sm">MIS ÓRDENES</Button></Link>}
-          <Link to="/"><Button size="sm">VOLVER AL CATÁLOGO</Button></Link>
+          {payment?.estado_pago === 'APROBADO' && payment?.orden_id && (
+            <Link
+              to={`/confirmacion/${payment.orden_id}${payment.token_acceso ? `?token=${encodeURIComponent(payment.token_acceso)}` : ''}`}
+            >
+              <Button size="sm" className="gap-2">
+                VER CERTIFICADO DE ORDEN <ArrowRight className="h-3.5 w-3.5" />
+              </Button>
+            </Link>
+          )}
+          {isAuthenticated && (
+            <Link to="/mis-ordenes">
+              <Button variant="outline" size="sm">MIS ÓRDENES</Button>
+            </Link>
+          )}
+          <Link to="/">
+            <Button variant={payment?.estado_pago === 'APROBADO' ? 'outline' : 'default'} size="sm">
+              VOLVER AL CATÁLOGO
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

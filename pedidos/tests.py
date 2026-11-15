@@ -4,6 +4,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 from unittest.mock import patch
+from django.utils.crypto import get_random_string
 
 from catalogo.models import Marca, Reloj
 
@@ -12,6 +13,7 @@ from .models import Orden
 User = get_user_model()
 
 PAYMENT_TEST_SETTINGS = {
+    'PUBLIC_BASE_URL': 'https://shop.example.test',
     'MERCADOPAGO_ACCESS_TOKEN': 'APP_USR-test-credential',
     'MERCADOPAGO_ENVIRONMENT': 'test',
     'MERCADOPAGO_WEBHOOK_SECRET': 'test-webhook-secret',
@@ -24,7 +26,7 @@ PAYMENT_TEST_SETTINGS = {
 
 class LegacyOrderCertificateAccessTests(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='cliente', password='CronosGeneve!9274')
+        self.user = User.objects.create_user(username='cliente', password='Aa9!' + get_random_string(32))
         self.order = Orden.objects.create(
             usuario=self.user,
             cliente_nombre='Cliente',
@@ -47,8 +49,8 @@ class OrdenCertificadoAccesoTests(APITestCase):
     """Fase 2.1 §3 — Certificado / órdenes: propietario, ajeno, invitado, token y 404."""
 
     def setUp(self):
-        self.user_a = User.objects.create_user(username='usuario_a', email='a@example.com', password='CronosGeneve!9274')
-        self.user_b = User.objects.create_user(username='usuario_b', email='b@example.com', password='CronosGeneve!9274')
+        self.user_a = User.objects.create_user(username='usuario_a', email='a@example.com', password='Aa9!' + get_random_string(32))
+        self.user_b = User.objects.create_user(username='usuario_b', email='b@example.com', password='Aa9!' + get_random_string(32))
         self.orden_a = Orden.objects.create(
             usuario=self.user_a, cliente_nombre='Usuario A', cliente_email='a@example.com',
             cliente_telefono='+51123456789', direccion_envio='Dirección A', garantia_aceptada=True,

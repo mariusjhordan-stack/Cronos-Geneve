@@ -36,7 +36,7 @@ class OrdenAdmin(admin.ModelAdmin):
     readonly_fields = (
         'total', 'token_acceso', 'garantia_aceptada', 'creado_en', 'actualizado_en',
         'referencia_pago', 'clave_idempotencia', 'estado_pago', 'monto_pago', 'moneda_pago',
-        'preferencia_pago_id', 'url_pago', 'pago_gateway_id', 'stock_reservado',
+        'preferencia_pago_id', 'url_pago', 'preferencia_base_url', 'pago_gateway_id', 'stock_reservado',
         'reserva_expira_en', 'conflicto_stock_pago', 'pago_actualizado_en',
     )
 

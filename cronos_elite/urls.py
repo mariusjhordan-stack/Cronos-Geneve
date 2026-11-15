@@ -25,6 +25,11 @@ urlpatterns = [
     # Módulo de Pedidos y Transacciones (Templates Django legados)
     path('pedidos/', include('pedidos.urls')),
 
+    # Redirección de retorno para pasarelas en caso de acceso directo al backend
+    path('pago/retorno', include([
+        path('', include('pedidos.retorno_urls')),
+    ])),
+
     # Frontend Renderizado por Django (Catálogo, Detalles, Comparador)
     path('', include('catalogo.urls')),
 ]

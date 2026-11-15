@@ -5,6 +5,8 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.validators import validate_email
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import constant_time_compare
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -195,9 +197,16 @@ class CheckoutAPIView(APIView):
         order = None
         try:
             order, created = reserve_order(order_data, item_qty_map, request.user, idempotency_key)
-            if order.url_pago and order.preferencia_pago_id:
+            config = payment_config()
+            current_base = config['return_base']
+            if (
+                order.url_pago
+                and order.preferencia_pago_id
+                and getattr(order, 'preferencia_base_url', '') == current_base
+                and (not order.reserva_expira_en or order.reserva_expira_en > timezone.now())
+            ):
                 checkout_url = order.url_pago
-            elif not created:
+            elif not created and getattr(order, 'preferencia_base_url', '') == current_base and not order.url_pago:
                 return Response(
                     {'error': 'El checkout de esta solicitud ya está en proceso. Intente nuevamente en unos segundos.'},
                     status=status.HTTP_409_CONFLICT,
@@ -288,32 +297,70 @@ class OrdenDetailAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class MercadoPagoWebhookAPIView(APIView):
-    """Valida la firma y consulta siempre el pago en la API autenticada."""
+    """
+    Endpoint público de Webhook para Mercado Pago.
+    Acepta peticiones POST sin autenticación de usuario (AllowAny) y exento de CSRF.
+    """
     permission_classes = [AllowAny]
     authentication_classes = []
 
     def post(self, request):
         data = request.data if isinstance(request.data, dict) else {}
-        notification_type = request.query_params.get('type') or data.get('type') or request.query_params.get('topic')
+        notification_type = (
+            request.query_params.get('type')
+            or data.get('type')
+            or request.query_params.get('topic')
+            or data.get('topic')
+            or data.get('action')
+            or ''
+        )
         notification_data = data.get('data')
         if not isinstance(notification_data, dict):
             notification_data = {}
-        data_id = request.query_params.get('data.id') or notification_data.get('id')
-        signature = request.headers.get('x-signature', '')
-        request_id = request.headers.get('x-request-id', '')
+
+        data_id = (
+            request.query_params.get('data.id')
+            or request.query_params.get('id')
+            or notification_data.get('id')
+            or data.get('id')
+        )
+
+        signature = request.headers.get('x-signature', '') or request.META.get('HTTP_X_SIGNATURE', '')
+        request_id = request.headers.get('x-request-id', '') or request.META.get('HTTP_X_REQUEST_ID', '')
+        logger.info('[MP] webhook received: type=%s, data_id=%s, request_id=%s', notification_type, data_id, request_id)
+
+        # Mercado Pago firma también las notificaciones enviadas desde su simulador.
+        # No se confía en data.id, action ni live_mode para omitir esta validación.
         if not verify_webhook_signature(signature, request_id, data_id):
+            logger.warning('[MP] webhook rejected: invalid signature for data_id=%s', data_id)
             return Response({'error': 'Firma de notificación inválida.'}, status=status.HTTP_401_UNAUTHORIZED)
-        if notification_type != 'payment':
-            return Response({'received': True, 'ignored': True}, status=status.HTTP_200_OK)
+
+        # Notificaciones ajenas al tópico de pagos se confirman, pero no se procesan.
+        if notification_type and notification_type != 'payment':
+            logger.info('[MP] Webhook notification type %s acknowledged and ignored.', notification_type)
+            return Response({'received': True, 'ignored': True, 'type': notification_type}, status=status.HTTP_200_OK)
+
+        # Solo una respuesta autenticada de la API puede llevar a la reconciliación.
         try:
             payment = fetch_payment(data_id)
             if str(payment.get('id')) != str(data_id):
-                return Response({'error': 'Notificación inválida.'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'received': True, 'ignored': True, 'detail': 'ID no coincide.'}, status=status.HTTP_200_OK)
             reconcile_payment(payment)
-        except PaymentProviderError:
-            logger.warning('No se pudo reconciliar una notificación de pago verificada.')
-            return Response({'error': 'No fue posible verificar el pago.'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        except PaymentProviderError as exc:
+            logger.warning('[MP] No se pudo reconciliar la notificación de pago (data_id=%s): %s', data_id, exc)
+            return Response(
+                {'received': True, 'processed': False, 'detail': str(exc)},
+                status=status.HTTP_200_OK,
+            )
+        except Exception as exc:
+            logger.exception('[MP] Error inesperado en webhook: %s', exc)
+            return Response(
+                {'received': True, 'processed': False, 'detail': 'Error interno de reconciliación.'},
+                status=status.HTTP_200_OK,
+            )
+
         return Response({'received': True}, status=status.HTTP_200_OK)
 
 

@@ -76,6 +76,7 @@ class Orden(models.Model):
     moneda_pago = models.CharField(max_length=3, blank=True, default='')
     preferencia_pago_id = models.CharField(max_length=100, null=True, blank=True, unique=True)
     url_pago = models.URLField(max_length=1000, blank=True)
+    preferencia_base_url = models.URLField(max_length=500, blank=True, default='')
     pago_gateway_id = models.CharField(max_length=100, null=True, blank=True, unique=True)
     stock_reservado = models.BooleanField(default=False)
     reserva_expira_en = models.DateTimeField(null=True, blank=True)

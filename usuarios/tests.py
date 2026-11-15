@@ -3,6 +3,7 @@ from django.test import override_settings
 from rest_framework import status
 from rest_framework.test import APITestCase
 from unittest.mock import patch
+from django.utils.crypto import get_random_string
 
 from catalogo.models import Marca, Reloj
 from pedidos.models import Orden
@@ -11,7 +12,9 @@ from .models import Direccion, Perfil
 User = get_user_model()
 
 PAYMENT_TEST_SETTINGS = {
+    'PUBLIC_BASE_URL': 'https://shop.example.test',
     'MERCADOPAGO_ACCESS_TOKEN': 'TEST-only-token',
+    'MERCADOPAGO_ENVIRONMENT': 'test',
     'MERCADOPAGO_WEBHOOK_SECRET': 'test-webhook-secret',
     'MERCADOPAGO_WEBHOOK_URL': 'https://shop.example.test/api/pedidos/webhooks/mercadopago/',
     'MERCADOPAGO_RETURN_BASE_URL': 'https://shop.example.test',
@@ -22,7 +25,7 @@ PAYMENT_TEST_SETTINGS = {
 
 @override_settings(**PAYMENT_TEST_SETTINGS)
 class CuentaApiTests(APITestCase):
-    password = 'CronosGeneve!9274'
+    password = 'Aa9!' + get_random_string(32)
 
     def setUp(self):
         self.user = User.objects.create_user(username='cliente', email='cliente@example.com', password=self.password)
