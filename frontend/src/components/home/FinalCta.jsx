@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/Button';
 
 export function FinalCta() {
   return (
-    <section className="py-28 sm:py-36 border-b border-cronos-line bg-cronos-surface/30 text-center">
+    <section className="border-b border-cronos-line bg-cronos-bg py-28 text-center sm:py-36">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <span className="font-mono text-technical tracking-widest-brand text-cronos-bronze uppercase block mb-3">
           CATÁLOGO HOROLÓGICO &bull; CRONOS GENÈVE

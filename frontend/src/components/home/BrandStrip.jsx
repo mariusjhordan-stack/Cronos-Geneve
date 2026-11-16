@@ -4,7 +4,7 @@ export function BrandStrip({ marcas = [], onSelectMarca }) {
   if (!marcas || marcas.length === 0) return null;
 
   return (
-    <section className="border-y border-cronos-line bg-cronos-surface/40 py-8">
+    <section className="border-y border-cronos-line bg-cronos-bg py-10">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-cronos-line/60 pb-3 mb-6">
           <span className="font-mono text-technical text-cronos-muted uppercase tracking-widest-brand">

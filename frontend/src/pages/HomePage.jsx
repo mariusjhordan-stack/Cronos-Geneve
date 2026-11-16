@@ -209,7 +209,7 @@ export function HomePage() {
             <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-cronos-text tracking-[0.02em]">
               La Colección
             </h2>
-            <p className="text-xs sm:text-sm text-cronos-muted max-w-xl font-sans leading-relaxed mt-2 font-normal">
+            <p className="mt-3 max-w-xl font-sans text-sm leading-relaxed text-cronos-muted">
               Una cuidada selección de 24 piezas mecánicas y de alta precisión de las casas relojeras más prestigiosas, catalogadas por manufactura, calibre y referencia.
             </p>
           </div>
@@ -319,9 +319,9 @@ export function HomePage() {
 
         {/* GRILLA O ESTADOS DE CARGA/ERROR */}
         {loading ? (
-          <div className="border border-cronos-line py-28 text-center bg-white shadow-editorial">
-            <span className="font-mono text-xs tracking-widest-brand text-cronos-bronze uppercase block animate-pulse">
-              CONSULTANDO COLECCIÓN DE ALTA RELOJERÍA...
+          <div className="py-28 text-center">
+            <span className="block animate-pulse font-mono text-xs uppercase tracking-widest-brand text-cronos-bronze">
+              Consultando colección de alta relojería...
             </span>
           </div>
         ) : error ? (

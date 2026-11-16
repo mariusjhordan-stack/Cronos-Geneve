@@ -6,6 +6,7 @@ import { useCart } from '@/context/CartContext';
 import { useCompare } from '@/context/CompareContext';
 import { useAuth } from '@/context/AuthContext';
 import { useFavorites } from '@/context/FavoritesContext';
+import { WatchImage } from '@/components/product/WatchImage';
 
 export function ProductCard({ reloj }) {
   const { addToCart } = useCart();
@@ -38,95 +39,78 @@ export function ProductCard({ reloj }) {
     : reloj.imagen_url;
 
   return (
-    <article className="group relative flex flex-col justify-between p-6 sm:p-8 bg-white transition-colors hover:bg-[#FAF9F6]/60 h-full">
-      <div className="flex flex-col flex-1">
-        {/* 1. LIENZO FOTOGRÁFICO PROTAGONISTA CON FONDO ALABASTRO */}
-        <div className="relative aspect-[4/5] w-full bg-[#FAF9F6] border border-cronos-line flex items-center justify-center p-6 mb-6 overflow-hidden">
+    <article className="group relative flex h-full flex-col justify-between bg-transparent px-1 py-8 sm:py-10">
+      <div className="flex flex-1 flex-col">
+        <div className="relative mb-7 aspect-[4/5] w-full overflow-hidden bg-cronos-surface-1">
           <Link
             to={`/reloj/${reloj.id}`}
-            className="flex h-full w-full items-center justify-center focus:outline-none"
+            className="absolute inset-0 focus:outline-none focus-visible:ring-1 focus-visible:ring-cronos-text"
             aria-label={`Ver detalles de ${reloj.nombre}`}
           >
-            {cardImage ? (
-              <img
-                src={cardImage}
-                alt={`${brandName} ${reloj.nombre}`}
-                className="max-h-full max-w-full object-contain transition-transform duration-700 ease-out group-hover:scale-105"
-                loading="lazy"
-                onError={(e) => {
-                  e.currentTarget.src = '/images/relojes/placeholder-reloj.svg';
-                }}
-              />
-            ) : (
-              <div className="flex h-48 w-48 items-center justify-center border border-cronos-line bg-white">
-                <span className="font-mono text-[9px] tracking-widest text-cronos-muted uppercase">
-                  [ SIN REGISTRO ]
-                </span>
-              </div>
-            )}
+            <WatchImage
+              src={cardImage}
+              alt={`${brandName} ${reloj.nombre}`}
+              className="h-full w-full"
+              imgClassName="transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+            />
           </Link>
 
-          {/* Botón de Favorito Flotante Discreto */}
           <button
             type="button"
             disabled={processingFav}
             onClick={handleToggleFavorite}
             aria-label={isFav ? `Retirar ${reloj.nombre} de favoritos privados` : `Añadir ${reloj.nombre} a favoritos privados`}
             title={isFav ? 'En favoritos privados' : 'Añadir a favoritos privados'}
-            className="absolute top-3 right-3 p-2 text-cronos-muted hover:text-cronos-bronze transition-colors cursor-pointer disabled:opacity-50 focus:outline-none bg-white/90 backdrop-blur-xs border border-cronos-line"
+            className="absolute right-3 top-3 cursor-pointer p-2 text-cronos-muted transition-colors hover:text-cronos-bronze focus:outline-none disabled:opacity-50"
           >
             <Heart
               className={`h-4 w-4 stroke-[1.4] transition-all duration-200 ${
-                isFav ? 'fill-cronos-bronze text-cronos-bronze' : 'hover:scale-110'
+                isFav ? 'fill-cronos-bronze text-cronos-bronze' : ''
               }`}
             />
           </button>
 
-          {/* Indicador Discreto de Stock */}
-          <div className="absolute bottom-2.5 left-2.5 pointer-events-none">
+          <div className="pointer-events-none absolute bottom-3 left-3">
             {!inStock && (
-              <span className="font-mono text-[9px] tracking-widest text-red-700 bg-white/95 px-2 py-0.5 border border-red-200">
-                AGOTADO
+              <span className="bg-white/90 px-2 py-0.5 font-mono text-[9px] tracking-widest text-red-700 uppercase">
+                Agotado
               </span>
             )}
             {inStock && reloj.stock === 1 && (
-              <span className="font-mono text-[9px] tracking-widest text-cronos-bronze bg-white/95 px-2 py-0.5 border border-cronos-line">
-                PIEZA ÚNICA
+              <span className="bg-white/90 px-2 py-0.5 font-mono text-[9px] tracking-widest text-cronos-bronze uppercase">
+                Pieza única
               </span>
             )}
           </div>
         </div>
 
-        {/* 2. INFORMACIÓN EDITORIAL DEL GUARDATIEMPO */}
-        <div className="space-y-1.5 flex-1">
-          <span className="block font-mono text-[9px] tracking-[0.24em] text-cronos-bronze uppercase">
+        <div className="flex-1 space-y-2">
+          <span className="block font-mono text-[10px] uppercase tracking-[0.28em] text-cronos-bronze">
             {brandName}
           </span>
 
-          <h3 className="font-serif text-lg sm:text-xl text-cronos-text tracking-[0.02em] leading-snug">
+          <h3 className="font-serif text-xl leading-snug tracking-[0.02em] text-cronos-text sm:text-[1.35rem]">
             <Link
               to={`/reloj/${reloj.id}`}
-              className="hover:text-cronos-bronze transition-colors focus:outline-none block"
+              className="block transition-colors hover:text-cronos-bronze focus:outline-none"
             >
               {reloj.nombre}
             </Link>
           </h3>
 
-          <div className="font-mono text-[10px] text-cronos-muted tracking-wider pt-1">
-            {reloj.movimiento_display || reloj.movimiento} &bull; {reloj.diametro_caja_mm} mm &bull; {reloj.resistencia_agua_m} m WR
+          <div className="pt-1 font-mono text-[11px] tracking-wider text-cronos-muted">
+            {reloj.movimiento_display || reloj.movimiento} · {reloj.diametro_caja_mm} mm · {reloj.resistencia_agua_m} m WR
           </div>
         </div>
 
-        {/* 3. COTIZACIÓN SOBRIA */}
-        <div className="pt-4 pb-4">
-          <span className="font-mono text-base text-cronos-text tracking-wider font-medium block">
-            {formatPrice(price)} <span className="text-xs text-cronos-muted font-normal">USD</span>
+        <div className="pb-5 pt-5">
+          <span className="block font-mono text-base font-medium tracking-wider text-cronos-text">
+            {formatPrice(price)} <span className="text-xs font-normal text-cronos-muted">USD</span>
           </span>
         </div>
       </div>
 
-      {/* 4. ACCIONES DISCRETAS */}
-      <div className="pt-4 border-t border-cronos-line/60 flex items-center justify-between gap-3">
+      <div className="flex items-center justify-between gap-3 border-t border-cronos-line/70 pt-4">
         {inStock ? (
           <button
             type="button"
@@ -135,12 +119,12 @@ export function ProductCard({ reloj }) {
               e.stopPropagation();
               addToCart(reloj, 1);
             }}
-            className="text-[11px] font-sans font-medium tracking-[0.18em] text-cronos-text hover:text-cronos-bronze uppercase transition-colors cursor-pointer py-1 border-b border-cronos-line hover:border-cronos-bronze"
+            className="cursor-pointer py-1 text-[11px] font-medium uppercase tracking-[0.2em] text-cronos-text transition-colors hover:text-cronos-bronze"
           >
-            Añadir a la bolsa &rarr;
+            Añadir a la bolsa
           </button>
         ) : (
-          <span className="text-[10px] font-mono tracking-widest text-cronos-muted uppercase py-1">
+          <span className="py-1 font-mono text-[10px] uppercase tracking-widest text-cronos-muted">
             Bajo encargo
           </span>
         )}
@@ -148,9 +132,9 @@ export function ProductCard({ reloj }) {
         <button
           type="button"
           onClick={() => toggleCompare(reloj)}
-          className={`font-mono text-[10px] tracking-widest uppercase transition-colors flex items-center gap-1.5 py-1 cursor-pointer ${
+          className={`flex cursor-pointer items-center gap-1.5 py-1 font-mono text-[10px] uppercase tracking-widest transition-colors ${
             compared
-              ? 'text-cronos-bronze font-medium'
+              ? 'font-medium text-cronos-bronze'
               : 'text-cronos-muted hover:text-cronos-text'
           }`}
         >
@@ -160,7 +144,7 @@ export function ProductCard({ reloj }) {
               <span>En matriz</span>
             </>
           ) : (
-            <span>+ Comparar</span>
+            <span>Comparar</span>
           )}
         </button>
       </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
+import { WatchImage } from '@/components/product/WatchImage';
 
 export function Hero({ protagonistPiece, totalPiezas = 0 }) {
   const brandName = protagonistPiece?.marca_nombre || protagonistPiece?.marca_detalle?.nombre || 'Manufactura Suiza';
@@ -24,25 +25,23 @@ export function Hero({ protagonistPiece, totalPiezas = 0 }) {
   }, []);
 
   return (
-    <section className="relative overflow-hidden border-b border-cronos-line bg-cronos-bg py-20 sm:py-28 lg:py-32">
+    <section className="relative overflow-hidden border-b border-cronos-line bg-cronos-bg py-16 sm:py-24 lg:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
-          {/* Columna Izquierda: Manifiesto Editorial y Especificaciones (7 cols) */}
-          <div className="lg:col-span-7">
-            <span className="font-mono text-[10px] tracking-[0.28em] text-cronos-bronze uppercase block mb-4">
-              CRONOS GENÈVE &bull; CATÁLOGO EDITORIAL
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-20">
+          <div className="lg:col-span-6">
+            <span className="mb-5 block font-mono text-[11px] uppercase tracking-[0.32em] text-cronos-bronze">
+              Cronos Genève · Genève
             </span>
 
-            <h1 className="font-serif text-4xl sm:text-6xl lg:text-7xl text-cronos-text tracking-[0.02em] leading-[1.05] mb-6">
-              Precisión mecánica <br />
-              <span className="italic font-light text-cronos-text/80">y diseño atemporal</span>
+            <h1 className="mb-6 font-serif text-4xl leading-[1.05] tracking-[0.01em] text-cronos-text sm:text-6xl lg:text-[4.25rem]">
+              Precisión mecánica
+              <span className="mt-1 block italic font-light text-cronos-text/75">y diseño atemporal</span>
             </h1>
 
-            <p className="max-w-xl text-sm sm:text-base text-cronos-muted leading-relaxed font-sans mb-10 font-normal">
+            <p className="mb-10 max-w-xl font-sans text-base leading-relaxed text-cronos-muted">
               Colección selecta de guardatiempos de alta gama. Fichas técnicas rigurosas, calibres históricos y documentación detallada por cada pieza registrada.
             </p>
 
-            {/* Acciones de Navegación Editorial */}
             <div className="flex flex-wrap items-center gap-6 sm:gap-8">
               <a
                 href="#catalogo"
@@ -50,60 +49,56 @@ export function Hero({ protagonistPiece, totalPiezas = 0 }) {
                   e.preventDefault();
                   document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="inline-flex items-center justify-center bg-[#171717] text-white px-7 py-3.5 text-xs font-sans tracking-[0.2em] uppercase hover:bg-[#2B2B2B] transition-colors cursor-pointer"
+                className="inline-flex cursor-pointer items-center justify-center bg-[#171717] px-8 py-4 text-xs uppercase tracking-[0.22em] text-white transition-colors hover:bg-[#2B2B2B]"
               >
-                <span>EXPLORAR CATÁLOGO</span>
+                <span>Explorar catálogo</span>
                 <ArrowRight className="ml-2.5 h-3.5 w-3.5 stroke-[1.5]" />
               </a>
 
               <Link
                 to="/comparador"
-                className="text-xs font-sans tracking-[0.2em] text-cronos-muted hover:text-cronos-text uppercase transition-colors py-2 border-b border-transparent hover:border-cronos-text"
+                className="border-b border-transparent py-2 text-xs uppercase tracking-[0.22em] text-cronos-muted transition-colors hover:border-cronos-text hover:text-cronos-text"
               >
-                MATRIZ COMPARATIVA
+                Comparador
               </Link>
             </div>
 
-            {/* Tira Técnica de Especificaciones Editoriales con profundidad marfil */}
-            <div className="mt-14 pt-6 border-t border-cronos-line grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="border border-cronos-line bg-cronos-surface-1 p-3.5 shadow-xs">
-                <span className="block font-mono text-[9px] tracking-[0.2em] text-cronos-muted uppercase mb-1">
-                  DISCIPLINA
+            <div className="mt-14 grid grid-cols-1 gap-8 border-t border-cronos-line pt-8 sm:grid-cols-3">
+              <div>
+                <span className="mb-1 block font-mono text-[10px] uppercase tracking-[0.22em] text-cronos-muted">
+                  Disciplina
                 </span>
-                <span className="font-mono text-xs text-cronos-text tracking-wider uppercase block font-medium">
+                <span className="block font-serif text-lg text-cronos-text">
                   Haute Horlogerie
                 </span>
               </div>
-              <div className="border border-cronos-line bg-cronos-surface-1 p-3.5 shadow-xs">
-                <span className="block font-mono text-[9px] tracking-[0.2em] text-cronos-muted uppercase mb-1">
-                  CALIBRES
+              <div>
+                <span className="mb-1 block font-mono text-[10px] uppercase tracking-[0.22em] text-cronos-muted">
+                  Calibres
                 </span>
-                <span className="font-mono text-xs text-cronos-text tracking-wider uppercase block font-medium">
-                  Automático &bull; Manual
+                <span className="block font-serif text-lg text-cronos-text">
+                  Automático y manual
                 </span>
               </div>
-              <div className="border border-cronos-line bg-cronos-surface-1 p-3.5 shadow-xs">
-                <span className="block font-mono text-[9px] tracking-[0.2em] text-cronos-muted uppercase mb-1">
-                  INVENTARIO
+              <div>
+                <span className="mb-1 block font-mono text-[10px] uppercase tracking-[0.22em] text-cronos-muted">
+                  Inventario
                 </span>
-                <span className="font-mono text-xs text-cronos-text tracking-wider block font-medium">
-                  {totalPiezas > 0 ? `${totalPiezas} PIEZAS REGISTRADAS` : '24 PIEZAS REGISTRADAS'}
+                <span className="block font-serif text-lg text-cronos-text">
+                  {totalPiezas > 0 ? `${totalPiezas} piezas` : 'Colección'}
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Columna Derecha: Reloj Protagonista y Multimedia (5 cols) */}
-          <div className="lg:col-span-5 flex flex-col items-center justify-center">
+          <div className="lg:col-span-6">
             {protagonistPiece ? (
               <Link
                 to={`/reloj/${protagonistPiece.id}`}
-                className="group relative block w-full max-w-md focus:outline-none"
+                className="group relative block w-full focus:outline-none"
                 aria-label={`Ver pieza destacada: ${brandName} ${watchName}`}
               >
-                {/* Lienzo multimedia protagonista con soporte de video y fotografía editorial */}
-                <div className="relative aspect-[4/5] sm:aspect-square w-full bg-gradient-to-b from-cronos-surface-1 to-[#F0EDE6] border border-cronos-line overflow-hidden flex items-center justify-center p-8 sm:p-12 transition-all duration-300 group-hover:border-cronos-text/40 shadow-xs">
-                  {/* Capa de video editorial de fondo (preparado para /videos/hero-horology.mp4) */}
+                <div className="relative aspect-[4/5] w-full overflow-hidden bg-cronos-surface-1 sm:aspect-square">
                   {!videoError && !prefersReducedMotion && (
                     <video
                       ref={videoRef}
@@ -113,55 +108,48 @@ export function Hero({ protagonistPiece, totalPiezas = 0 }) {
                       loop
                       playsInline
                       onError={() => setVideoError(true)}
-                      className="absolute inset-0 h-full w-full object-cover opacity-75 transition-opacity duration-700 pointer-events-none"
+                      className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-20"
                     />
                   )}
-
-                  {/* Velo degradado sutil para asegurar armonía cromática y contraste */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#FAF9F6]/80 via-transparent to-[#FAF9F6]/30 pointer-events-none" />
-
-                  {/* Fotografía / Render de la pieza protagonista de alta relojería */}
                   {imgUrl ? (
-                    <div className="relative z-10 p-4 flex items-center justify-center h-full w-full">
-                      <img
-                        src={imgUrl}
-                        alt={`${brandName} ${watchName}`}
-                        className="max-h-full max-w-full object-contain filter drop-shadow-[0_16px_32px_rgba(0,0,0,0.12)] transition-transform duration-700 ease-out group-hover:scale-105"
-                        loading="eager"
-                      />
-                    </div>
+                    <WatchImage
+                      src={imgUrl}
+                      alt={`${brandName} ${watchName}`}
+                      eager
+                      className="watch-stage--hero absolute inset-0 h-full w-full bg-transparent"
+                      imgClassName="transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                    />
                   ) : (
-                    <div className="relative z-10 flex h-56 w-56 items-center justify-center border border-cronos-line bg-white/90 backdrop-blur-[2px]">
-                      <span className="font-mono text-[9px] tracking-widest text-cronos-muted uppercase">
-                        [ ARCHIVO EN REGISTRO ]
+                    <div className="flex h-full items-center justify-center">
+                      <span className="font-mono text-[9px] uppercase tracking-widest text-cronos-muted">
+                        Archivo en registro
                       </span>
                     </div>
                   )}
                 </div>
 
-                {/* Ficha editorial descriptiva al pie */}
-                <div className="mt-4 flex items-baseline justify-between border-b border-cronos-line/60 pb-2">
+                <div className="mt-5 flex items-end justify-between gap-4">
                   <div>
-                    <span className="font-mono text-[9px] tracking-[0.24em] text-cronos-bronze uppercase block mb-0.5">
+                    <span className="mb-1 block font-mono text-[10px] uppercase tracking-[0.28em] text-cronos-bronze">
                       {brandName}
                     </span>
-                    <span className="font-serif text-lg text-cronos-text group-hover:text-cronos-bronze transition-colors">
+                    <span className="font-serif text-2xl text-cronos-text transition-colors group-hover:text-cronos-bronze">
                       {watchName}
                     </span>
                   </div>
                   {price && (
-                    <span className="font-mono text-sm text-cronos-text tracking-wider font-medium">
-                      {formatPrice(price)} <span className="text-[10px] text-cronos-muted font-normal">USD</span>
+                    <span className="shrink-0 font-mono text-sm tracking-wider text-cronos-text">
+                      {formatPrice(price)} <span className="text-[10px] text-cronos-muted">USD</span>
                     </span>
                   )}
                 </div>
               </Link>
             ) : (
-              <div className="relative aspect-square w-full max-w-md flex flex-col items-center justify-center border border-cronos-line bg-cronos-surface-1 p-8 text-center shadow-xs">
-                <span className="font-mono text-[9px] tracking-widest-brand text-cronos-bronze uppercase block mb-2">
-                  CATÁLOGO EDITORIAL
+              <div className="flex aspect-square w-full flex-col items-center justify-center bg-cronos-surface-1 p-8 text-center">
+                <span className="mb-2 block font-mono text-[9px] uppercase tracking-widest-brand text-cronos-bronze">
+                  Catálogo editorial
                 </span>
-                <span className="font-serif text-xl text-cronos-text mb-2">
+                <span className="mb-2 font-serif text-xl text-cronos-text">
                   Alta Relojería Suiza
                 </span>
                 <span className="font-mono text-technical text-cronos-muted">

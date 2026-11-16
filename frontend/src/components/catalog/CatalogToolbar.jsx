@@ -64,7 +64,7 @@ export function CatalogToolbar({
       {/* ==========================================
           1. BARRA EDITORIAL HORIZONTAL (DESKTOP >= 1024px)
           ========================================== */}
-      <div className="hidden lg:block border border-cronos-line bg-white shadow-editorial">
+      <div className="hidden border-y border-cronos-line bg-transparent lg:block">
         <div className="grid grid-cols-12 divide-x divide-cronos-line">
           {/* 1.1 BÚSQUEDA (3 columnas) */}
           <div className="col-span-3 p-3 flex flex-col justify-center">

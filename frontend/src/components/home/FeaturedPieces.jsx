@@ -2,28 +2,27 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { formatPrice } from '@/lib/utils';
 import { ArrowRight } from 'lucide-react';
+import { WatchImage } from '@/components/product/WatchImage';
 
 export function FeaturedPieces({ pieces = [] }) {
   if (!pieces || pieces.length === 0) return null;
 
   return (
-    <section className="py-20 sm:py-28 border-b border-cronos-line">
+    <section className="border-b border-cronos-line py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Encabezado Editorial */}
-        <div className="mb-14 text-center max-w-2xl mx-auto">
-          <span className="font-mono text-technical tracking-widest-brand text-cronos-bronze uppercase block mb-2">
-            SÉLECTION DU MAÎTRE
+        <div className="mx-auto mb-16 max-w-2xl text-center">
+          <span className="mb-3 block font-mono text-technical uppercase tracking-widest-brand text-cronos-bronze">
+            Sélection du maître
           </span>
-          <h2 className="font-serif text-3xl sm:text-4xl text-cronos-text tracking-[0.04em] mb-3">
-            PIEZAS DESTACADAS
+          <h2 className="mb-4 font-serif text-3xl tracking-[0.04em] text-cronos-text sm:text-4xl">
+            Piezas destacadas
           </h2>
-          <p className="text-xs sm:text-sm text-cronos-muted font-sans leading-relaxed">
+          <p className="font-sans text-sm leading-relaxed text-cronos-muted sm:text-base">
             Ejemplares de manufactura seleccionados por su complejidad mecánica, pureza de calibre y disponibilidad en catálogo.
           </p>
         </div>
 
-        {/* Galería Editorial sin tarjetas artificiales */}
-        <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x border-y border-cronos-line">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-3 md:gap-10">
           {pieces.map((piece) => {
             const brand = piece.marca_nombre || piece.marca_detalle?.nombre || 'Manufactura Suiza';
             const price = parseFloat(piece.precio);
@@ -31,75 +30,63 @@ export function FeaturedPieces({ pieces = [] }) {
             return (
               <article
                 key={piece.id}
-                className="group flex flex-col justify-between p-8 sm:p-10 transition-colors hover:bg-cronos-surface-2/30"
+                className="group flex flex-col justify-between"
               >
                 <div>
-                  {/* Marca */}
-                  <span className="font-mono text-[9px] tracking-widest-brand text-cronos-bronze uppercase block text-center mb-1.5">
+                  <Link
+                    to={`/reloj/${piece.id}`}
+                    className="relative mb-6 block aspect-[4/5] w-full overflow-hidden bg-cronos-surface-1"
+                    aria-label={`Ver detalles de ${piece.nombre}`}
+                  >
+                    {piece.imagen_url ? (
+                      <WatchImage
+                        src={piece.imagen_url}
+                        alt={`${brand} ${piece.nombre}`}
+                        className="h-full w-full"
+                        imgClassName="transition-transform duration-700 group-hover:scale-[1.03]"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center">
+                        <span className="font-mono text-technical tracking-widest text-cronos-muted">
+                          Archivo reservado
+                        </span>
+                      </div>
+                    )}
+                    {piece.stock === 1 && (
+                      <span className="absolute right-3 top-3 bg-white/90 px-2 py-0.5 font-mono text-[9px] tracking-widest text-cronos-bronze uppercase">
+                        Pieza única
+                      </span>
+                    )}
+                  </Link>
+
+                  <span className="mb-1.5 block text-center font-mono text-[10px] uppercase tracking-[0.28em] text-cronos-bronze">
                     {brand}
                   </span>
 
-                  {/* Modelo */}
-                  <h3 className="font-serif text-xl text-center text-cronos-text tracking-[0.04em] mb-6">
+                  <h3 className="mb-4 text-center font-serif text-xl tracking-[0.03em] text-cronos-text">
                     <Link
                       to={`/reloj/${piece.id}`}
-                      className="hover:text-cronos-bronze transition-colors focus:outline-none"
+                      className="transition-colors hover:text-cronos-bronze focus:outline-none"
                     >
                       {piece.nombre}
                     </Link>
                   </h3>
 
-                  {/* Fotografía Dominante */}
-                  <div className="relative aspect-[4/5] w-full flex items-center justify-center p-4 mb-6">
-                    <Link
-                      to={`/reloj/${piece.id}`}
-                      className="flex h-full w-full items-center justify-center"
-                      aria-label={`Ver detalles de ${piece.nombre}`}
-                    >
-                      {piece.imagen_url ? (
-                        <img
-                          src={piece.imagen_url}
-                          alt={`${brand} ${piece.nombre}`}
-                          className="max-h-full max-w-full object-contain filter drop-shadow-md transition-transform duration-500 group-hover:scale-105"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className="flex h-44 w-44 items-center justify-center border border-cronos-line bg-cronos-surface-2/40">
-                          <span className="font-mono text-technical tracking-widest text-cronos-muted">
-                            [ ARCHIVO RESERVADO ]
-                          </span>
-                        </div>
-                      )}
-                    </Link>
-
-                    {/* Badge sutil de stock exclusivo */}
-                    {piece.stock === 1 && (
-                      <div className="absolute top-2 right-2">
-                        <span className="font-mono text-[9px] tracking-widest text-cronos-bronze border border-cronos-bronze/40 px-2 py-0.5 bg-cronos-bg/90">
-                          PIEZA ÚNICA
-                        </span>
-                      </div>
-                    )}
+                  <div className="mb-3 text-center font-mono text-[11px] tracking-widest text-cronos-muted">
+                    {piece.movimiento_display || piece.movimiento} · {piece.diametro_caja_mm} MM
                   </div>
 
-                  {/* Especificación Técnica Compacta */}
-                  <div className="text-center font-mono text-technical tracking-widest text-cronos-muted mb-3">
-                    {piece.movimiento_display || piece.movimiento} &bull; {piece.diametro_caja_mm} MM
-                  </div>
-
-                  {/* Cotización Oficial */}
-                  <div className="text-center font-mono text-base text-cronos-text tracking-wider mb-6">
+                  <div className="mb-6 text-center font-mono text-base tracking-wider text-cronos-text">
                     {formatPrice(price)} <span className="text-[10px] text-cronos-muted">USD</span>
                   </div>
                 </div>
 
-                {/* CTA Editorial Discreto */}
-                <div className="pt-2 text-center">
+                <div className="text-center">
                   <Link
                     to={`/reloj/${piece.id}`}
-                    className="inline-flex items-center gap-1.5 border-b border-cronos-bronze pb-1 text-xs font-sans tracking-[0.2em] text-cronos-text hover:text-cronos-bronze uppercase transition-colors"
+                    className="inline-flex items-center gap-1.5 border-b border-cronos-bronze pb-1 text-xs uppercase tracking-[0.2em] text-cronos-text transition-colors hover:text-cronos-bronze"
                   >
-                    <span>CONSULTAR FICHA TÉCNICA</span>
+                    <span>Consultar ficha</span>
                     <ArrowRight className="h-3 w-3" />
                   </Link>
                 </div>
