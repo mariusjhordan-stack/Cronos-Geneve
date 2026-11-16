@@ -9,6 +9,7 @@ import { FinalCta } from '@/components/home/FinalCta';
 import { CatalogToolbar } from '@/components/catalog/CatalogToolbar';
 import { ProductGrid } from '@/components/catalog/ProductGrid';
 import { api } from '@/services/api';
+import { getWatchImageSrc } from '@/lib/watchImages';
 
 export function HomePage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -154,7 +155,7 @@ export function HomePage() {
   // Selección determinista del guardatiempo protagonista (sin IDs hardcodeados)
   const protagonistPiece = useMemo(() => {
     if (!relojes || relojes.length === 0) return null;
-    const conImagen = relojes.filter((r) => Boolean(r.imagen_url));
+    const conImagen = relojes.filter((r) => Boolean(getWatchImageSrc(r)));
     if (conImagen.length === 0) return relojes[0];
     return [...conImagen].sort((a, b) => parseFloat(b.precio) - parseFloat(a.precio))[0];
   }, [relojes]);
@@ -162,7 +163,7 @@ export function HomePage() {
   // Selección determinista de piezas destacadas (3 piezas distintas del protagonista)
   const featuredPieces = useMemo(() => {
     if (!relojes || relojes.length === 0) return [];
-    const restantes = relojes.filter((r) => r.id !== protagonistPiece?.id && Boolean(r.imagen_url));
+    const restantes = relojes.filter((r) => r.id !== protagonistPiece?.id && Boolean(getWatchImageSrc(r)));
     return restantes.length >= 3 ? restantes.slice(0, 3) : relojes.slice(0, 3);
   }, [relojes, protagonistPiece]);
 
@@ -193,7 +194,7 @@ export function HomePage() {
       />
 
       {/* 4. ENSAYO DE HERENCIA & ARQUITECTURA */}
-      <HeritageEssay />
+      <HeritageEssay mainPiece={protagonistPiece} detailPiece={featuredPieces[0] || protagonistPiece} />
 
       {/* 5. CATÁLOGO GENERAL (VITRINA EDITORIAL) */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:py-28 lg:py-32 scroll-mt-24" id="catalogo">

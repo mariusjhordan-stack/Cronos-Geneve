@@ -52,3 +52,6 @@ frontend/*.local
 # OS Files
 .DS_Store
 Thumbs.db
+
+# Capturas temporales de revisión
+frontend/.review-assets/

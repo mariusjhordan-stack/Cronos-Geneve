@@ -4,6 +4,7 @@ import { ArrowRight } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';
 import { formatPrice } from '@/lib/utils';
 import { WatchImage } from '@/components/product/WatchImage';
+import { getWatchImageSrc } from '@/lib/watchImages';
 
 export function Hero({ protagonistPiece, totalPiezas = 0 }) {
   const brandName =
@@ -11,7 +12,7 @@ export function Hero({ protagonistPiece, totalPiezas = 0 }) {
     protagonistPiece?.marca_detalle?.nombre ||
     'Manufactura';
   const watchName = protagonistPiece?.nombre || 'Pieza de Alta Relojería';
-  const imgUrl = protagonistPiece?.imagen_url;
+  const imgUrl = getWatchImageSrc(protagonistPiece);
   const price = protagonistPiece?.precio ? parseFloat(protagonistPiece.precio) : null;
 
   const shouldReduceMotion = useReducedMotion();
@@ -149,21 +150,13 @@ export function Hero({ protagonistPiece, totalPiezas = 0 }) {
                 aria-label={`Ver pieza destacada: ${brandName} ${watchName}`}
               >
                 <div className="relative aspect-[4/5] w-full overflow-hidden bg-cronos-surface-1 transition-colors sm:aspect-square">
-                  {imgUrl ? (
-                    <WatchImage
-                      src={imgUrl}
-                      alt={`${brandName} ${watchName}`}
-                      eager
-                      className="watch-stage--hero absolute inset-0 h-full w-full bg-transparent"
-                      imgClassName="transition-transform duration-1000 ease-out group-hover:scale-[1.04]"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center">
-                      <span className="font-mono text-[9px] uppercase tracking-widest text-cronos-muted">
-                        Archivo en registro
-                      </span>
-                    </div>
-                  )}
+                  <WatchImage
+                    src={imgUrl}
+                    alt={`${brandName} ${watchName}`}
+                    eager
+                    className="watch-stage--hero absolute inset-0 h-full w-full bg-transparent"
+                    imgClassName="transition-transform duration-1000 ease-out group-hover:scale-[1.02]"
+                  />
 
                   {/* Descriptor editorial sin afirmar procedencia */}
                   <div className="pointer-events-none absolute bottom-4 left-4 font-mono text-[9px] uppercase tracking-[0.2em] text-cronos-muted/70">

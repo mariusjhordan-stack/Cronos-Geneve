@@ -27,11 +27,7 @@ export function CartItem({ item, onUpdateQuantity, onRemove, onNavigate }) {
           className="block h-full w-full focus:outline-none"
           aria-label={`Ver detalles de ${item.nombre}`}
         >
-          {item.imagen_url ? (
-            <WatchImage src={item.imagen_url} alt={item.nombre} className="h-full w-full" />
-          ) : (
-            <span className="font-mono text-[9px] uppercase text-cronos-muted">Sin registro</span>
-          )}
+          <WatchImage src={item.imagen_url} alt={item.nombre} className="h-full w-full" />
         </Link>
       </div>
 

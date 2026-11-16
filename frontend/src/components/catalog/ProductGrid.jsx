@@ -24,11 +24,17 @@ export function ProductGrid({ relojes = [], onResetFilters }) {
     );
   }
 
+  const layoutForIndex = (index) => {
+    if (relojes.length === 1) return 'single';
+    if (relojes.length === 2) return 'pair';
+    return ['lead', 'middle', 'narrow'][index % 3];
+  };
+
   return (
-    <div className="grid grid-cols-1 gap-x-10 gap-y-4 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-1 items-start gap-x-8 gap-y-8 md:grid-cols-2 md:gap-x-10 md:gap-y-12 xl:grid-cols-12 xl:gap-x-8 xl:gap-y-16">
       <AnimatePresence mode="popLayout">
-        {relojes.map((reloj) => (
-          <ProductCard key={reloj.id} reloj={reloj} />
+        {relojes.map((reloj, index) => (
+          <ProductCard key={reloj.id} reloj={reloj} layoutVariant={layoutForIndex(index)} />
         ))}
       </AnimatePresence>
     </div>

@@ -112,28 +112,22 @@ export function ProductDetail({ reloj, relatedPieces = [] }) {
           {/* Lienzo Principal de la Imagen Activa */}
           <div className="group relative aspect-square w-full overflow-hidden bg-cronos-surface-1">
             <AnimatePresence mode="wait">
-              {activeImage?.url ? (
-                <motion.div
-                  key={activeImage.url}
-                  initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
-                  transition={{ duration: 0.35, ease: 'easeInOut' }}
+              <motion.div
+                key={activeImage?.url || `placeholder-${reloj.id}`}
+                initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
+                transition={{ duration: 0.35, ease: 'easeInOut' }}
+                className="h-full w-full"
+              >
+                <WatchImage
+                  src={activeImage?.url}
+                  alt={activeImage?.alt_text || `${brandName} ${reloj.nombre}`}
+                  eager
                   className="h-full w-full"
-                >
-                  <WatchImage
-                    src={activeImage.url}
-                    alt={activeImage.alt_text || `${brandName} ${reloj.nombre}`}
-                    eager
-                    className="h-full w-full"
-                    imgClassName="transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-                  />
-                </motion.div>
-              ) : (
-                <div className="flex h-full w-full items-center justify-center font-mono text-[10px] uppercase tracking-widest text-cronos-muted">
-                  Archivo reservado
-                </div>
-              )}
+                  imgClassName="transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+                />
+              </motion.div>
             </AnimatePresence>
 
             {/* Controles de Navegación de Galería (Anterior / Siguiente) */}

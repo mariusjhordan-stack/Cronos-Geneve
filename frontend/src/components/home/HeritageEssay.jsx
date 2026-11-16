@@ -1,11 +1,19 @@
 import React from 'react';
 import { ShieldCheck, Award } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';
+import { WatchImage } from '@/components/product/WatchImage';
+import { getWatchImageSrc } from '@/lib/watchImages';
 
-const PLACEHOLDER_SVG = '/images/relojes/placeholder-reloj.svg';
+function pieceLabel(piece) {
+  if (!piece) return 'Pieza del catálogo';
+  const brand = piece.marca_nombre || piece.marca_detalle?.nombre || '';
+  return [brand, piece.nombre].filter(Boolean).join(' · ');
+}
 
-export function HeritageEssay() {
+export function HeritageEssay({ mainPiece, detailPiece }) {
   const shouldReduceMotion = useReducedMotion();
+  const mainImage = getWatchImageSrc(mainPiece);
+  const detailImage = getWatchImageSrc(detailPiece);
 
   const fadeUp = {
     hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 28 },
@@ -50,9 +58,9 @@ export function HeritageEssay() {
           </p>
         </motion.div>
 
-        {/* Composición Asimétrica de Doble Fotografía y Ensayo */}
+        {/* Composición asimétrica con piezas reales del catálogo */}
         <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-16">
-          {/* Columna Izquierda: Fotografía Protagonista (Calibre Datograph) + Cita */}
+          {/* Pieza protagonista */}
           <motion.div
             initial={shouldReduceMotion ? false : 'hidden'}
             whileInView="visible"
@@ -60,23 +68,17 @@ export function HeritageEssay() {
             variants={fadeUp}
             className="space-y-8 lg:col-span-7"
           >
-            <div className="group relative overflow-hidden bg-cronos-surface-1">
-              <div className="relative aspect-[16/10] w-full overflow-hidden">
-                <img
-                  src={PLACEHOLDER_SVG}
-                  alt="Ilustración de archivo de un reloj; imagen editorial pendiente de autorización"
-                  loading="lazy"
-                  className="h-full w-full object-contain p-10 transition-transform duration-1000 ease-out group-hover:scale-[1.02]"
-                />
-              </div>
-
-              {/* Identificación editorial al pie de la imagen */}
-              <div className="flex flex-col justify-between gap-1 border-t border-cronos-line/60 bg-cronos-bg/60 px-4 py-3 sm:flex-row sm:items-center">
-                <span className="font-mono text-[10px] tracking-wider text-cronos-muted">
-                  Imagen de archivo · contenido editorial pendiente
-                </span>
-                <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-cronos-bronze">
-                  Glashütte · Sajonia
+            <div className="group relative aspect-[6/5] w-full overflow-hidden bg-gradient-to-br from-[#ece8df] via-[#f7f5f0] to-[#e8e3da]">
+              <WatchImage
+                src={mainImage}
+                alt={mainPiece ? `${mainPiece.marca_nombre || mainPiece.marca_detalle?.nombre || 'Reloj'} ${mainPiece.nombre}` : 'Imagen de reloj no disponible'}
+                eager
+                className="h-full w-full"
+                imgClassName="transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+              />
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#171717]/55 to-transparent px-5 pb-5 pt-16 sm:px-7 sm:pb-7">
+                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/90">
+                  {pieceLabel(mainPiece)}
                 </span>
               </div>
             </div>
@@ -92,7 +94,7 @@ export function HeritageEssay() {
             </p>
           </motion.div>
 
-          {/* Columna Derecha: Macro Detalle (Anglage Voutilainen) + Fichas Técnicas */}
+          {/* Segunda pieza y notas técnicas */}
           <motion.div
             initial={shouldReduceMotion ? false : 'hidden'}
             whileInView="visible"
@@ -100,23 +102,16 @@ export function HeritageEssay() {
             variants={fadeUp}
             className="space-y-10 lg:col-span-5 lg:pt-12"
           >
-            {/* Fotografía de Detalle Macro */}
-            <div className="group relative overflow-hidden bg-cronos-surface-1">
-              <div className="relative aspect-[4/3] w-full overflow-hidden sm:aspect-[16/11]">
-                <img
-                  src={PLACEHOLDER_SVG}
-                  alt="Ilustración de archivo de un reloj; imagen editorial pendiente de autorización"
-                  loading="lazy"
-                  className="h-full w-full object-contain p-8 transition-transform duration-1000 ease-out group-hover:scale-[1.02]"
-                />
-              </div>
-
-              <div className="flex flex-col justify-between gap-1 border-t border-cronos-line/60 bg-cronos-bg/60 px-4 py-3 sm:flex-row sm:items-center">
-                <span className="font-mono text-[10px] tracking-wider text-cronos-muted">
-                  Imagen de archivo · contenido editorial pendiente
-                </span>
-                <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-cronos-bronze">
-                  Haute Horlogerie
+            <div className="group relative aspect-[4/5] w-full overflow-hidden bg-gradient-to-br from-[#e7e4dd] via-[#f8f7f3] to-[#e9e5dc]">
+              <WatchImage
+                src={detailImage}
+                alt={detailPiece ? `${detailPiece.marca_nombre || detailPiece.marca_detalle?.nombre || 'Reloj'} ${detailPiece.nombre}` : 'Imagen de reloj no disponible'}
+                className="h-full w-full"
+                imgClassName="transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+              />
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#171717]/55 to-transparent px-4 pb-4 pt-12">
+                <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/90">
+                  {pieceLabel(detailPiece)}
                 </span>
               </div>
             </div>

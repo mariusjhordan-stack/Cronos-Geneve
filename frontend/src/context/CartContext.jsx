@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from 'sonner';
+import { getWatchImageSrc } from '@/lib/watchImages';
 
 const CartContext = createContext();
 
@@ -37,16 +38,7 @@ export function CartProvider({ children }) {
 
     const requestedQty = Math.max(1, parseInt(cantidad, 10) || 1);
 
-    // Resolver la imagen principal (priorizando galería de FASE 1.5)
-    let resolvedImage = '';
-    if (Array.isArray(reloj.imagenes) && reloj.imagenes.length > 0) {
-      const primary = reloj.imagenes.find((img) => img.orden === 1);
-      resolvedImage = primary ? primary.url : reloj.imagenes[0].url;
-    } else if (reloj.imagen_url) {
-      resolvedImage = reloj.imagen_url;
-    } else {
-      resolvedImage = '/images/relojes/placeholder-reloj.svg';
-    }
+    const resolvedImage = getWatchImageSrc(reloj) || '/images/relojes/placeholder-reloj.svg';
 
     // Comprobar disponibilidad actual en el carrito
     const existingItem = items.find((it) => it.id === reloj.id);

@@ -8,6 +8,7 @@ import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import { Button } from '@/components/ui/Button';
 import { WatchImage } from '@/components/product/WatchImage';
+import { getWatchImageSrc } from '@/lib/watchImages';
 
 export function FavoritesPage() {
   const { favorites, loading, error, removeFavorite, refreshFavorites, isProcessing } = useFavorites();
@@ -163,20 +164,12 @@ export function FavoritesPage() {
                       className="absolute inset-0"
                       aria-label={`Ver especificaciones de ${watch.nombre}`}
                     >
-                      {watch.imagen_url ? (
-                        <WatchImage
-                          src={watch.imagen_url}
-                          alt={`${brandName} ${watch.nombre}`}
-                          className="h-full w-full"
-                          imgClassName="transition-transform duration-500 group-hover:scale-[1.03]"
-                        />
-                      ) : (
-                        <div className="flex h-full items-center justify-center">
-                          <span className="font-mono text-[9px] tracking-widest text-cronos-muted">
-                            Archivo reservado
-                          </span>
-                        </div>
-                      )}
+                      <WatchImage
+                        src={getWatchImageSrc(watch)}
+                        alt={`${brandName} ${watch.nombre}`}
+                        className="h-full w-full"
+                        imgClassName="transition-transform duration-500 group-hover:scale-[1.02]"
+                      />
                     </Link>
                   </div>
 

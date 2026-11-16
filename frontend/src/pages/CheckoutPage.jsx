@@ -544,15 +544,11 @@ export function CheckoutPage() {
                 <div key={item.id} className="py-3.5 flex items-center justify-between text-xs gap-3">
                   <div className="flex items-center gap-3 min-w-0 pr-2">
                     <div className="h-16 w-16 shrink-0 overflow-hidden bg-cronos-surface-1">
-                      {item.imagen_url ? (
-                        <WatchImage
-                          src={item.imagen_url}
-                          alt={item.nombre}
-                          className="h-full w-full bg-cronos-surface-1"
-                        />
-                      ) : (
-                        <span className="font-mono text-[8px] text-cronos-muted">S/R</span>
-                      )}
+                      <WatchImage
+                        src={item.imagen_url}
+                        alt={item.nombre}
+                        className="h-full w-full bg-cronos-surface-1"
+                      />
                     </div>
                     <div className="min-w-0">
                       <span className="font-mono text-[9px] tracking-widest text-cronos-bronze block uppercase">

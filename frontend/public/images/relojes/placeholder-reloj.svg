@@ -1,21 +1,45 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 720" role="img" aria-labelledby="title desc">
+  <title id="title">Ilustración de reloj</title>
+  <desc id="desc">Ilustración genérica que se muestra cuando falta la fotografía del producto.</desc>
   <defs>
-    <radialGradient id="pGlow" cx="50%" cy="42%" r="58%">
-      <stop offset="0%" stop-color="#F7F5F0" />
-      <stop offset="100%" stop-color="#FAF9F6" />
-    </radialGradient>
-    <linearGradient id="pGold" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#C5A880" stop-opacity="0.7" />
-      <stop offset="100%" stop-color="#A58A68" stop-opacity="0.25" />
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbfaf7" />
+      <stop offset="1" stop-color="#eeeae2" />
     </linearGradient>
+    <linearGradient id="metal" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#aaa69d" />
+      <stop offset=".24" stop-color="#f7f5f0" />
+      <stop offset=".52" stop-color="#c7c2b8" />
+      <stop offset=".78" stop-color="#f5f2ed" />
+      <stop offset="1" stop-color="#aaa69d" />
+    </linearGradient>
+    <radialGradient id="dial" cx="38%" cy="30%" r="80%">
+      <stop offset="0" stop-color="#fffefa" />
+      <stop offset="1" stop-color="#e8e3da" />
+    </radialGradient>
+    <filter id="shadow" x="-.3" y="-.2" width="1.6" height="1.5">
+      <feGaussianBlur stdDeviation="13" />
+    </filter>
   </defs>
-  <rect width="500" height="500" fill="url(#pGlow)" />
-  <circle cx="250" cy="228" r="118" fill="none" stroke="#D8D4CC" stroke-width="1.25" />
-  <circle cx="250" cy="228" r="92" fill="none" stroke="url(#pGold)" stroke-width="1" />
-  <circle cx="250" cy="228" r="58" fill="none" stroke="#E8E5DD" stroke-width="1" />
-  <line x1="250" y1="228" x2="250" y2="152" stroke="#A58A68" stroke-width="2" stroke-linecap="round" />
-  <line x1="250" y1="228" x2="302" y2="198" stroke="#A58A68" stroke-width="2" stroke-linecap="round" />
-  <circle cx="250" cy="228" r="3.5" fill="#A58A68" />
-  <text x="250" y="390" font-family="Georgia, serif" font-size="18" letter-spacing="4" fill="#171717" text-anchor="middle">CRONOS GENÈVE</text>
-  <text x="250" y="416" font-family="ui-monospace, monospace" font-size="9" letter-spacing="3.5" fill="#8F8B83" text-anchor="middle">PIEZA EN CATALOGACIÓN</text>
+  <rect width="600" height="720" fill="url(#background)" />
+  <path d="M55 115h490M55 605h490" stroke="#d8d4cc" stroke-width="1" />
+  <ellipse cx="300" cy="390" rx="150" ry="250" fill="#817b70" opacity=".14" filter="url(#shadow)" />
+
+  <!-- Genérica, sin logotipo ni asociación a una manufactura concreta. -->
+  <path d="M247 88c0-18 14-32 32-32h42c18 0 32 14 32 32v105H247z" fill="url(#metal)" stroke="#9e998f" stroke-width="3" />
+  <path d="M247 527h106v105c0 18-14 32-32 32h-42c-18 0-32-14-32-32z" fill="url(#metal)" stroke="#9e998f" stroke-width="3" />
+  <path d="M247 111h106M247 147h106M247 583h106M247 619h106" stroke="#aaa59b" stroke-width="3" opacity=".8" />
+  <path d="M256 198h88v333h-88z" fill="url(#metal)" stroke="#9e998f" stroke-width="4" />
+  <rect x="203" y="217" width="194" height="294" rx="46" fill="url(#metal)" stroke="#89847b" stroke-width="5" />
+  <rect x="220" y="235" width="160" height="258" rx="36" fill="#e6e1d7" stroke="#fffefa" stroke-width="3" />
+  <circle cx="300" cy="364" r="108" fill="url(#dial)" stroke="#bcb6ab" stroke-width="3" />
+  <circle cx="300" cy="364" r="92" fill="none" stroke="#d6c4a8" stroke-width="2" />
+  <g stroke="#827b70" stroke-width="4" stroke-linecap="round">
+    <path d="M300 270v14M347 283l-7 12M381 317l-12 7M394 364h-14M381 411l-12-7M347 445l-7-12M300 458v-14M253 445l7-12M219 411l12-7M206 364h14M219 317l12 7M253 283l7 12" />
+  </g>
+  <path d="M300 364l-35-42M300 364l52-49" fill="none" stroke="#8f7555" stroke-width="7" stroke-linecap="round" />
+  <circle cx="300" cy="364" r="8" fill="#a58a68" />
+  <path d="M397 327h24v74h-24M421 340h14v48h-14" fill="url(#metal)" stroke="#89847b" stroke-width="3" />
+
+  <text x="300" y="690" text-anchor="middle" fill="#6f6b64" font-family="Inter, Arial, sans-serif" font-size="11" letter-spacing="3">IMAGEN DEL PRODUCTO NO DISPONIBLE</text>
 </svg>

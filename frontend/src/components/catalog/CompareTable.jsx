@@ -5,6 +5,7 @@ import { formatPrice } from '@/lib/utils';
 import { useCart } from '@/context/CartContext';
 import { Button } from '@/components/ui/Button';
 import { WatchImage } from '@/components/product/WatchImage';
+import { getWatchImageSrc } from '@/lib/watchImages';
 
 export function CompareTable({ pieces = [], onRemovePiece }) {
   const { addToCart } = useCart();
@@ -77,16 +78,12 @@ export function CompareTable({ pieces = [], onRemovePiece }) {
                       <td key={piece.id} className="p-3 sm:p-4 text-center border-r border-cronos-line last:border-r-0 align-middle">
                         <div className="flex h-40 w-full items-center justify-center overflow-hidden bg-cronos-surface-1">
                           <Link to={`/reloj/${piece.id}`} className="block h-full w-full">
-                            {piece.imagen_url ? (
-                              <WatchImage
-                                src={piece.imagen_url}
-                                alt={piece.nombre}
-                                className="h-full w-full"
-                                imgClassName="transition-transform duration-500 hover:scale-[1.03]"
-                              />
-                            ) : (
-                              <span className="font-mono text-[9px] text-cronos-muted">Archivo reservado</span>
-                            )}
+                            <WatchImage
+                              src={getWatchImageSrc(piece)}
+                              alt={piece.nombre}
+                              className="h-full w-full"
+                              imgClassName="transition-transform duration-500 hover:scale-[1.02]"
+                            />
                           </Link>
                         </div>
                       </td>

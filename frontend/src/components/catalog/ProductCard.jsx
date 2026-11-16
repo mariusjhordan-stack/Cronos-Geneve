@@ -8,8 +8,17 @@ import { useCompare } from '@/context/CompareContext';
 import { useAuth } from '@/context/AuthContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import { WatchImage } from '@/components/product/WatchImage';
+import { getWatchImageSrc } from '@/lib/watchImages';
 
-export function ProductCard({ reloj }) {
+const CARD_LAYOUTS = {
+  single: { column: 'xl:col-span-8 xl:col-start-3', image: 'xl:aspect-[5/4]' },
+  pair: { column: 'xl:col-span-6', image: 'xl:aspect-[4/5]' },
+  lead: { column: 'xl:col-span-5', image: 'xl:aspect-[6/5]' },
+  middle: { column: 'xl:col-span-4', image: 'xl:aspect-[4/5]' },
+  narrow: { column: 'xl:col-span-3', image: 'xl:aspect-[3/4]' },
+};
+
+export function ProductCard({ reloj, layoutVariant = 'middle' }) {
   const { addToCart } = useCart();
   const { toggleCompare, isCompared } = useCompare();
   const { isFavorite, toggleFavorite, isProcessing } = useFavorites();
@@ -36,8 +45,8 @@ export function ProductCard({ reloj }) {
     await toggleFavorite(reloj);
   };
 
-  const cardImage =
-    reloj.imagenes && reloj.imagenes.length > 0 ? reloj.imagenes[0].url : reloj.imagen_url;
+  const cardImage = getWatchImageSrc(reloj);
+  const layout = CARD_LAYOUTS[layoutVariant] || CARD_LAYOUTS.middle;
 
   return (
     <motion.article
@@ -45,10 +54,10 @@ export function ProductCard({ reloj }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.12 }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      className="group relative flex h-full flex-col justify-between bg-transparent px-1 py-8 sm:py-10"
+      className={`group relative col-span-1 flex h-full flex-col justify-between bg-transparent px-1 py-4 sm:py-6 xl:py-8 ${layout.column}`}
     >
       <div className="flex flex-1 flex-col">
-        <div className="relative mb-7 aspect-[4/5] w-full overflow-hidden bg-cronos-surface-1">
+        <div className={`relative mb-7 aspect-[4/5] w-full overflow-hidden bg-gradient-to-br from-cronos-surface-1 via-[#f5f3ee] to-cronos-surface-2 ${layout.image}`}>
           <Link
             to={`/reloj/${reloj.id}`}
             className="absolute inset-0 focus:outline-none focus-visible:ring-1 focus-visible:ring-cronos-text"

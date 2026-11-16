@@ -4,6 +4,7 @@ import { Package, ArrowRight, ChevronLeft, ChevronRight, AlertCircle, RefreshCw 
 import { api } from '@/services/api';
 import { formatPrice } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
+import { getWatchImageSrc } from '@/lib/watchImages';
 import { WatchImage } from '@/components/product/WatchImage';
 
 export function OrdersPage() {
@@ -276,7 +277,7 @@ export function OrdersPage() {
                         detalle.reloj_marca || watch?.marca_nombre || 'Manufactura Suiza';
                       const watchName =
                         detalle.reloj_nombre || watch?.nombre || `Guardatiempo #${detalle.reloj}`;
-                      const watchImg = watch?.imagen_url;
+                      const watchImg = getWatchImageSrc(watch);
 
                       return (
                         <div
@@ -285,17 +286,11 @@ export function OrdersPage() {
                         >
                           <div className="flex items-center gap-4 min-w-0">
                             <div className="h-14 w-14 flex-shrink-0 overflow-hidden bg-cronos-surface-1 sm:h-16 sm:w-16">
-                              {watchImg ? (
-                                <WatchImage
-                                  src={watchImg}
-                                  alt={watchName}
-                                  className="h-full w-full"
-                                />
-                              ) : (
-                                <div className="flex h-full w-full items-center justify-center">
-                                  <Package className="h-5 w-5 text-cronos-muted stroke-[1.2]" />
-                                </div>
-                              )}
+                              <WatchImage
+                                src={watchImg}
+                                alt={watchName}
+                                className="h-full w-full"
+                              />
                             </div>
 
                             <div className="min-w-0">

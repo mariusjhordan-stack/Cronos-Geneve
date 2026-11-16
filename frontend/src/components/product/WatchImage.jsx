@@ -23,13 +23,18 @@ export function WatchImage({
           onError={(e) => {
             if (e.currentTarget.getAttribute('data-fallback') === '1') return;
             e.currentTarget.setAttribute('data-fallback', '1');
+            e.currentTarget.alt = 'Ilustración de reloj: fotografía del producto no disponible';
             e.currentTarget.src = PLACEHOLDER;
           }}
         />
       ) : (
-        <span className="font-mono text-[9px] tracking-[0.18em] text-cronos-muted uppercase">
-          Archivo reservado
-        </span>
+        <img
+          src={PLACEHOLDER}
+          alt="Ilustración de reloj: fotografía del producto no disponible"
+          loading={eager ? 'eager' : loading}
+          decoding="async"
+          className="watch-stage__img watch-stage__img--placeholder"
+        />
       )}
     </figure>
   );

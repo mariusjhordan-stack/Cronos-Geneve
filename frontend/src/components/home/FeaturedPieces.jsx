@@ -4,6 +4,7 @@ import { ArrowRight } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';
 import { formatPrice } from '@/lib/utils';
 import { WatchImage } from '@/components/product/WatchImage';
+import { getWatchImageSrc } from '@/lib/watchImages';
 
 export function FeaturedPieces({ pieces = [] }) {
   const shouldReduceMotion = useReducedMotion();
@@ -62,12 +63,13 @@ export function FeaturedPieces({ pieces = [] }) {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.15 }}
-          className="grid grid-cols-1 items-start gap-14 md:grid-cols-3 md:gap-10"
+          className="grid grid-cols-1 items-start gap-14 md:grid-cols-[1.1fr_0.9fr_1fr] md:gap-10"
         >
           {pieces.map((piece, idx) => {
             const brand =
               piece.marca_nombre || piece.marca_detalle?.nombre || 'Manufactura Suiza';
             const price = parseFloat(piece.precio);
+            const imageSrc = getWatchImageSrc(piece);
 
             // Ritmo asimétrico: el elemento central tiene un ligero desfase vertical para romper la cuadrícula rígida
             const isCenterPiece = idx === 1;
@@ -83,23 +85,15 @@ export function FeaturedPieces({ pieces = [] }) {
                 <div>
                   <Link
                     to={`/reloj/${piece.id}`}
-                    className="relative mb-6 block aspect-[4/5] w-full overflow-hidden bg-cronos-surface-1 transition-colors"
+                    className={`relative mb-6 block w-full overflow-hidden bg-gradient-to-br from-cronos-surface-1 via-[#f5f3ee] to-cronos-surface-2 transition-colors ${idx === 1 ? 'aspect-[3/4]' : 'aspect-[4/5]'}`}
                     aria-label={`Ver detalles de ${piece.nombre}`}
                   >
-                    {piece.imagen_url ? (
-                      <WatchImage
-                        src={piece.imagen_url}
-                        alt={`${brand} ${piece.nombre}`}
-                        className="h-full w-full"
-                        imgClassName={shouldReduceMotion ? '' : 'transition-transform duration-700 ease-out group-hover:scale-[1.04]'}
-                      />
-                    ) : (
-                      <div className="flex h-full items-center justify-center">
-                        <span className="font-mono text-technical tracking-widest text-cronos-muted">
-                          Archivo reservado
-                        </span>
-                      </div>
-                    )}
+                    <WatchImage
+                      src={imageSrc}
+                      alt={`${brand} ${piece.nombre}`}
+                      className="h-full w-full"
+                      imgClassName={shouldReduceMotion ? '' : 'transition-transform duration-700 ease-out group-hover:scale-[1.04]'}
+                    />
                     {piece.stock === 1 && (
                       <span className="absolute right-3 top-3 bg-white/90 px-2.5 py-0.5 font-mono text-[9px] tracking-widest text-cronos-bronze uppercase">
                         Pieza única
