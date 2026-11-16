@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs';
 import { ProductSpecifications } from './ProductSpecifications';
 import { ProductCard } from '@/components/catalog/ProductCard';
+import { WatchImage } from '@/components/product/WatchImage';
 import { formatPrice } from '@/lib/utils';
 import { useCart } from '@/context/CartContext';
 import { useCompare } from '@/context/CompareContext';
@@ -107,20 +108,19 @@ export function ProductDetail({ reloj, relatedPieces = [] }) {
         {/* Columna Izquierda: Escaparate y Galería Fotográfica (7 cols = ~58%) */}
         <div className="lg:col-span-7 flex flex-col">
           {/* Lienzo Principal de la Imagen Activa */}
-          <div className="relative aspect-square w-full border border-cronos-line bg-cronos-surface-1 flex items-center justify-center p-6 sm:p-12 overflow-hidden group">
+          <div className="group relative aspect-square w-full overflow-hidden bg-cronos-surface-1">
             {activeImage?.url ? (
-              <img
+              <WatchImage
                 key={activeImage.url}
                 src={activeImage.url}
                 alt={activeImage.alt_text || `${brandName} ${reloj.nombre}`}
-                className="max-h-full max-w-full object-contain transition-transform duration-700 ease-out group-hover:scale-105"
-                onError={(e) => {
-                  e.currentTarget.src = '/images/relojes/placeholder-reloj.svg';
-                }}
+                eager
+                className="h-full w-full"
+                imgClassName="transition-transform duration-700 ease-out group-hover:scale-[1.03]"
               />
             ) : (
-              <div className="font-mono text-xs text-cronos-muted">
-                [ ARCHIVO RESERVADO ]
+              <div className="flex h-full w-full items-center justify-center font-mono text-[10px] uppercase tracking-widest text-cronos-muted">
+                Archivo reservado
               </div>
             )}
 
@@ -130,7 +130,7 @@ export function ProductDetail({ reloj, relatedPieces = [] }) {
                 <button
                   type="button"
                   onClick={handlePrevImage}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 p-2.5 border border-cronos-line bg-white/90 text-cronos-muted hover:text-cronos-text hover:border-cronos-text transition-colors cursor-pointer focus:outline-none shadow-sm"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 p-2.5 bg-white/80 backdrop-blur-xs text-cronos-muted hover:text-cronos-text transition-colors cursor-pointer focus:outline-none"
                   aria-label="Imagen anterior"
                 >
                   <ChevronLeft className="h-4 w-4 stroke-[1.5]" />
@@ -138,7 +138,7 @@ export function ProductDetail({ reloj, relatedPieces = [] }) {
                 <button
                   type="button"
                   onClick={handleNextImage}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-2.5 border border-cronos-line bg-white/90 text-cronos-muted hover:text-cronos-text hover:border-cronos-text transition-colors cursor-pointer focus:outline-none shadow-sm"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-2.5 bg-white/80 backdrop-blur-xs text-cronos-muted hover:text-cronos-text transition-colors cursor-pointer focus:outline-none"
                   aria-label="Imagen siguiente"
                 >
                   <ChevronRight className="h-4 w-4 stroke-[1.5]" />
@@ -148,7 +148,7 @@ export function ProductDetail({ reloj, relatedPieces = [] }) {
 
             {/* Contador Discreto de Galería [ 1 / 2 ] */}
             {galleryList.length > 1 && (
-              <div className="absolute bottom-3 right-3 font-mono text-[9px] tracking-widest text-cronos-muted bg-white/90 border border-cronos-line px-2.5 py-1 select-none shadow-xs">
+              <div className="absolute bottom-3 right-3 font-mono text-[9px] tracking-widest text-cronos-muted bg-white/90 border border-cronos-line px-2.5 py-1 select-none">
                 [ {activeImageIndex + 1} / {galleryList.length} ]
               </div>
             )}
@@ -166,12 +166,12 @@ export function ProductDetail({ reloj, relatedPieces = [] }) {
                 </span>
               )}
               {inStock && reloj.stock > 1 && reloj.stock <= 3 && (
-                <span className="font-mono text-[9px] tracking-widest text-cronos-muted bg-white border border-cronos-line px-2.5 py-1 shadow-xs">
+                <span className="font-mono text-[9px] tracking-widest text-cronos-muted bg-white border border-cronos-line px-2.5 py-1">
                   [ {reloj.stock} DISPONIBLES ]
                 </span>
               )}
               {inStock && reloj.stock > 3 && (
-                <span className="font-mono text-[9px] tracking-widest text-cronos-muted bg-white border border-cronos-line px-2.5 py-1 shadow-xs">
+                <span className="font-mono text-[9px] tracking-widest text-cronos-muted bg-white border border-cronos-line px-2.5 py-1">
                   [ EN BÓVEDA ]
                 </span>
               )}
@@ -188,20 +188,17 @@ export function ProductDetail({ reloj, relatedPieces = [] }) {
                     key={item.id || idx}
                     type="button"
                     onClick={() => setActiveImageIndex(idx)}
-                    className={`relative h-20 w-20 shrink-0 border p-1 bg-white transition-all cursor-pointer flex items-center justify-center focus:outline-none ${
+                    className={`relative flex h-20 w-20 shrink-0 cursor-pointer items-center justify-center overflow-hidden bg-cronos-surface-1 transition-opacity focus:outline-none ${
                       isSelected
-                        ? 'border-cronos-text ring-1 ring-cronos-text'
-                        : 'border-cronos-line opacity-70 hover:opacity-100 hover:border-cronos-muted'
+                        ? 'opacity-100 ring-1 ring-cronos-text'
+                        : 'opacity-60 hover:opacity-100'
                     }`}
                     aria-label={`Seleccionar vista ${idx + 1}`}
                   >
-                    <img
+                    <WatchImage
                       src={item.url}
                       alt={item.alt_text || `Vista ${idx + 1}`}
-                      className="max-h-full max-w-full object-contain"
-                      onError={(e) => {
-                        e.currentTarget.src = '/images/relojes/placeholder-reloj.svg';
-                      }}
+                      className="h-full w-full"
                     />
                     <span className="absolute bottom-0.5 right-1 font-mono text-[8px] text-cronos-muted">
                       {idx + 1}
@@ -277,7 +274,7 @@ export function ProductDetail({ reloj, relatedPieces = [] }) {
                     <span className="font-mono text-[10px] tracking-widest text-cronos-muted uppercase">
                       UNIDADES:
                     </span>
-                    <div className="inline-flex items-center border border-cronos-line bg-white shadow-xs">
+                    <div className="inline-flex items-center border border-cronos-line bg-white">
                       <button
                         type="button"
                         onClick={() => setQuantity((q) => Math.max(1, q - 1))}
@@ -424,7 +421,7 @@ export function ProductDetail({ reloj, relatedPieces = [] }) {
                 {reloj.descripcion}
               </p>
               {reloj.marca_detalle?.descripcion && (
-                <div className="mt-8 border-l-2 border-cronos-bronze bg-white p-5 border border-cronos-line shadow-xs">
+                <div className="mt-8 border-l border-cronos-bronze bg-cronos-surface-1/60 p-5">
                   <span className="font-mono text-[9px] tracking-widest text-cronos-bronze uppercase block mb-1">
                     HERENCIA DE LA MANUFACTURA {brandName}
                   </span>
@@ -451,11 +448,11 @@ export function ProductDetail({ reloj, relatedPieces = [] }) {
                 Cada solicitud de adquisición se procesa a través de la plataforma de <strong className="text-cronos-text font-medium">Cronos Genève</strong> con registro de orden, código identificador único y confirmación detallada con las especificaciones de la pieza.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 font-mono text-xs">
-                <div className="border border-cronos-line p-5 bg-white shadow-xs">
+                <div className="border border-cronos-line/80 p-5 bg-white">
                   <span className="text-cronos-text block font-medium mb-1">REGISTRO DE ORDEN</span>
                   <span className="text-cronos-muted text-[11px] leading-relaxed">Comprobante digital con código de adquisición único y desglose de piezas.</span>
                 </div>
-                <div className="border border-cronos-line p-5 bg-white shadow-xs">
+                <div className="border border-cronos-line/80 p-5 bg-white">
                   <span className="text-cronos-text block font-medium mb-1">DIRECCIÓN CONSIGNADA</span>
                   <span className="text-cronos-muted text-[11px] leading-relaxed">Envío gestionado según los datos de entrega especificados por el titular.</span>
                 </div>
@@ -477,14 +474,10 @@ export function ProductDetail({ reloj, relatedPieces = [] }) {
             </h2>
           </div>
 
-          <div className="border-t border-l border-cronos-line">
-            <div className="grid grid-cols-1 md:grid-cols-3">
-              {relatedPieces.map((piece) => (
-                <div key={piece.id} className="border-r border-b border-cronos-line bg-white">
-                  <ProductCard reloj={piece} />
-                </div>
-              ))}
-            </div>
+          <div className="grid grid-cols-1 gap-x-10 md:grid-cols-3">
+            {relatedPieces.map((piece) => (
+              <ProductCard key={piece.id} reloj={piece} />
+            ))}
           </div>
         </div>
       )}

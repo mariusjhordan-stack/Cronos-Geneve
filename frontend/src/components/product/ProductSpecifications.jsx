@@ -26,15 +26,15 @@ export function ProductSpecifications({ reloj }) {
   const specs = rawSpecs.filter((item) => Boolean(item.value));
 
   return (
-    <div className="border border-cronos-line bg-white shadow-xs overflow-hidden">
+    <div className="overflow-hidden border-y border-cronos-line bg-transparent">
       <Table>
         <TableBody>
           {specs.map((item, idx) => (
-            <TableRow key={idx} className="border-b border-cronos-line/70 last:border-b-0 hover:bg-cronos-surface-1 transition-colors">
-              <TableCell className="w-2/5 sm:w-1/3 p-3.5 sm:p-4 font-mono text-[10px] tracking-widest text-cronos-muted uppercase border-r border-cronos-line/70 align-top bg-cronos-surface-1/40 sm:bg-transparent">
+            <TableRow key={idx} className="border-b border-cronos-line/60 last:border-b-0 hover:bg-cronos-surface-1/40 transition-colors">
+              <TableCell className="w-2/5 sm:w-1/3 py-3.5 sm:py-4 pr-4 font-mono text-[10px] tracking-widest text-cronos-muted uppercase align-top">
                 {item.label}
               </TableCell>
-              <TableCell className="p-3.5 sm:p-4 font-sans text-xs sm:text-sm text-cronos-text leading-relaxed font-normal">
+              <TableCell className="py-3.5 sm:py-4 font-sans text-xs sm:text-sm text-cronos-text leading-relaxed font-normal">
                 {item.value}
               </TableCell>
             </TableRow>

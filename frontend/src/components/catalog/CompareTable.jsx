@@ -4,6 +4,7 @@ import { X, ArrowRight } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import { useCart } from '@/context/CartContext';
 import { Button } from '@/components/ui/Button';
+import { WatchImage } from '@/components/product/WatchImage';
 
 export function CompareTable({ pieces = [], onRemovePiece }) {
   const { addToCart } = useCart();
@@ -27,7 +28,7 @@ export function CompareTable({ pieces = [], onRemovePiece }) {
   ];
 
   return (
-    <div className="border border-cronos-line bg-white shadow-xs overflow-hidden">
+    <div className="overflow-hidden border-y border-cronos-line bg-transparent">
       <div className="overflow-x-auto">
         <table className="w-full min-w-[560px] sm:min-w-[680px] lg:min-w-[760px] border-collapse text-left text-xs">
           {/* Encabezado con nombres y botón de remoción */}
@@ -74,19 +75,17 @@ export function CompareTable({ pieces = [], onRemovePiece }) {
                   if (attr.key === 'imagen') {
                     return (
                       <td key={piece.id} className="p-3 sm:p-4 text-center border-r border-cronos-line last:border-r-0 align-middle">
-                        <div className="h-36 w-full flex items-center justify-center p-2 bg-cronos-surface-1/40">
-                          <Link to={`/reloj/${piece.id}`}>
+                        <div className="flex h-40 w-full items-center justify-center overflow-hidden bg-cronos-surface-1">
+                          <Link to={`/reloj/${piece.id}`} className="block h-full w-full">
                             {piece.imagen_url ? (
-                              <img
+                              <WatchImage
                                 src={piece.imagen_url}
                                 alt={piece.nombre}
-                                className="max-h-32 max-w-[140px] object-contain transition-transform duration-500 hover:scale-105"
-                                onError={(e) => {
-                                  e.currentTarget.src = '/images/relojes/placeholder-reloj.svg';
-                                }}
+                                className="h-full w-full"
+                                imgClassName="transition-transform duration-500 hover:scale-[1.03]"
                               />
                             ) : (
-                              <span className="font-mono text-[9px] text-cronos-muted">[ ARCHIVO RESERVADO ]</span>
+                              <span className="font-mono text-[9px] text-cronos-muted">Archivo reservado</span>
                             )}
                           </Link>
                         </div>

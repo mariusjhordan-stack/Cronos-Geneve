@@ -73,8 +73,8 @@ export function ComparePage() {
         <span className="font-mono text-[10px] tracking-widest-brand text-cronos-bronze uppercase block mb-2">
           CRONOS GENÈVE / MATRIZ HOROLÓGICA
         </span>
-        <h1 className="font-serif text-3xl sm:text-4xl text-cronos-text tracking-wide mb-3 font-normal">
-          ANÁLISIS DE PIEZAS
+        <h1 className="mb-3 font-serif text-3xl font-normal tracking-wide text-cronos-text sm:text-4xl">
+          Análisis de piezas
         </h1>
         <p className="text-xs sm:text-sm text-cronos-muted leading-relaxed font-sans">
           Contraste analítico de tolerancias mecánicas, arquitectura de caja, cotizaciones y calibres de manufacturas de prestigio.
@@ -82,7 +82,7 @@ export function ComparePage() {
       </div>
 
       {/* 2. SELECTORES DE PIEZAS EN RANURAS (HASTA 3) */}
-      <div className="border border-cronos-line bg-cronos-surface-1 p-4 sm:p-6 mb-8 shadow-xs">
+      <div className="mb-10 bg-cronos-surface-1/70 p-4 sm:p-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[0, 1, 2].map((slotIdx) => {
             const currentPiece = comparedPieces[slotIdx];
@@ -122,7 +122,7 @@ export function ComparePage() {
 
       {/* 3. MATRIZ O ESTADOS */}
       {loading ? (
-        <div className="border border-cronos-line py-20 text-center bg-white my-6 shadow-xs">
+        <div className="py-20 text-center my-6">
           <span className="font-mono text-xs tracking-widest-brand text-cronos-bronze uppercase block animate-pulse">
             CARGANDO MATRIZ HOROLÓGICA...
           </span>
@@ -133,7 +133,7 @@ export function ComparePage() {
           onRemovePiece={removeFromCompare}
         />
       ) : comparedPieces.length === 1 ? (
-        <div className="border border-cronos-line py-16 px-4 text-center bg-white my-6 shadow-xs">
+        <div className="py-16 px-4 text-center my-6">
           <Scale className="h-8 w-8 text-cronos-bronze mx-auto mb-3 stroke-[1.2]" />
           <span className="font-mono text-[10px] tracking-widest text-cronos-bronze uppercase block mb-1">
             CONTRASTE INCOMPLETO
@@ -151,7 +151,7 @@ export function ComparePage() {
           </Link>
         </div>
       ) : (
-        <div className="border border-cronos-line py-20 px-4 text-center bg-white my-6 shadow-xs">
+        <div className="py-20 px-4 text-center my-6">
           <Scale className="h-10 w-10 text-cronos-tertiary mx-auto mb-4 stroke-[1.2]" />
           <span className="font-mono text-[10px] tracking-widest-brand text-cronos-bronze uppercase block mb-1">
             MATRIZ VACÍA

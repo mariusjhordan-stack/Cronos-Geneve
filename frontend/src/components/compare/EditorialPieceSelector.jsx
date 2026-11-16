@@ -80,7 +80,7 @@ export function EditorialPieceSelector({
         aria-expanded={isOpen}
         aria-controls={listboxId}
         aria-label={`Seleccionar guardatiempo para posición 0${slotIndex + 1}`}
-        className="flex h-11 w-full items-center justify-between border border-cronos-line bg-white px-3.5 py-2 text-xs font-sans tracking-wide text-cronos-text hover:border-cronos-text/50 focus:border-cronos-text focus:outline-none transition-colors shadow-xs cursor-pointer disabled:cursor-not-allowed disabled:bg-cronos-surface-2 disabled:text-cronos-muted text-left"
+        className="flex h-11 w-full items-center justify-between border border-cronos-line bg-white px-3.5 py-2 text-xs font-sans tracking-wide text-cronos-text hover:border-cronos-text/50 focus:border-cronos-text focus:outline-none transition-colors cursor-pointer disabled:cursor-not-allowed disabled:bg-cronos-surface-2 disabled:text-cronos-muted text-left"
       >
         <span className="truncate pr-2">
           {currentPiece ? (
