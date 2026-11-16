@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
+  <defs>
+    <radialGradient id="bgLight" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#1B1D22" />
+      <stop offset="100%" stop-color="#111214" />
+    </radialGradient>
+  </defs>
+  <rect width="500" height="500" fill="url(#bgLight)" />
+  <rect x="8" y="8" width="484" height="484" fill="none" stroke="#212328" stroke-width="1" />
+  
+            <rect x="186" y="25" width="128" height="115" fill="#182333" stroke="#26344A" stroke-width="1.5" rx="4" />
+            <line x1="193" y1="25" x2="193" y2="140" stroke="#2C3D57" stroke-width="1.5" stroke-dasharray="3 3" />
+            <line x1="307" y1="25" x2="307" y2="140" stroke="#2C3D57" stroke-width="1.5" stroke-dasharray="3 3" />
+            <rect x="186" y="360" width="128" height="115" fill="#182333" stroke="#26344A" stroke-width="1.5" rx="4" />
+            <line x1="193" y1="360" x2="193" y2="475" stroke="#2C3D57" stroke-width="1.5" stroke-dasharray="3 3" />
+            <line x1="307" y1="360" x2="307" y2="475" stroke="#2C3D57" stroke-width="1.5" stroke-dasharray="3 3" />
+            
+  
+            <rect x="382" y="235" width="18" height="30" fill="#C0C4CC" rx="2" stroke="#1E2024" stroke-width="1" />
+            <path d="M 180 140 L 165 170 L 165 330 L 180 360 L 320 360 L 335 330 L 335 170 L 320 140 Z" fill="#C0C4CC" opacity="0.9" />
+            <circle cx="250" cy="250" r="142" fill="#C0C4CC" stroke="#16181B" stroke-width="2" />
+            <circle cx="250" cy="250" r="132" fill="#1D212A" stroke="#2A2C30" stroke-width="3" />
+            
+  
+    <!-- Double-Curved Sapphire Bezel Ring -->
+    <circle cx="250" cy="250" r="128" fill="#1D212A" stroke="#333844" stroke-width="2" />
+    <!-- Smoked Sunburst Blue Dial -->
+    <circle cx="250" cy="250" r="108" fill="#0F1E33" stroke="#08101C" stroke-width="2" />
+    <!-- Numerals 12, 3, 6, 9 in Rose Gold -->
+    <text x="250" y="174" font-family="'Cinzel', serif" font-size="18" fill="#E0A78F" text-anchor="middle">12</text>
+    <text x="330" y="256" font-family="'Cinzel', serif" font-size="18" fill="#E0A78F" text-anchor="middle">3</text>
+    <text x="250" y="338" font-family="'Cinzel', serif" font-size="18" fill="#E0A78F" text-anchor="middle">6</text>
+    <text x="170" y="256" font-family="'Cinzel', serif" font-size="18" fill="#E0A78F" text-anchor="middle">9</text>
+    <!-- Slender Rose Gold Hands -->
+    <line x1="250" y1="250" x2="215" y2="215" stroke="#E0A78F" stroke-width="3" stroke-linecap="round" />
+    <line x1="250" y1="250" x2="270" y2="180" stroke="#E0A78F" stroke-width="2" stroke-linecap="round" />
+    <line x1="250" y1="250" x2="280" y2="300" stroke="#E0A78F" stroke-width="1" />
+    <circle cx="250" cy="250" r="3.5" fill="#E0A78F" />
+    
+  <text x="250" y="482" font-family="'Cinzel', 'Playfair Display', serif" font-size="9" letter-spacing="3" fill="#6B6E76" text-anchor="middle" text-transform="uppercase">AUDEMARS PIGUET · CODE 11.59 AUTOMATIQUE</text>
+</svg>
