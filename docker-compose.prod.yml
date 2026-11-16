@@ -20,12 +20,13 @@ services:
     restart: unless-stopped
     depends_on:
       db: { condition: service_healthy }
-    env_file: .env
+    env_file: ${ENV_FILE:-.env}
     environment:
       DEBUG: "false"
+      DJANGO_NUM_PROXIES: "2"  # TLS proxy externo + nginx
       DB_SSL_REQUIRE: "false"  # BD en red interna de Docker; con BD gestionada dejar en true
       DATABASE_URL: postgres://cronos:${POSTGRES_PASSWORD}@db:5432/cronos_geneve
-    command: sh -c "python manage.py migrate --noinput && gunicorn cronos_elite.wsgi:application --bind 0.0.0.0:8000 --workers 3 --access-logfile - --error-logfile -"
+    command: sh -c "python manage.py migrate --noinput && python manage.py createcachetable && gunicorn cronos_elite.wsgi:application --bind 0.0.0.0:8000 --workers 3 --access-logfile - --error-logfile -"
 
   web:
     build: ./frontend

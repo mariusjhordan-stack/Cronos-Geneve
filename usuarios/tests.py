@@ -349,3 +349,25 @@ class ScriptsDeDespliegueTests(TestCase):
         from django.conf import settings
         ruta = Path(settings.BASE_DIR) / 'poblar_datos.py'
         ast.parse(ruta.read_text(encoding='utf-8'))
+
+    def test_render_no_carga_datos_demo_al_arrancar(self):
+        from pathlib import Path
+        from django.conf import settings
+        render = (Path(settings.BASE_DIR) / 'render.yaml').read_text(encoding='utf-8')
+        comandos = [l for l in render.splitlines() if 'startCommand' in l or 'buildCommand' in l or 'preDeployCommand' in l]
+        self.assertTrue(comandos)
+        for linea in comandos:
+            self.assertNotIn('poblar_datos', linea)
+
+    def test_poblar_datos_se_niega_en_produccion_sin_confirmacion(self):
+        import importlib.util, os, subprocess, sys
+        from django.conf import settings
+        if importlib.util.find_spec('dj_database_url') is None:
+            self.skipTest('Requiere las dependencias de produccion (requirements.txt: dj-database-url).')
+        env = {k: v for k, v in os.environ.items() if k != 'CONFIRMAR_CARGA_CATALOGO'}
+        env.update({'DEBUG': 'false', 'DJANGO_SECRET_KEY': 'x' * 60, 'DJANGO_ALLOWED_HOSTS': 'example.com',
+                    'DATABASE_URL': 'sqlite:///' + str(settings.BASE_DIR / 'no_existe_prueba.sqlite3').replace(chr(92), '/')})
+        r = subprocess.run([sys.executable, 'poblar_datos.py'], cwd=settings.BASE_DIR, env=env, capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertIn('Carga cancelada', r.stdout)
+        self.assertFalse((settings.BASE_DIR / 'no_existe_prueba.sqlite3').exists())

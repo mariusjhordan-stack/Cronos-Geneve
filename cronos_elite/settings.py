@@ -276,6 +276,16 @@ if not DEBUG:
     # El health check del orquestador llega por HTTP interno: no debe redirigirse a HTTPS.
     SECURE_REDIRECT_EXEMPT = [r'^healthz/?$']
 
+# Caché compartida entre workers de gunicorn: sin ella, cada worker lleva su propio contador y el límite de
+# peticiones (throttling) no se cumple. Usa la propia base de datos (`python manage.py createcachetable`).
+if not DEBUG:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+            'LOCATION': 'django_cache',
+        }
+    }
+
 # Ruta del panel de administración configurable (evita el /admin/ por defecto que escanean los bots).
 ADMIN_URL = os.environ.get('DJANGO_ADMIN_URL', 'admin/').strip().lstrip('/')
 if ADMIN_URL and not ADMIN_URL.endswith('/'):
@@ -315,6 +325,9 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 12,
+    # Nº de proxies de confianza delante de Django (nginx + balanceador TLS): el límite se aplica por cliente real,
+    # no por la IP del proxy. Render = 1; docker-compose con proxy TLS delante de nginx = 2.
+    'NUM_PROXIES': int(os.environ.get('DJANGO_NUM_PROXIES', '1')),
     # Limitación de peticiones: frena fuerza bruta en login/registro y abuso del checkout.
     'DEFAULT_THROTTLE_RATES': {
         'auth': os.environ.get('THROTTLE_AUTH_RATE', '100000/min' if TESTING else '10/min'),

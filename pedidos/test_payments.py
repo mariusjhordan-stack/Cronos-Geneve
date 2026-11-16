@@ -449,6 +449,40 @@ class MercadoPagoCheckoutTests(TestCase):
         self.assertEqual(PagoMercadoPago.objects.filter(payment_id='900003').count(), 1)
         self.assertEqual(Reloj.objects.get(pk=self.watch.pk).stock, 4)
 
+    def _post_signed(self, data_id='900010'):
+        return self.client.post(
+            f'/api/pedidos/webhooks/mercadopago/?type=payment&data.id={data_id}',
+            {'type': 'payment', 'data': {'id': data_id}}, format='json', **self.signed_webhook_headers(data_id),
+        )
+
+    @patch('pedidos.api_views.fetch_payment')
+    def test_webhook_devuelve_503_si_mercado_pago_no_responde(self, fetch_mock):
+        fetch_mock.side_effect = PaymentProviderError('sin red', category='network')
+        self.assertEqual(self._post_signed().status_code, 503)
+
+    @patch('pedidos.api_views.fetch_payment')
+    def test_webhook_devuelve_503_ante_error_5xx_del_proveedor(self, fetch_mock):
+        fetch_mock.side_effect = PaymentProviderError('HTTP 502', status_code=502)
+        self.assertEqual(self._post_signed().status_code, 503)
+
+    @patch('pedidos.api_views.reconcile_payment')
+    @patch('pedidos.api_views.fetch_payment')
+    def test_webhook_devuelve_500_ante_error_interno_inesperado(self, fetch_mock, reconcile_mock):
+        fetch_mock.return_value = {'id': '900010'}
+        reconcile_mock.side_effect = RuntimeError('fallo de base de datos')
+        response = self._post_signed()
+        self.assertEqual(response.status_code, 500)
+        self.assertFalse(response.data['processed'])
+
+    def test_checkout_no_expone_detalles_de_configuracion_al_cliente(self):
+        with override_settings(MERCADOPAGO_ACCESS_TOKEN='', MERCADOPAGO_ENVIRONMENT='production'):
+            response = self.client.post('/api/pedidos/checkout/', {}, format='json')
+        self.assertEqual(response.status_code, 503)
+        cuerpo = str(response.data)
+        self.assertNotIn('MERCADOPAGO', cuerpo)
+        self.assertNotIn('Token', cuerpo)
+        self.assertIn('no está disponible', cuerpo)
+
     @patch('pedidos.api_views.fetch_payment')
     def test_official_style_signed_simulation_with_unknown_id_is_acknowledged_without_changes(self, fetch_mock):
         order = self.create_order()

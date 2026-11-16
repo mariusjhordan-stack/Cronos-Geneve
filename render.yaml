@@ -1,3 +1,4 @@
+# La carga del catalogo NO se ejecuta al arrancar: se hace una sola vez a mano (ver docs/DESPLIEGUE.md).
 # Demo setup only. Free Render web services sleep and free Postgres expires after 30 days.
 # Choose durable paid plans before relying on this deployment for customer or payment data.
 databases:
@@ -15,7 +16,7 @@ services:
     plan: free
     region: ohio
     buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
-    startCommand: python manage.py migrate --noinput && python poblar_datos.py && gunicorn cronos_elite.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --access-logfile - --error-logfile -
+    startCommand: python manage.py migrate --noinput && python manage.py createcachetable && gunicorn cronos_elite.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --access-logfile - --error-logfile -
     healthCheckPath: /api/relojes/
     envVars:
       - key: DATABASE_URL

@@ -73,7 +73,9 @@ class CheckoutAPIView(APIView):
         try:
             payment_config()
         except PaymentConfigurationError as exc:
-            return Response({'error': str(exc)}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+            # El detalle (nombres de variables, entorno) solo va al registro del servidor, nunca al cliente.
+            logger.error('Checkout bloqueado por configuración de pago: %s', exc)
+            return Response({'error': 'El pago en línea no está disponible en este momento. Intente de nuevo más tarde; no se realizó ningún cargo.'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
         data = request.data
         if not isinstance(data, dict):
             return Response(
@@ -223,9 +225,9 @@ class CheckoutAPIView(APIView):
         except PaymentConfigurationError as exc:
             if order and order.stock_reservado:
                 release_reservation(order.id, Orden.EstadoPago.ERROR)
-            logger.warning('Checkout Pro rechazado por configuración inválida.')
+            logger.error('Checkout Pro rechazado por configuración inválida: %s', exc)
             return Response(
-                {'error': str(exc)},
+                {'error': 'El pago en línea no está disponible en este momento. Intente de nuevo más tarde; no se realizó ningún cargo.'},
                 status=status.HTTP_503_SERVICE_UNAVAILABLE,
             )
         except PaymentProviderError as exc:
@@ -237,7 +239,7 @@ class CheckoutAPIView(APIView):
                 exc.status_code or '-',
             )
             return Response(
-                {'error': str(exc)},
+                {'error': 'El pago en línea no está disponible en este momento. Intente de nuevo más tarde; no se realizó ningún cargo.'},
                 status=status.HTTP_502_BAD_GATEWAY,
             )
         except Exception:
@@ -353,15 +355,23 @@ class MercadoPagoWebhookAPIView(APIView):
             reconcile_payment(payment)
         except PaymentProviderError as exc:
             logger.warning('[MP] No se pudo reconciliar la notificación de pago (data_id=%s): %s', data_id, exc)
+            # Fallo transitorio nuestro o de Mercado Pago (red, 5xx, 429, credenciales): 503 para que reintente.
+            # Un 4xx (p. ej. 404 de un id inexistente en el simulador) no mejora al reintentar: se confirma sin procesar.
+            if exc.category in ('network', 'authentication') or exc.status_code is None or exc.status_code >= 500 or exc.status_code == 429:
+                return Response(
+                    {'received': False, 'processed': False, 'detail': 'Proveedor no disponible; se reintentará.'},
+                    status=status.HTTP_503_SERVICE_UNAVAILABLE,
+                )
             return Response(
                 {'received': True, 'processed': False, 'detail': str(exc)},
                 status=status.HTTP_200_OK,
             )
         except Exception as exc:
             logger.exception('[MP] Error inesperado en webhook: %s', exc)
+            # 500: Mercado Pago reintenta y la reconciliación es idempotente, así que reintentar es seguro.
             return Response(
-                {'received': True, 'processed': False, 'detail': 'Error interno de reconciliación.'},
-                status=status.HTTP_200_OK,
+                {'received': False, 'processed': False, 'detail': 'Error interno de reconciliación.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
         return Response({'received': True}, status=status.HTTP_200_OK)

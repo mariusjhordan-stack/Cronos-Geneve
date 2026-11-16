@@ -12,6 +12,8 @@ from decimal import Decimal
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cronos_elite.settings')
 django.setup()
 
+from django.conf import settings
+
 from catalogo.models import Marca, Categoria, Reloj, ImagenReloj
 
 
@@ -476,5 +478,15 @@ def poblar():
     print(f"\n¡Base de datos de Cronos Genève poblada exitosamente con catálogo oficial de {total_relojes} piezas!")
 
 
+def _permitido():
+    """Con DEBUG=false (produccion) el catalogo de demostracion solo se carga con confirmacion explicita."""
+    if settings.DEBUG or os.environ.get('CONFIRMAR_CARGA_CATALOGO', '').strip().lower() in {'1', 'true', 'si', 'yes'}:
+        return True
+    print('Carga cancelada: DEBUG=false (produccion). Para cargar el catalogo inicial a proposito, '
+          'ejecuta con CONFIRMAR_CARGA_CATALOGO=true.')
+    return False
+
+
 if __name__ == '__main__':
-    poblar()
+    if _permitido():
+        poblar()
