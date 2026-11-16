@@ -1,6 +1,7 @@
 from django.db import IntegrityError, transaction
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
+from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -21,6 +22,8 @@ from .serializers import (
 )
 
 class RegistroAPIView(generics.CreateAPIView):
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = 'register'
     permission_classes = [AllowAny]
     authentication_classes = []
     serializer_class = RegistroSerializer
@@ -40,6 +43,8 @@ class LoginTokenSerializer(TokenObtainPairSerializer):
 
 
 class LoginAPIView(TokenObtainPairView):
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = 'auth'
     permission_classes = [AllowAny]
     authentication_classes = []
     serializer_class = LoginTokenSerializer

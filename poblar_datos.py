@@ -464,8 +464,7 @@ def poblar():
         print(f" [+] Reloj {action}: {obj.marca.nombre} {obj.nombre} (${obj.precio}) -> {obj.imagen_url}")
 
     # 4. Galería de imágenes: assets locales de frontend/public/images/relojes (ver docs/IMAGE-SOURCES.md).
-    print("
-Sincronizando galerías con los assets locales...")
+    print("\nSincronizando galerías con los assets locales...")
     try:
         from catalogo.management.commands.sincronizar_imagenes import sincronizar
         r = sincronizar()

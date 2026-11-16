@@ -1,0 +1,37 @@
+# Despliegue en un solo servidor: PostgreSQL + Django (gunicorn) + nginx con el frontend.
+# TLS: poner delante un proxy/balanceador que termine HTTPS (Caddy, Traefik, Cloudflare, ALB)
+# y que envie X-Forwarded-Proto=https. Las variables salen de un .env que NO se versiona.
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: cronos_geneve
+      POSTGRES_USER: cronos
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?define POSTGRES_PASSWORD}
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cronos -d cronos_geneve"]
+      interval: 10s
+      retries: 5
+
+  api:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db: { condition: service_healthy }
+    env_file: .env
+    environment:
+      DEBUG: "false"
+      DB_SSL_REQUIRE: "false"  # BD en red interna de Docker; con BD gestionada dejar en true
+      DATABASE_URL: postgres://cronos:${POSTGRES_PASSWORD}@db:5432/cronos_geneve
+    command: sh -c "python manage.py migrate --noinput && gunicorn cronos_elite.wsgi:application --bind 0.0.0.0:8000 --workers 3 --access-logfile - --error-logfile -"
+
+  web:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on: [api]
+    ports: ["80:80"]
+
+volumes:
+  pgdata:

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { motion, useReducedMotion } from 'motion/react';
 import { CartProvider } from '@/context/CartContext';
@@ -9,19 +9,19 @@ import { Footer } from '@/components/layout/Footer';
 import { Toaster } from '@/components/ui/Toaster';
 import { CartDrawer } from '@/components/cart/CartDrawer';
 import { HomePage } from '@/pages/HomePage';
-import { ProductDetailPage } from '@/pages/ProductDetailPage';
-import { ComparePage } from '@/pages/ComparePage';
-import { CheckoutPage } from '@/pages/CheckoutPage';
-import { ConfirmationPage } from '@/pages/ConfirmationPage';
-import { PaymentReturnPage } from '@/pages/PaymentReturnPage';
+const ProductDetailPage = lazy(() => import('@/pages/ProductDetailPage').then((m) => ({ default: m.ProductDetailPage })));
+const ComparePage = lazy(() => import('@/pages/ComparePage').then((m) => ({ default: m.ComparePage })));
+const CheckoutPage = lazy(() => import('@/pages/CheckoutPage').then((m) => ({ default: m.CheckoutPage })));
+const ConfirmationPage = lazy(() => import('@/pages/ConfirmationPage').then((m) => ({ default: m.ConfirmationPage })));
+const PaymentReturnPage = lazy(() => import('@/pages/PaymentReturnPage').then((m) => ({ default: m.PaymentReturnPage })));
 import { AuthProvider, ProtectedRoute } from '@/context/AuthContext';
-import { LoginPage } from '@/pages/LoginPage';
-import { RegisterPage } from '@/pages/RegisterPage';
-import { ProfilePage } from '@/pages/ProfilePage';
-import { AddressesPage } from '@/pages/AddressesPage';
-import { OrdersPage } from '@/pages/OrdersPage';
-import { FavoritesPage } from '@/pages/FavoritesPage';
-import { CollectionsPage } from '@/pages/CollectionsPage';
+const LoginPage = lazy(() => import('@/pages/LoginPage').then((m) => ({ default: m.LoginPage })));
+const RegisterPage = lazy(() => import('@/pages/RegisterPage').then((m) => ({ default: m.RegisterPage })));
+const ProfilePage = lazy(() => import('@/pages/ProfilePage').then((m) => ({ default: m.ProfilePage })));
+const AddressesPage = lazy(() => import('@/pages/AddressesPage').then((m) => ({ default: m.AddressesPage })));
+const OrdersPage = lazy(() => import('@/pages/OrdersPage').then((m) => ({ default: m.OrdersPage })));
+const FavoritesPage = lazy(() => import('@/pages/FavoritesPage').then((m) => ({ default: m.FavoritesPage })));
+const CollectionsPage = lazy(() => import('@/pages/CollectionsPage').then((m) => ({ default: m.CollectionsPage })));
 import { BrandIntro } from '@/components/brand/BrandIntro';
 
 /** Fundido entre páginas (250 ms) y regreso al inicio al cambiar de ruta. */
@@ -31,6 +31,9 @@ function PageTransition({ children }) {
   React.useEffect(() => {
     // Los enlaces con ancla (#catalogo) gestionan su propio desplazamiento.
     if (!window.location.hash) window.scrollTo({ top: 0 });
+    // Título por página (SEO y pestañas): las fichas de reloj lo fijan con su nombre.
+    if (TITLES[pathname]) document.title = `${TITLES[pathname]} | Cronos Genève`;
+    else if (pathname === '/') document.title = 'Cronos Genève | Haute Horlogerie Suisse';
   }, [pathname]);
   return (
     <motion.div
@@ -41,6 +44,26 @@ function PageTransition({ children }) {
     >
       {children}
     </motion.div>
+  );
+}
+
+const TITLES = {
+  '/colecciones': 'Colecciones',
+  '/comparador': 'Comparador',
+  '/checkout': 'Finalizar compra',
+  '/login': 'Acceso',
+  '/register': 'Crear cuenta',
+  '/perfil': 'Mi perfil',
+  '/direcciones': 'Mis direcciones',
+  '/mis-ordenes': 'Mis órdenes',
+  '/favoritos': 'Favoritos',
+};
+
+function RouteFallback() {
+  return (
+    <div className="flex min-h-[50vh] items-center justify-center" role="status" aria-live="polite">
+      <span className="font-mono text-[11px] uppercase tracking-widest text-cronos-muted">Cargando…</span>
+    </div>
   );
 }
 
@@ -61,6 +84,7 @@ export function App() {
             {/* Contenido Dinámico Principal */}
             <main className="flex-1">
               <PageTransition>
+              <Suspense fallback={<RouteFallback />}>
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/colecciones" element={<CollectionsPage />} />
@@ -77,6 +101,7 @@ export function App() {
                 <Route path="/favoritos" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
+              </Suspense>
               </PageTransition>
             </main>
 

@@ -37,6 +37,14 @@ export function ProductDetailPage() {
     setReloadKey((k) => k + 1);
   };
 
+  // Título de la pestaña = pieza (SEO y accesibilidad); se restaura al salir.
+  useEffect(() => {
+    if (!reloj) return undefined;
+    const previous = document.title;
+    document.title = `${reloj.marca_nombre ? reloj.marca_nombre + ' ' : ''}${reloj.nombre} | Cronos Genève`;
+    return () => { document.title = previous; };
+  }, [reloj]);
+
   if (loading) {
     return (
       <div className="mx-auto max-w-7xl px-4 py-32 text-center">

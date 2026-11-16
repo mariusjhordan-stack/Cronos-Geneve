@@ -6,6 +6,7 @@ Desarrollado con fines académicos y de producción para arquitectura desacoplad
 from pathlib import Path
 import os
 import re
+import sys
 from datetime import timedelta
 from django.core.exceptions import ImproperlyConfigured
 
@@ -149,7 +150,7 @@ if DATABASE_URL:
         'default': dj_database_url.parse(
             DATABASE_URL,
             conn_max_age=600,
-            ssl_require=not DEBUG,
+            ssl_require=(not DEBUG) and os.environ.get('DB_SSL_REQUIRE', 'true').strip().lower() in {'1', 'true', 'yes', 'on'},
         )
     }
 elif DEBUG:
@@ -263,11 +264,43 @@ MERCADOPAGO_API_BASE_URL = 'https://api.mercadopago.com'
 if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True
-    SECURE_HSTS_SECONDS = 3600
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+    # HSTS: empieza en 1 hora; subir a 31536000 (1 año) por entorno cuando HTTPS esté validado en el dominio final.
+    SECURE_HSTS_SECONDS = int(os.environ.get('DJANGO_HSTS_SECONDS', '3600'))
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = os.environ.get('DJANGO_HSTS_SUBDOMAINS', 'false').lower() in {'1', 'true', 'yes'}
+    SECURE_HSTS_PRELOAD = False
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_REFERRER_POLICY = 'same-origin'
+    X_FRAME_OPTIONS = 'DENY'
+    # El health check del orquestador llega por HTTP interno: no debe redirigirse a HTTPS.
+    SECURE_REDIRECT_EXEMPT = [r'^healthz/?$']
+
+# Ruta del panel de administración configurable (evita el /admin/ por defecto que escanean los bots).
+ADMIN_URL = os.environ.get('DJANGO_ADMIN_URL', 'admin/').strip().lstrip('/')
+if ADMIN_URL and not ADMIN_URL.endswith('/'):
+    ADMIN_URL += '/'
+
+# Las pruebas automáticas ejecutan decenas de logins/checkouts seguidos: se relajan los límites (la prueba de throttling fija el suyo).
+TESTING = 'test' in sys.argv
+
+# Registros a consola (stdout) con formato legible por Render/Docker/CloudWatch.
+LOG_LEVEL = os.environ.get('DJANGO_LOG_LEVEL', 'INFO' if not DEBUG else 'DEBUG').upper()
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'standard': {'format': '%(asctime)s %(levelname)s %(name)s %(message)s'},
+    },
+    'handlers': {
+        'console': {'class': 'logging.StreamHandler', 'formatter': 'standard'},
+    },
+    'root': {'handlers': ['console'], 'level': LOG_LEVEL},
+    'loggers': {
+        'django.request': {'handlers': ['console'], 'level': 'WARNING', 'propagate': False},
+        'django.security': {'handlers': ['console'], 'level': 'WARNING', 'propagate': False},
+    },
+}
 
 # ==========================================
 # CONFIGURACIÓN DE DJANGO REST FRAMEWORK (DRF)
@@ -282,6 +315,12 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 12,
+    # Limitación de peticiones: frena fuerza bruta en login/registro y abuso del checkout.
+    'DEFAULT_THROTTLE_RATES': {
+        'auth': os.environ.get('THROTTLE_AUTH_RATE', '100000/min' if TESTING else '10/min'),
+        'register': os.environ.get('THROTTLE_REGISTER_RATE', '100000/min' if TESTING else '10/hour'),
+        'checkout': os.environ.get('THROTTLE_CHECKOUT_RATE', '100000/min' if TESTING else '20/min'),
+    },
 }
 
 SIMPLE_JWT = {

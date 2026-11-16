@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.test import override_settings
+from django.test import TestCase, override_settings
 from rest_framework import status
 from rest_framework.test import APITestCase
 from unittest.mock import patch
@@ -313,3 +313,39 @@ class CuentaApiTests(APITestCase):
         self.assertEqual(self.client.get('/api/direcciones/1/').status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(self.client.patch('/api/direcciones/1/', {'ciudad': 'Lima'}, format='json').status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(self.client.delete('/api/direcciones/1/').status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class ProduccionBasicaTests(TestCase):
+    """Salvaguardas de despliegue: health check y límite de intentos de login."""
+
+    def setUp(self):
+        from django.core.cache import cache
+        cache.clear()
+
+    def test_healthz_responde_ok_con_base_de_datos(self):
+        r = self.client.get('/healthz/')
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.json()['status'], 'ok')
+
+    def test_login_se_limita_tras_intentos_repetidos(self):
+        from rest_framework.test import APIClient
+        from rest_framework.throttling import ScopedRateThrottle
+        api = APIClient()
+        with patch.dict(ScopedRateThrottle.THROTTLE_RATES, {'auth': '10/min'}):
+            codigos = [
+                api.post('/api/auth/login/', {'username': 'nadie', 'password': 'mala'}, format='json').status_code
+                for _ in range(12)
+            ]
+        self.assertIn(429, codigos)
+        self.assertEqual(codigos[0], 401)
+
+
+class ScriptsDeDespliegueTests(TestCase):
+    """render.yaml ejecuta poblar_datos.py al arrancar: un error de sintaxis tumbaria el despliegue."""
+
+    def test_poblar_datos_compila(self):
+        import ast
+        from pathlib import Path
+        from django.conf import settings
+        ruta = Path(settings.BASE_DIR) / 'poblar_datos.py'
+        ast.parse(ruta.read_text(encoding='utf-8'))

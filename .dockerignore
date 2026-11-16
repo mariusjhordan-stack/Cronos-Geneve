@@ -1,0 +1,11 @@
+.git
+.env
+db.sqlite3
+media/uploads
+scratch
+scratch_img
+frontend/node_modules
+frontend/dist
+frontend/image-originals
+frontend/.review-assets
+**/__pycache__

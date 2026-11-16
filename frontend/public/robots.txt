@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /checkout
+Disallow: /pago/
+Disallow: /confirmacion/
+Disallow: /perfil
+Disallow: /direcciones
+Disallow: /mis-ordenes
+Disallow: /favoritos
+# Añadir al publicar: Sitemap: https://<dominio>/sitemap.xml
