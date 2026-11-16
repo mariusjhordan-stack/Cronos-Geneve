@@ -195,10 +195,7 @@ export function HomePage() {
       {/* 4. ENSAYO DE HERENCIA & ARQUITECTURA */}
       <HeritageEssay />
 
-      {/* 5. CTA FINAL */}
-      <FinalCta />
-
-      {/* 6. CATÁLOGO GENERAL (VITRINA EDITORIAL) */}
+      {/* 5. CATÁLOGO GENERAL (VITRINA EDITORIAL) */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:py-28 lg:py-32 scroll-mt-24" id="catalogo">
         {/* HEADER DE CATÁLOGO EDITORIAL */}
         <div className="mb-12 border-b border-cronos-line pb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
@@ -385,6 +382,9 @@ export function HomePage() {
           </>
         )}
       </section>
+
+      {/* 6. COLOFÓN Y CTA EDITORIAL */}
+      <FinalCta />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { Scale, RotateCcw } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
 import { CompareTable } from '@/components/catalog/CompareTable';
 import { EditorialPieceSelector } from '@/components/compare/EditorialPieceSelector';
 import { Button } from '@/components/ui/Button';
@@ -13,6 +14,7 @@ export function ComparePage() {
   const [allWatches, setAllWatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const hydratedRef = useRef(false);
+  const shouldReduceMotion = useReducedMotion();
 
   // Carga de catálogo para poblar los selectores de slots
   useEffect(() => {
@@ -128,10 +130,16 @@ export function ComparePage() {
           </span>
         </div>
       ) : comparedPieces.length >= 2 ? (
-        <CompareTable
-          pieces={comparedPieces}
-          onRemovePiece={removeFromCompare}
-        />
+        <motion.div
+          initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <CompareTable
+            pieces={comparedPieces}
+            onRemovePiece={removeFromCompare}
+          />
+        </motion.div>
       ) : comparedPieces.length === 1 ? (
         <div className="py-16 px-4 text-center my-6">
           <Scale className="h-8 w-8 text-cronos-bronze mx-auto mb-3 stroke-[1.2]" />

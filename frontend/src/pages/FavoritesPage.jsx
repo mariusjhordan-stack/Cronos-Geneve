@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, ShoppingBag, Trash2, AlertCircle, RefreshCw } from 'lucide-react';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { toast } from 'sonner';
 import { formatPrice } from '@/lib/utils';
 import { useCart } from '@/context/CartContext';
@@ -11,6 +12,7 @@ import { WatchImage } from '@/components/product/WatchImage';
 export function FavoritesPage() {
   const { favorites, loading, error, removeFavorite, refreshFavorites, isProcessing } = useFavorites();
   const { addToCart } = useCart();
+  const shouldReduceMotion = useReducedMotion();
 
   const handleRemove = async (relojId, relojNombre) => {
     await removeFavorite(relojId, relojNombre);
@@ -98,7 +100,8 @@ export function FavoritesPage() {
         </div>
       ) : (
         /* 3. VITRINA DE FAVORITOS (GRID DE 3 COLUMNAS EN DESKTOP) */
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        <motion.div layout={!shouldReduceMotion} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          <AnimatePresence initial={false}>
           {favorites.map((favorite) => {
             const watch = favorite.reloj_detalle;
             if (!watch) return null;
@@ -109,8 +112,13 @@ export function FavoritesPage() {
             const isRemoving = isProcessing(favorite.reloj);
 
             return (
-              <article
+              <motion.article
                 key={favorite.id}
+                layout={!shouldReduceMotion}
+                initial={shouldReduceMotion ? false : { opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
+                transition={{ duration: shouldReduceMotion ? 0.01 : 0.32, ease: [0.16, 1, 0.3, 1] }}
                 className="group relative flex flex-col justify-between bg-transparent py-2"
               >
                 <div>
@@ -213,10 +221,11 @@ export function FavoritesPage() {
                     <span>{isRemoving ? 'RETIRANDO…' : 'RETIRAR DE SELECCIÓN'}</span>
                   </button>
                 </div>
-              </article>
+              </motion.article>
             );
           })}
-        </div>
+          </AnimatePresence>
+        </motion.div>
       )}
     </div>
   );

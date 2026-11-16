@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Plus, Minus, ShieldCheck, Scale, Check, Heart, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { Button } from '@/components/ui/Button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs';
 import { ProductSpecifications } from './ProductSpecifications';
@@ -16,6 +17,7 @@ export function ProductDetail({ reloj, relatedPieces = [] }) {
   const [quantity, setQuantity] = useState(1);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [prevId, setPrevId] = useState(reloj.id);
+  const shouldReduceMotion = useReducedMotion();
 
   if (reloj.id !== prevId) {
     setPrevId(reloj.id);
@@ -109,20 +111,30 @@ export function ProductDetail({ reloj, relatedPieces = [] }) {
         <div className="lg:col-span-7 flex flex-col">
           {/* Lienzo Principal de la Imagen Activa */}
           <div className="group relative aspect-square w-full overflow-hidden bg-cronos-surface-1">
-            {activeImage?.url ? (
-              <WatchImage
-                key={activeImage.url}
-                src={activeImage.url}
-                alt={activeImage.alt_text || `${brandName} ${reloj.nombre}`}
-                eager
-                className="h-full w-full"
-                imgClassName="transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center font-mono text-[10px] uppercase tracking-widest text-cronos-muted">
-                Archivo reservado
-              </div>
-            )}
+            <AnimatePresence mode="wait">
+              {activeImage?.url ? (
+                <motion.div
+                  key={activeImage.url}
+                  initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
+                  transition={{ duration: 0.35, ease: 'easeInOut' }}
+                  className="h-full w-full"
+                >
+                  <WatchImage
+                    src={activeImage.url}
+                    alt={activeImage.alt_text || `${brandName} ${reloj.nombre}`}
+                    eager
+                    className="h-full w-full"
+                    imgClassName="transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                  />
+                </motion.div>
+              ) : (
+                <div className="flex h-full w-full items-center justify-center font-mono text-[10px] uppercase tracking-widest text-cronos-muted">
+                  Archivo reservado
+                </div>
+              )}
+            </AnimatePresence>
 
             {/* Controles de Navegación de Galería (Anterior / Siguiente) */}
             {galleryList.length > 1 && (
@@ -413,7 +425,12 @@ export function ProductDetail({ reloj, relatedPieces = [] }) {
           </TabsList>
 
           <TabsContent value="descripcion">
-            <div className="max-w-3xl space-y-4">
+            <motion.div
+              initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35 }}
+              className="max-w-3xl space-y-4"
+            >
               <h3 className="font-serif text-2xl text-cronos-text tracking-wide font-normal">
                 Arquitectura de Manufactura y Trascendencia
               </h3>
@@ -430,17 +447,27 @@ export function ProductDetail({ reloj, relatedPieces = [] }) {
                   </p>
                 </div>
               )}
-            </div>
+            </motion.div>
           </TabsContent>
 
           <TabsContent value="especificaciones">
-            <div className="max-w-4xl">
+            <motion.div
+              initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35 }}
+              className="max-w-4xl"
+            >
               <ProductSpecifications reloj={reloj} />
-            </div>
+            </motion.div>
           </TabsContent>
 
           <TabsContent value="adquisicion">
-            <div className="max-w-3xl space-y-4 font-sans text-sm text-cronos-muted leading-relaxed">
+            <motion.div
+              initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35 }}
+              className="max-w-3xl space-y-4 font-sans text-sm text-cronos-muted leading-relaxed"
+            >
               <h3 className="font-serif text-2xl text-cronos-text tracking-wide font-normal">
                 Protocolo de Adquisición
               </h3>
@@ -457,7 +484,7 @@ export function ProductDetail({ reloj, relatedPieces = [] }) {
                   <span className="text-cronos-muted text-[11px] leading-relaxed">Envío gestionado según los datos de entrega especificados por el titular.</span>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </TabsContent>
         </Tabs>
       </div>

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ShoppingBag, ArrowRight } from 'lucide-react';
+import { AnimatePresence } from 'motion/react';
 import { Sheet, SheetHeader, SheetTitle, SheetDescription, SheetContent, SheetFooter } from '@/components/ui/Sheet';
 import { Button } from '@/components/ui/Button';
 import { CartItem } from './CartItem';
@@ -77,15 +78,17 @@ export function CartDrawer() {
           </div>
         ) : (
           <div className="divide-y divide-cronos-line">
-            {items.map((item) => (
-              <CartItem
-                key={item.id}
-                item={item}
-                onUpdateQuantity={updateQuantity}
-                onRemove={removeFromCart}
-                onNavigate={closeCart}
-              />
-            ))}
+            <AnimatePresence initial={false}>
+              {items.map((item) => (
+                <CartItem
+                  key={item.id}
+                  item={item}
+                  onUpdateQuantity={updateQuantity}
+                  onRemove={removeFromCart}
+                  onNavigate={closeCart}
+                />
+              ))}
+            </AnimatePresence>
           </div>
         )}
       </SheetContent>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { AnimatePresence } from 'motion/react';
 import { ProductCard } from './ProductCard';
 import { Button } from '@/components/ui/Button';
 
@@ -13,7 +14,8 @@ export function ProductGrid({ relojes = [], onResetFilters }) {
           Ninguna pieza coincide con los criterios
         </h3>
         <p className="mx-auto mb-6 max-w-md font-sans text-sm leading-relaxed text-cronos-muted">
-          Pruebe con otra manufactura, complicación o referencia, o restablezca los filtros para explorar la colección completa.
+          Pruebe con otra manufactura, complicación o referencia, o restablezca los filtros para
+          explorar la colección completa.
         </p>
         <Button variant="outline" size="sm" onClick={onResetFilters}>
           Restaurar filtros
@@ -24,9 +26,11 @@ export function ProductGrid({ relojes = [], onResetFilters }) {
 
   return (
     <div className="grid grid-cols-1 gap-x-10 gap-y-4 md:grid-cols-2 lg:grid-cols-3">
-      {relojes.map((reloj) => (
-        <ProductCard key={reloj.id} reloj={reloj} />
-      ))}
+      <AnimatePresence mode="popLayout">
+        {relojes.map((reloj) => (
+          <ProductCard key={reloj.id} reloj={reloj} />
+        ))}
+      </AnimatePresence>
     </div>
   );
 }

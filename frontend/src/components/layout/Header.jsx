@@ -8,15 +8,27 @@ import { useFavorites } from '@/context/FavoritesContext';
 import { Sheet, SheetHeader, SheetTitle, SheetDescription, SheetContent, SheetFooter } from '@/components/ui/Sheet';
 import { Separator } from '@/components/ui/Separator';
 import { toast } from 'sonner';
+import { useReducedMotion } from 'motion/react';
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
   const { totalUnidades, openCart } = useCart();
   const { totalCompared } = useCompare();
   const { totalFavorites } = useFavorites();
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Cerrar el Sheet de menú móvil ante cualquier navegación (atrás/adelante o programática)
   useEffect(() => {
@@ -57,8 +69,18 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-cronos-line/80 bg-[#F4F2EE]/90 backdrop-blur-md">
-      <div className="mx-auto flex h-[4.75rem] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    <header
+      className={`sticky top-0 z-40 w-full ${shouldReduceMotion ? 'transition-none' : 'transition-all duration-300'} ${
+        isScrolled
+          ? 'border-b border-cronos-line/90 bg-[#F4F2EE]/95 shadow-[0_4px_24px_rgba(23,23,23,0.03)] backdrop-blur-lg'
+          : 'border-b border-cronos-line/70 bg-[#F4F2EE]/90 backdrop-blur-md'
+      }`}
+    >
+      <div
+        className={`mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 ${shouldReduceMotion ? 'transition-none' : 'transition-all duration-300'} ${
+          isScrolled ? 'h-16' : 'h-[4.75rem]'
+        }`}
+      >
         {/* Monograma de Marca Editorial */}
         <Link to="/" className="group flex flex-col text-left focus:outline-none select-none shrink-0">
           <span className="font-serif text-lg sm:text-xl tracking-[0.22em] sm:tracking-[0.28em] text-cronos-text transition-colors group-hover:text-cronos-bronze">

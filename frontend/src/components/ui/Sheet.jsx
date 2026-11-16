@@ -1,9 +1,12 @@
 import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { cn } from '@/lib/utils';
 
 export function Sheet({ open, onOpenChange, children }) {
+  const shouldReduceMotion = useReducedMotion();
+
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden';
@@ -20,34 +23,50 @@ export function Sheet({ open, onOpenChange, children }) {
     }
   }, [open, onOpenChange]);
 
-  if (!open || typeof document === 'undefined') return null;
+  if (typeof document === 'undefined') return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex justify-end">
-      {/* Velo traslúcido institucional */}
-      <div
-        className="fixed inset-0 bg-[#171717]/40 backdrop-blur-[2px] transition-opacity"
-        onClick={() => onOpenChange(false)}
-      />
+    <AnimatePresence>
+      {open && (
+        <div className="fixed inset-0 z-50 flex justify-end">
+          {/* Velo traslúcido institucional animado */}
+          <motion.div
+            initial={shouldReduceMotion ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
+            transition={{ duration: shouldReduceMotion ? 0.01 : 0.25 }}
+            className="fixed inset-0 bg-[#171717]/40 backdrop-blur-[2px]"
+            onClick={() => onOpenChange(false)}
+          />
 
-      {/* Contenedor lateral con borde milimétrico */}
-      <div className="relative z-50 flex h-full w-full max-w-md flex-col rounded-none border-l border-cronos-line bg-white text-cronos-text shadow-modal">
-        {children}
-      </div>
-    </div>,
+          {/* Contenedor lateral con deslizamiento suave */}
+          <motion.div
+            initial={shouldReduceMotion ? { opacity: 0 } : { x: '100%' }}
+            animate={shouldReduceMotion ? { opacity: 1 } : { x: 0 }}
+            exit={shouldReduceMotion ? { opacity: 0 } : { x: '100%' }}
+            transition={{ duration: shouldReduceMotion ? 0.01 : 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="relative z-50 flex h-full w-full max-w-md flex-col rounded-none border-l border-cronos-line bg-white text-cronos-text shadow-modal"
+          >
+            {children}
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>,
     document.body
   );
 }
 
 export function SheetHeader({ className, children, onClose }) {
   return (
-    <div className={cn('flex items-center justify-between border-b border-cronos-line p-6', className)}>
+    <div
+      className={cn('flex items-center justify-between border-b border-cronos-line p-6', className)}
+    >
       <div>{children}</div>
       {onClose && (
         <button
           type="button"
           onClick={onClose}
-          className="text-cronos-muted hover:text-cronos-text transition-colors p-1.5 focus:outline-none"
+          className="cursor-pointer p-1.5 text-cronos-muted transition-colors hover:text-cronos-text focus:outline-none"
           aria-label="Cerrar panel lateral"
         >
           <X className="h-4 w-4 stroke-[1.4]" />
@@ -67,7 +86,12 @@ export function SheetTitle({ className, children }) {
 
 export function SheetDescription({ className, children }) {
   return (
-    <p className={cn('text-[10px] font-mono tracking-widest text-cronos-muted uppercase mt-1', className)}>
+    <p
+      className={cn(
+        'mt-1 font-mono text-[10px] uppercase tracking-widest text-cronos-muted',
+        className
+      )}
+    >
       {children}
     </p>
   );
@@ -75,7 +99,7 @@ export function SheetDescription({ className, children }) {
 
 export function SheetContent({ className, children }) {
   return (
-    <div className={cn('flex-1 overflow-y-auto p-6', className)}>
+    <div className={cn('flex-1 overflow-y-auto px-6 py-4 scrollbar-none', className)}>
       {children}
     </div>
   );
@@ -83,7 +107,7 @@ export function SheetContent({ className, children }) {
 
 export function SheetFooter({ className, children }) {
   return (
-    <div className={cn('border-t border-cronos-line p-6 bg-cronos-surface-2', className)}>
+    <div className={cn('border-t border-cronos-line bg-cronos-bg/40 p-6', className)}>
       {children}
     </div>
   );

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Check, Heart } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
 import { formatPrice } from '@/lib/utils';
 import { useCart } from '@/context/CartContext';
 import { useCompare } from '@/context/CompareContext';
@@ -15,6 +16,7 @@ export function ProductCard({ reloj }) {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const shouldReduceMotion = useReducedMotion();
 
   const brandName = reloj.marca_nombre || reloj.marca_detalle?.nombre || 'Manufactura Suiza';
   const price = parseFloat(reloj.precio);
@@ -34,12 +36,17 @@ export function ProductCard({ reloj }) {
     await toggleFavorite(reloj);
   };
 
-  const cardImage = (reloj.imagenes && reloj.imagenes.length > 0)
-    ? reloj.imagenes[0].url
-    : reloj.imagen_url;
+  const cardImage =
+    reloj.imagenes && reloj.imagenes.length > 0 ? reloj.imagenes[0].url : reloj.imagen_url;
 
   return (
-    <article className="group relative flex h-full flex-col justify-between bg-transparent px-1 py-8 sm:py-10">
+    <motion.article
+      initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.12 }}
+      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+      className="group relative flex h-full flex-col justify-between bg-transparent px-1 py-8 sm:py-10"
+    >
       <div className="flex flex-1 flex-col">
         <div className="relative mb-7 aspect-[4/5] w-full overflow-hidden bg-cronos-surface-1">
           <Link
@@ -51,7 +58,7 @@ export function ProductCard({ reloj }) {
               src={cardImage}
               alt={`${brandName} ${reloj.nombre}`}
               className="h-full w-full"
-              imgClassName="transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+              imgClassName={shouldReduceMotion ? '' : 'transition-transform duration-700 ease-out group-hover:scale-[1.04]'}
             />
           </Link>
 
@@ -59,12 +66,16 @@ export function ProductCard({ reloj }) {
             type="button"
             disabled={processingFav}
             onClick={handleToggleFavorite}
-            aria-label={isFav ? `Retirar ${reloj.nombre} de favoritos privados` : `Añadir ${reloj.nombre} a favoritos privados`}
+            aria-label={
+              isFav
+                ? `Retirar ${reloj.nombre} de favoritos privados`
+                : `Añadir ${reloj.nombre} a favoritos privados`
+            }
             title={isFav ? 'En favoritos privados' : 'Añadir a favoritos privados'}
-            className="absolute right-3 top-3 cursor-pointer p-2 text-cronos-muted transition-colors hover:text-cronos-bronze focus:outline-none disabled:opacity-50"
+            className="absolute right-3 top-3 cursor-pointer p-2 text-cronos-muted transition-all duration-200 hover:scale-110 hover:text-cronos-bronze focus:outline-none disabled:opacity-50"
           >
             <Heart
-              className={`h-4 w-4 stroke-[1.4] transition-all duration-200 ${
+              className={`h-4 w-4 stroke-[1.4] transition-colors duration-200 ${
                 isFav ? 'fill-cronos-bronze text-cronos-bronze' : ''
               }`}
             />
@@ -92,14 +103,15 @@ export function ProductCard({ reloj }) {
           <h3 className="font-serif text-xl leading-snug tracking-[0.02em] text-cronos-text sm:text-[1.35rem]">
             <Link
               to={`/reloj/${reloj.id}`}
-              className="block transition-colors hover:text-cronos-bronze focus:outline-none"
+              className="block transition-colors duration-200 hover:text-cronos-bronze focus:outline-none"
             >
               {reloj.nombre}
             </Link>
           </h3>
 
           <div className="pt-1 font-mono text-[11px] tracking-wider text-cronos-muted">
-            {reloj.movimiento_display || reloj.movimiento} · {reloj.diametro_caja_mm} mm · {reloj.resistencia_agua_m} m WR
+            {reloj.movimiento_display || reloj.movimiento} · {reloj.diametro_caja_mm} mm ·{' '}
+            {reloj.resistencia_agua_m} m WR
           </div>
         </div>
 
@@ -119,9 +131,10 @@ export function ProductCard({ reloj }) {
               e.stopPropagation();
               addToCart(reloj, 1);
             }}
-            className="cursor-pointer py-1 text-[11px] font-medium uppercase tracking-[0.2em] text-cronos-text transition-colors hover:text-cronos-bronze"
+            className="group/btn relative cursor-pointer py-1 text-[11px] font-medium uppercase tracking-[0.2em] text-cronos-text transition-colors hover:text-cronos-bronze"
           >
-            Añadir a la bolsa
+            <span>Añadir a la bolsa</span>
+            <span className="absolute bottom-0 left-0 h-px w-0 bg-cronos-bronze transition-all duration-300 group-hover/btn:w-full" />
           </button>
         ) : (
           <span className="py-1 font-mono text-[10px] uppercase tracking-widest text-cronos-muted">
@@ -148,7 +161,7 @@ export function ProductCard({ reloj }) {
           )}
         </button>
       </div>
-    </article>
+    </motion.article>
   );
 }
 

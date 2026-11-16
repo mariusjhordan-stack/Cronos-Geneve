@@ -1,15 +1,24 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Minus, X } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
 import { formatPrice } from '@/lib/utils';
 import { WatchImage } from '@/components/product/WatchImage';
 
 export function CartItem({ item, onUpdateQuantity, onRemove, onNavigate }) {
+  const shouldReduceMotion = useReducedMotion();
   const precioUnitario = parseFloat(item.precio) || 0;
   const precioSubtotal = precioUnitario * item.cantidad;
 
   return (
-    <div className="py-5 border-b border-cronos-line flex items-start gap-3 sm:gap-4">
+    <motion.div
+      layout={!shouldReduceMotion}
+      initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, height: 0, overflow: 'hidden' }}
+      transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+      className="flex items-start gap-3 border-b border-cronos-line py-5 sm:gap-4"
+    >
       {/* Lienzo fotográfico de la pieza en fondo claro sobrio */}
       <div className="h-20 w-20 shrink-0 overflow-hidden bg-cronos-surface-1 sm:h-24 sm:w-24">
         <Link
@@ -19,11 +28,7 @@ export function CartItem({ item, onUpdateQuantity, onRemove, onNavigate }) {
           aria-label={`Ver detalles de ${item.nombre}`}
         >
           {item.imagen_url ? (
-            <WatchImage
-              src={item.imagen_url}
-              alt={item.nombre}
-              className="h-full w-full"
-            />
+            <WatchImage src={item.imagen_url} alt={item.nombre} className="h-full w-full" />
           ) : (
             <span className="font-mono text-[9px] uppercase text-cronos-muted">Sin registro</span>
           )}
@@ -31,73 +36,68 @@ export function CartItem({ item, onUpdateQuantity, onRemove, onNavigate }) {
       </div>
 
       {/* Ficha técnica y descriptiva */}
-      <div className="flex-1 min-w-0">
-        <span className="block font-mono text-[9px] tracking-[0.24em] text-cronos-bronze uppercase mb-0.5">
+      <div className="min-w-0 flex-1">
+        <span className="mb-0.5 block font-mono text-[9px] uppercase tracking-[0.24em] text-cronos-bronze">
           {item.marca_nombre}
         </span>
-        <h4 className="font-serif text-base text-cronos-text truncate mb-0.5" title={item.nombre}>
+        <h4 className="font-serif text-base leading-snug tracking-[0.02em] text-cronos-text">
           <Link
             to={`/reloj/${item.id}`}
             onClick={onNavigate}
-            className="hover:text-cronos-bronze transition-colors focus:outline-none"
+            className="transition-colors hover:text-cronos-bronze focus:outline-none"
           >
             {item.nombre}
           </Link>
         </h4>
-        <span className="block text-[10px] font-mono text-cronos-muted mb-3">
-          {item.movimiento_display || item.movimiento || 'Mecánico'} &bull; {item.diametro_caja_mm} mm
-        </span>
 
-        {/* Selector de cantidad y cotización */}
-        <div className="flex items-center justify-between gap-2 flex-wrap sm:flex-nowrap">
+        {/* Cotización unitaria */}
+        <div className="mt-1 font-mono text-xs text-cronos-muted">
+          {formatPrice(precioUnitario)} <span className="text-[10px]">USD</span>
+        </div>
+
+        {/* Controles de unidades y subtotal por guardatiempo */}
+        <div className="mt-3 flex items-center justify-between">
           <div className="inline-flex items-center border border-cronos-line bg-white">
             <button
               type="button"
               disabled={item.cantidad <= 1}
               onClick={() => onUpdateQuantity(item.id, item.cantidad - 1)}
-              className="px-2.5 py-1 text-cronos-muted hover:text-cronos-text transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
-              aria-label="Disminuir unidad"
+              className="cursor-pointer p-1.5 text-cronos-muted transition-colors hover:bg-cronos-surface-1 hover:text-cronos-text disabled:cursor-not-allowed disabled:opacity-30"
+              aria-label={`Restar una unidad de ${item.nombre}`}
             >
-              <Minus className="h-3 w-3" />
+              <Minus className="h-3 w-3 stroke-[1.5]" />
             </button>
-            <span className="w-7 text-center text-xs font-mono text-cronos-text select-none">
+            <span className="w-8 text-center font-mono text-xs text-cronos-text">
               {item.cantidad}
             </span>
             <button
               type="button"
-              disabled={item.cantidad >= item.stock}
+              disabled={item.stock !== undefined && item.cantidad >= item.stock}
               onClick={() => onUpdateQuantity(item.id, item.cantidad + 1)}
-              className="px-2.5 py-1 text-cronos-muted hover:text-cronos-text transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
-              aria-label="Aumentar unidad"
+              className="cursor-pointer p-1.5 text-cronos-muted transition-colors hover:bg-cronos-surface-1 hover:text-cronos-text disabled:cursor-not-allowed disabled:opacity-30"
+              aria-label={`Añadir una unidad de ${item.nombre}`}
             >
-              <Plus className="h-3 w-3" />
+              <Plus className="h-3 w-3 stroke-[1.5]" />
             </button>
           </div>
 
-          <div className="text-right">
-            <span className="text-xs font-mono text-cronos-text font-medium block">
-              {formatPrice(precioSubtotal)} <span className="text-[10px] text-cronos-muted font-normal">USD</span>
-            </span>
-            {item.cantidad > 1 && (
-              <span className="text-[10px] font-mono text-cronos-muted block">
-                {item.cantidad} &times; {formatPrice(precioUnitario)}
-              </span>
-            )}
-          </div>
+          <span className="font-mono text-xs font-medium tracking-wider text-cronos-text">
+            {formatPrice(precioSubtotal)} <span className="text-[10px] text-cronos-muted">USD</span>
+          </span>
         </div>
       </div>
 
-      {/* Botón discreto de retiro */}
+      {/* Retiro de pieza */}
       <button
         type="button"
         onClick={() => onRemove(item.id)}
-        className="text-cronos-muted hover:text-cronos-text p-1 transition-colors cursor-pointer shrink-0"
-        title="Retirar de la bolsa"
+        className="cursor-pointer p-1 text-cronos-muted transition-colors hover:text-cronos-text focus:outline-none"
         aria-label={`Retirar ${item.nombre} de la bolsa`}
+        title="Retirar de la bolsa"
       >
-        <X className="h-4 w-4 stroke-[1.4]" />
+        <X className="h-3.5 w-3.5 stroke-[1.4]" />
       </button>
-    </div>
+    </motion.div>
   );
 }
 
