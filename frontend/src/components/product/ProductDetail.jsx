@@ -5,7 +5,7 @@ import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { Button } from '@/components/ui/Button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs';
 import { ProductSpecifications } from './ProductSpecifications';
-import { ProductCard } from '@/components/catalog/ProductCard';
+import { RelatedPieces } from '@/components/product/RelatedPieces';
 import { WatchImage } from '@/components/product/WatchImage';
 import { formatPrice } from '@/lib/utils';
 import { useCart } from '@/context/CartContext';
@@ -13,7 +13,7 @@ import { useCompare } from '@/context/CompareContext';
 import { useAuth } from '@/context/AuthContext';
 import { useFavorites } from '@/context/FavoritesContext';
 
-export function ProductDetail({ reloj, relatedPieces = [] }) {
+export function ProductDetail({ reloj }) {
   const [quantity, setQuantity] = useState(1);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [prevId, setPrevId] = useState(reloj.id);
@@ -483,25 +483,8 @@ export function ProductDetail({ reloj, relatedPieces = [] }) {
         </Tabs>
       </div>
 
-      {/* 4. PIEZAS RELACIONADAS DE LA MISMA CASA O CALIBRE */}
-      {relatedPieces.length > 0 && (
-        <div className="pt-12 border-t border-cronos-line">
-          <div className="mb-8">
-            <span className="font-mono text-[10px] tracking-widest-brand text-cronos-bronze uppercase block mb-1">
-              CRONOS GENÈVE / SÉLECTION PARALLÈLE
-            </span>
-            <h2 className="font-serif text-2xl sm:text-3xl text-cronos-text font-normal">
-              PIEZAS DE LA MISMA CASA Y CALIBRE
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 gap-x-10 md:grid-cols-3">
-            {relatedPieces.map((piece) => (
-              <ProductCard key={piece.id} reloj={piece} />
-            ))}
-          </div>
-        </div>
-      )}
+      {/* 4. PIEZAS RELACIONADAS (endpoint /recomendaciones/) */}
+      <RelatedPieces relojId={reloj.id} />
     </div>
   );
 }

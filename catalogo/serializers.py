@@ -84,3 +84,18 @@ class RelojSerializer(serializers.ModelSerializer):
         if imgs:
             return imgs[0].url
         return obj.imagen_url
+
+
+class RelojRecomendadoSerializer(RelojSerializer):
+    """
+    Igual que RelojSerializer pero añade `motivo`, derivado del puntaje que la
+    vista anotó en la consulta (así no se recalcula en Python ni se duplica la regla).
+    """
+    MOTIVOS = {3: 'casa_calibre', 2: 'casa', 1: 'calibre'}
+    motivo = serializers.SerializerMethodField()
+
+    class Meta(RelojSerializer.Meta):
+        fields = RelojSerializer.Meta.fields + ['motivo']
+
+    def get_motivo(self, obj):
+        return self.MOTIVOS.get(getattr(obj, 'puntaje', 0), '')

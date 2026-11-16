@@ -172,6 +172,7 @@ export const api = {
     return items;
   },
 
+  getRecomendaciones(id) { return request(`/api/relojes/${id}/recomendaciones/`, {}, { auth: false }); },
   getReloj(id) { return request(`/api/relojes/${id}/`, {}, { auth: false }); },
   async getMarcas() {
     const data = await request('/api/marcas/', {}, { auth: false });

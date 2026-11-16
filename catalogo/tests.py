@@ -83,3 +83,36 @@ class ImagenRelojGalleryTests(APITestCase):
         self.assertEqual(ImagenReloj.objects.filter(reloj_id=reloj_id).count(), 2)
         self.reloj.delete()
         self.assertEqual(ImagenReloj.objects.filter(reloj_id=reloj_id).count(), 0)
+
+
+class RecomendacionesTests(APITestCase):
+    def _reloj(self, nombre, marca, movimiento='AUTOMATICO', stock=3):
+        return Reloj.objects.create(
+            nombre=nombre, marca=marca, precio='1000.00', stock=stock,
+            movimiento=movimiento, diametro_caja_mm='40.0', descripcion='x',
+        )
+
+    def test_excluye_actual_ordena_por_disponibilidad_y_puntaje_y_limita_a_4(self):
+        a, b = Marca.objects.create(nombre='Casa A'), Marca.objects.create(nombre='Casa B')
+        base = self._reloj('Base', a, 'AUTOMATICO')
+        casa_calibre = self._reloj('CasaCalibre', a, 'AUTOMATICO')
+        casa = self._reloj('Casa', a, 'CUARZO')
+        calibre = self._reloj('Calibre', b, 'AUTOMATICO')
+        agotada = self._reloj('Agotada', a, 'AUTOMATICO', stock=0)
+        self._reloj('Otra', b, 'CUARZO')  # sin relación: no debe aparecer
+        extra = self._reloj('Extra', b, 'AUTOMATICO')
+
+        r = self.client.get(f'/api/relojes/{base.id}/recomendaciones/')
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        nombres = [x['nombre'] for x in r.json()]
+        self.assertEqual(len(nombres), 4)
+        self.assertNotIn('Base', nombres)
+        self.assertNotIn('Otra', nombres)
+        self.assertNotIn('Agotada', nombres)  # las agotadas van al final y el tope es 4
+        self.assertEqual(nombres[0], 'CasaCalibre')
+        self.assertEqual(nombres[1], 'Casa')
+        self.assertEqual(r.json()[0]['motivo'], 'casa_calibre')
+        self.assertEqual(r.json()[1]['motivo'], 'casa')
+
+    def test_404_si_no_existe(self):
+        self.assertEqual(self.client.get('/api/relojes/9999/recomendaciones/').status_code, 404)

@@ -1,8 +1,12 @@
 from rest_framework import viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAdminUser
-from django.db.models import Q
+from django.db.models import Q, Case, When, Value, IntegerField
 from .models import Marca, Categoria, Reloj
-from .serializers import MarcaSerializer, CategoriaSerializer, RelojSerializer
+from .serializers import (
+    MarcaSerializer, CategoriaSerializer, RelojSerializer, RelojRecomendadoSerializer,
+)
 
 
 class CategoriaViewSet(viewsets.ModelViewSet):
@@ -47,7 +51,7 @@ class RelojViewSet(viewsets.ModelViewSet):
     serializer_class = RelojSerializer
 
     def get_permissions(self):
-        if self.action in ('list', 'retrieve'):
+        if self.action in ('list', 'retrieve', 'recomendaciones'):
             return [AllowAny()]
         return [IsAdminUser()]
 
@@ -92,3 +96,44 @@ class RelojViewSet(viewsets.ModelViewSet):
             queryset = queryset.order_by(orden_map[orden])
 
         return queryset
+
+    @action(detail=True, methods=['get'], url_path='recomendaciones')
+    def recomendaciones(self, request, pk=None):
+        """
+        GET /api/relojes/<id>/recomendaciones/
+        Hasta 4 piezas de la misma casa (marca) o el mismo calibre (movimiento).
+
+        Por qué un @action y no un filtro en /api/relojes/: la regla (excluir la
+        pieza actual, puntuar, ordenar por disponibilidad, limitar a 4) vive en
+        el servidor, es una sola consulta SQL y el cliente deja de descargar
+        todo el catálogo para filtrarlo en JavaScript.
+        """
+        reloj = self.get_object()  # 404 si no existe
+
+        misma_casa = Q(marca_id=reloj.marca_id)
+        mismo_calibre = Q(movimiento=reloj.movimiento)
+
+        piezas = (
+            Reloj.objects.select_related('marca')
+            .prefetch_related('categorias', 'imagenes')
+            .exclude(pk=reloj.pk)
+            .filter(misma_casa | mismo_calibre)
+            .annotate(
+                puntaje=Case(
+                    When(misma_casa & mismo_calibre, then=Value(3)),
+                    When(misma_casa, then=Value(2)),
+                    When(mismo_calibre, then=Value(1)),
+                    default=Value(0),
+                    output_field=IntegerField(),
+                ),
+                disponible=Case(
+                    When(stock__gt=0, then=Value(1)),
+                    default=Value(0),
+                    output_field=IntegerField(),
+                ),
+            )
+            # Primero las disponibles, luego mayor afinidad; id desempata de forma estable.
+            .order_by('-disponible', '-puntaje', '-creado_en', 'id')[:4]
+        )
+        serializer = RelojRecomendadoSerializer(piezas, many=True, context={'request': request})
+        return Response(serializer.data)

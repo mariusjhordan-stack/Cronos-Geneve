@@ -117,8 +117,8 @@ img {
 /* Print Styles for Order Receipt */
 @media print {
   @page {
-    margin: 1.5cm;
-    size: auto;
+    margin: 12mm;
+    size: A4 portrait;
   }
 
   html,
@@ -172,29 +172,30 @@ img {
 
   .print-receipt {
     display: block !important;
-    background-color: #ffffff !important;
     background: #ffffff !important;
-    color: #111111 !important;
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
     box-shadow: none !important;
     border: none !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
   }
 
-  .print-receipt * {
-    color: #111111 !important;
-    border-color: #d1d5db !important;
-  }
-
+  /* Anchos porcentuales (<colgroup>) y sin scroll horizontal: Subtotal y Total
+     ya no se cortan por la derecha al imprimir. */
   .print-receipt table {
     width: 100% !important;
+    table-layout: fixed !important;
     border-collapse: collapse !important;
-    table-layout: auto !important;
   }
 
-  /* Evitar cortes incómodos entre filas y secciones */
+  .print-receipt td,
+  .print-receipt th {
+    overflow-wrap: anywhere;
+  }
+
   .print-receipt tr,
   .print-receipt .print-avoid-break {
     break-inside: avoid !important;

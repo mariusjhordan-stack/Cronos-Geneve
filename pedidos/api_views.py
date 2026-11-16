@@ -280,7 +280,7 @@ class OrdenDetailAPIView(APIView):
             )
         try:
             orden = get_object_or_404(
-                Orden.objects.prefetch_related('detalles__reloj__marca', 'detalles__reloj__categorias'),
+                Orden.objects.prefetch_related('detalles__reloj__marca', 'detalles__reloj__categorias', 'pagos_gateway'),
                 pk=pk,
             )
         except Exception:
@@ -489,7 +489,7 @@ class MisOrdenesAPIView(ListAPIView):
 
     def get_queryset(self):
         return Orden.objects.filter(usuario=self.request.user).prefetch_related(
-            'detalles__reloj__marca', 'detalles__reloj__categorias'
+            'detalles__reloj__marca', 'detalles__reloj__categorias', 'pagos_gateway'
         )
 
 
@@ -499,5 +499,5 @@ class MiOrdenDetailAPIView(RetrieveAPIView):
 
     def get_queryset(self):
         return Orden.objects.filter(usuario=self.request.user).prefetch_related(
-            'detalles__reloj__marca', 'detalles__reloj__categorias'
+            'detalles__reloj__marca', 'detalles__reloj__categorias', 'pagos_gateway'
         )

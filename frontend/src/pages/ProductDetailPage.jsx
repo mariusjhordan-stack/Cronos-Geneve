@@ -7,7 +7,6 @@ import { api } from '@/services/api';
 export function ProductDetailPage() {
   const { id } = useParams();
   const [reloj, setReloj] = useState(null);
-  const [relatedPieces, setRelatedPieces] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -20,14 +19,6 @@ export function ProductDetailPage() {
         const data = await api.getReloj(id);
         if (cancelled) return;
         setReloj(data);
-
-        // Cargar piezas relacionadas (misma manufactura o movimiento)
-        const allWatches = await api.getAllRelojes();
-        if (cancelled) return;
-        const filtered = allWatches
-          .filter((w) => w.id !== parseInt(id, 10) && (w.marca === data.marca || w.movimiento === data.movimiento))
-          .slice(0, 3);
-        setRelatedPieces(filtered);
       } catch (err) {
         if (!cancelled) setError(err.message || 'No fue posible acceder a la ficha técnica en la bóveda');
       } finally {
@@ -84,5 +75,5 @@ export function ProductDetailPage() {
     );
   }
 
-  return <ProductDetail reloj={reloj} relatedPieces={relatedPieces} />;
+  return <ProductDetail reloj={reloj} />;
 }
