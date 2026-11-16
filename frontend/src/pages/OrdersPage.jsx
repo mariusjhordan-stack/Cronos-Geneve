@@ -4,6 +4,7 @@ import { Package, ArrowRight, ChevronLeft, ChevronRight, AlertCircle, RefreshCw 
 import { api } from '@/services/api';
 import { formatPrice } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
+import { WatchImage } from '@/components/product/WatchImage';
 
 export function OrdersPage() {
   const [orders, setOrders] = useState([]);
@@ -130,7 +131,7 @@ export function OrdersPage() {
   if (error && orders.length === 0) {
     return (
       <div className="mx-auto max-w-xl px-4 py-24 text-center">
-        <div className="border border-cronos-line bg-white p-8 sm:p-10 shadow-xs">
+        <div className="border border-cronos-line/80 bg-white p-8 sm:p-10">
           <AlertCircle className="h-8 w-8 text-red-600 mx-auto mb-4 stroke-[1.2]" />
           <h2 className="font-serif text-2xl text-cronos-text mb-2 uppercase">ERROR AL CONSULTAR ARCHIVO</h2>
           <p className="text-xs text-cronos-muted font-sans max-w-md mx-auto mb-6 leading-relaxed">
@@ -199,7 +200,7 @@ export function OrdersPage() {
 
       {/* 2. ESTADO VACÍO */}
       {orders.length === 0 ? (
-        <div className="border border-cronos-line bg-white p-12 sm:p-16 text-center shadow-xs">
+        <div className="px-6 py-16 text-center sm:py-20">
           <Package className="h-10 w-10 text-cronos-bronze mx-auto mb-4 stroke-[1.2]" />
           <span className="font-mono text-[9px] tracking-widest text-cronos-bronze uppercase block mb-2">
             ARCHIVE VIDE
@@ -231,7 +232,7 @@ export function OrdersPage() {
             return (
               <article
                 key={order.id}
-                className="border border-cronos-line bg-white p-6 sm:p-8 transition-colors shadow-xs hover:border-cronos-line"
+                className="border border-cronos-line/80 bg-white p-6 sm:p-8 transition-colors"
               >
                 {/* Cabecera de la orden */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-cronos-line pb-5">
@@ -283,22 +284,19 @@ export function OrdersPage() {
                           className="flex items-center justify-between gap-4 py-3 first:pt-1 last:pb-1"
                         >
                           <div className="flex items-center gap-4 min-w-0">
-                            {watchImg ? (
-                              <div className="h-14 w-14 sm:h-16 sm:w-16 flex-shrink-0 border border-cronos-line bg-cronos-surface-1 p-1 flex items-center justify-center">
-                                <img
+                            <div className="h-14 w-14 flex-shrink-0 overflow-hidden bg-cronos-surface-1 sm:h-16 sm:w-16">
+                              {watchImg ? (
+                                <WatchImage
                                   src={watchImg}
                                   alt={watchName}
-                                  className="max-h-full max-w-full object-contain"
-                                  onError={(e) => {
-                                    e.currentTarget.style.display = 'none';
-                                  }}
+                                  className="h-full w-full"
                                 />
-                              </div>
-                            ) : (
-                              <div className="h-14 w-14 sm:h-16 sm:w-16 flex-shrink-0 border border-cronos-line bg-cronos-surface-1 flex items-center justify-center">
-                                <Package className="h-5 w-5 text-cronos-muted stroke-[1.2]" />
-                              </div>
-                            )}
+                              ) : (
+                                <div className="flex h-full w-full items-center justify-center">
+                                  <Package className="h-5 w-5 text-cronos-muted stroke-[1.2]" />
+                                </div>
+                              )}
+                            </div>
 
                             <div className="min-w-0">
                               <span className="font-mono text-[9px] tracking-widest text-cronos-bronze uppercase block truncate">

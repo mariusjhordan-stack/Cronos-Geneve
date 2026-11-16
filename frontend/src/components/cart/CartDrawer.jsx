@@ -55,7 +55,7 @@ export function CartDrawer() {
       <SheetContent>
         {items.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center text-center py-20 px-4">
-            <div className="border border-cronos-line p-5 mb-5 text-cronos-muted bg-[#FAF9F6]">
+            <div className="mb-5 p-5 text-cronos-muted">
               <ShoppingBag className="h-8 w-8 stroke-[1.2]" />
             </div>
             <span className="font-mono text-[10px] tracking-widest-brand text-cronos-bronze uppercase block mb-1.5">

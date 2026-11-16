@@ -132,7 +132,7 @@ export function ConfirmationPage() {
         </div>
 
         {/* 2. COMPROBANTE DE ORDEN EN PANTALLA */}
-        <div className="certificate-print-container border border-cronos-line bg-white p-6 sm:p-12 relative shadow-xs">
+        <div className="certificate-print-container border border-cronos-line/80 bg-white p-6 sm:p-12 relative">
           {/* Cabecera del Comprobante */}
           <div className="text-center pb-8 border-b border-cronos-line">
             <span className="font-mono text-[9px] sm:text-[10px] tracking-widest-brand text-cronos-bronze uppercase block mb-2">

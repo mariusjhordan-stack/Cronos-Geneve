@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Minus, X } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
+import { WatchImage } from '@/components/product/WatchImage';
 
 export function CartItem({ item, onUpdateQuantity, onRemove, onNavigate }) {
   const precioUnitario = parseFloat(item.precio) || 0;
@@ -10,24 +11,21 @@ export function CartItem({ item, onUpdateQuantity, onRemove, onNavigate }) {
   return (
     <div className="py-5 border-b border-cronos-line flex items-start gap-3 sm:gap-4">
       {/* Lienzo fotográfico de la pieza en fondo claro sobrio */}
-      <div className="h-20 w-20 sm:h-22 sm:w-22 shrink-0 bg-[#FAF9F6] border border-cronos-line flex items-center justify-center p-2 overflow-hidden">
+      <div className="h-20 w-20 shrink-0 overflow-hidden bg-cronos-surface-1 sm:h-24 sm:w-24">
         <Link
           to={`/reloj/${item.id}`}
           onClick={onNavigate}
-          className="flex h-full w-full items-center justify-center focus:outline-none"
+          className="block h-full w-full focus:outline-none"
           aria-label={`Ver detalles de ${item.nombre}`}
         >
           {item.imagen_url ? (
-            <img
+            <WatchImage
               src={item.imagen_url}
               alt={item.nombre}
-              className="h-full w-full object-contain transition-transform duration-300 hover:scale-105"
-              onError={(e) => {
-                e.currentTarget.src = '/images/relojes/placeholder-reloj.svg';
-              }}
+              className="h-full w-full"
             />
           ) : (
-            <span className="text-[9px] font-mono text-cronos-muted uppercase">[ SIN REGISTRO ]</span>
+            <span className="font-mono text-[9px] uppercase text-cronos-muted">Sin registro</span>
           )}
         </Link>
       </div>

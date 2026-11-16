@@ -6,6 +6,7 @@ import { formatPrice } from '@/lib/utils';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import { Button } from '@/components/ui/Button';
+import { WatchImage } from '@/components/product/WatchImage';
 
 export function FavoritesPage() {
   const { favorites, loading, error, removeFavorite, refreshFavorites, isProcessing } = useFavorites();
@@ -37,7 +38,7 @@ export function FavoritesPage() {
   if (error && favorites.length === 0) {
     return (
       <div className="mx-auto max-w-xl px-4 py-24 text-center">
-        <div className="border border-cronos-line bg-white p-8 sm:p-10 shadow-xs">
+        <div className="border border-cronos-line/80 bg-white p-8 sm:p-10">
           <AlertCircle className="h-8 w-8 text-red-600 mx-auto mb-4 stroke-[1.2]" />
           <h2 className="font-serif text-2xl text-cronos-text mb-2 uppercase">
             ERROR AL CONSULTAR SELECCIÓN
@@ -78,7 +79,7 @@ export function FavoritesPage() {
 
       {/* 2. ESTADO VACÍO */}
       {favorites.length === 0 ? (
-        <div className="border border-cronos-line bg-white p-12 sm:p-16 text-center shadow-xs">
+        <div className="px-6 py-16 text-center sm:py-20">
           <Heart className="h-10 w-10 text-cronos-bronze mx-auto mb-4 stroke-[1.2]" />
           <span className="font-mono text-[9px] tracking-widest text-cronos-bronze uppercase block mb-2">
             SÉLECTION VIDE
@@ -110,7 +111,7 @@ export function FavoritesPage() {
             return (
               <article
                 key={favorite.id}
-                className="group relative flex flex-col justify-between border border-cronos-line bg-white p-6 sm:p-7 transition-all duration-300 shadow-xs hover:border-cronos-line"
+                className="group relative flex flex-col justify-between bg-transparent py-2"
               >
                 <div>
                   {/* Fila superior: Marca e indicador de stock */}
@@ -148,27 +149,23 @@ export function FavoritesPage() {
                   </h2>
 
                   {/* Fotografía en lienzo editorial */}
-                  <div className="relative aspect-[4/5] w-full flex items-center justify-center p-4 mb-4 border border-cronos-line bg-cronos-surface-1">
+                  <div className="relative mb-4 aspect-[4/5] w-full overflow-hidden bg-cronos-surface-1">
                     <Link
                       to={`/reloj/${favorite.reloj}`}
-                      className="flex h-full w-full items-center justify-center"
+                      className="absolute inset-0"
                       aria-label={`Ver especificaciones de ${watch.nombre}`}
                     >
                       {watch.imagen_url ? (
-                        <img
+                        <WatchImage
                           src={watch.imagen_url}
                           alt={`${brandName} ${watch.nombre}`}
-                          className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-105"
-                          loading="lazy"
-                          onError={(e) => {
-                            e.currentTarget.src =
-                              '/images/relojes/placeholder-reloj.svg';
-                          }}
+                          className="h-full w-full"
+                          imgClassName="transition-transform duration-500 group-hover:scale-[1.03]"
                         />
                       ) : (
-                        <div className="flex h-40 w-40 items-center justify-center border border-cronos-line bg-cronos-surface-2">
+                        <div className="flex h-full items-center justify-center">
                           <span className="font-mono text-[9px] tracking-widest text-cronos-muted">
-                            [ ARCHIVO RESERVADO ]
+                            Archivo reservado
                           </span>
                         </div>
                       )}

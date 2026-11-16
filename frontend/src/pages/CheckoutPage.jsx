@@ -8,6 +8,7 @@ import { useCart } from '@/context/CartContext';
 import { formatPrice } from '@/lib/utils';
 import { api } from '@/services/api';
 import { useAuth } from '@/context/AuthContext';
+import { WatchImage } from '@/components/product/WatchImage';
 
 const LISTA_PAISES = [
   'Perú',
@@ -245,7 +246,7 @@ export function CheckoutPage() {
   if (items.length === 0) {
     return (
       <div className="mx-auto max-w-xl px-4 py-24 text-center">
-        <div className="border border-cronos-line p-8 bg-white shadow-xs">
+        <div className="border border-cronos-line/80 bg-white p-8">
           <ShoppingBag className="h-10 w-10 text-cronos-muted/40 mx-auto mb-4 stroke-[1.2]" />
           <span className="font-mono text-[10px] tracking-widest-brand text-cronos-bronze uppercase block mb-1">
             CRONOS GENÈVE / PRIVATE WATCH BAG
@@ -291,7 +292,7 @@ export function CheckoutPage() {
       )}
 
       {notices.length > 0 && (
-        <div className="mb-8 border border-cronos-line bg-white p-4 shadow-xs">
+        <div className="mb-8 border border-cronos-line/80 bg-white p-4">
           <span className="font-mono text-[10px] tracking-widest text-cronos-bronze uppercase block mb-2">
             ACTUALIZACIÓN DE DISPONIBILIDAD EN INVENTARIO
           </span>
@@ -307,7 +308,7 @@ export function CheckoutPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
         {/* Columna Izquierda: Formulario de Datos y Envío (7 cols) */}
         <div className="lg:col-span-7">
-          <div className="border border-cronos-line bg-white p-6 sm:p-8 shadow-xs">
+          <div className="bg-white p-6 sm:p-8">
             <div className="mb-6 pb-4 border-b border-cronos-line flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <span className="font-mono text-[9px] tracking-widest text-cronos-bronze uppercase block mb-0.5">
@@ -527,7 +528,7 @@ export function CheckoutPage() {
 
         {/* Columna Derecha: Resumen de la Selección (5 cols) */}
         <div className="lg:col-span-5">
-          <div className="border border-cronos-line bg-white p-6 sm:p-8 sticky top-24 shadow-xs">
+          <div className="sticky top-24 bg-cronos-surface-1 p-6 sm:p-8">
             <div className="flex items-center justify-between pb-4 mb-4 border-b border-cronos-line">
               <span className="font-mono text-[10px] tracking-widest-brand text-cronos-bronze uppercase">
                 RESUMEN DE LA ORDEN
@@ -542,15 +543,15 @@ export function CheckoutPage() {
               {items.map((item) => (
                 <div key={item.id} className="py-3.5 flex items-center justify-between text-xs gap-3">
                   <div className="flex items-center gap-3 min-w-0 pr-2">
-                    <div className="h-14 w-14 shrink-0 bg-cronos-surface-1 border border-cronos-line flex items-center justify-center p-1">
+                    <div className="h-16 w-16 shrink-0 overflow-hidden bg-cronos-surface-1">
                       {item.imagen_url ? (
-                        <img
+                        <WatchImage
                           src={item.imagen_url}
                           alt={item.nombre}
-                          className="h-full w-full object-contain"
+                          className="h-full w-full bg-cronos-surface-1"
                         />
                       ) : (
-                        <span className="font-mono text-[8px] text-cronos-muted">[ S/R ]</span>
+                        <span className="font-mono text-[8px] text-cronos-muted">S/R</span>
                       )}
                     </div>
                     <div className="min-w-0">

@@ -191,7 +191,7 @@ export function AddressManager({ showTitle = true, showFullPageLink = false }) {
 
   if (loading) {
     return (
-      <div className="border border-cronos-line bg-white p-12 text-center shadow-xs">
+      <div className="border border-cronos-line/80 bg-white p-12 text-center">
         <span className="font-mono text-xs tracking-widest-brand text-cronos-bronze uppercase block animate-pulse">
           CONSULTANDO LIBRETA DE DIRECCIONES…
         </span>
@@ -201,7 +201,7 @@ export function AddressManager({ showTitle = true, showFullPageLink = false }) {
 
   if (error && addresses.length === 0) {
     return (
-      <div className="border border-cronos-line bg-white p-8 text-center shadow-xs">
+      <div className="border border-cronos-line/80 bg-white p-8 text-center">
         <AlertCircle className="h-6 w-6 text-red-600 mx-auto mb-3 stroke-[1.2]" />
         <h3 className="font-serif text-lg text-cronos-text mb-2 uppercase">ERROR AL CARGAR DIRECCIONES</h3>
         <p className="text-xs text-cronos-muted font-sans max-w-md mx-auto mb-4">{error}</p>
@@ -251,7 +251,7 @@ export function AddressManager({ showTitle = true, showFullPageLink = false }) {
 
       {/* Listado de direcciones */}
       {addresses.length === 0 ? (
-        <div className="border border-cronos-line bg-white p-10 sm:p-14 text-center shadow-xs">
+        <div className="border border-cronos-line/80 bg-white p-10 sm:p-14 text-center">
           <div className="h-12 w-12 border border-cronos-line mx-auto mb-4 flex items-center justify-center bg-cronos-surface-1 text-cronos-muted">
             <MapPin className="h-6 w-6 stroke-[1.2]" />
           </div>
@@ -276,7 +276,7 @@ export function AddressManager({ showTitle = true, showFullPageLink = false }) {
           {addresses.map((item) => (
             <article
               key={item.id}
-              className="border border-cronos-line bg-white p-6 sm:p-7 flex flex-col justify-between transition-colors shadow-xs hover:border-cronos-line relative"
+              className="border border-cronos-line/80 bg-white p-6 sm:p-7 flex flex-col justify-between transition-colors relative"
             >
               <div>
                 {/* Encabezado: Etiqueta y Badge Predeterminada */}

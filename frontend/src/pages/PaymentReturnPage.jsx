@@ -104,7 +104,7 @@ export function PaymentReturnPage() {
 
   return (
     <section className="mx-auto max-w-2xl px-4 py-20 sm:px-6">
-      <div className="border border-cronos-line bg-white p-8 text-center shadow-xs sm:p-12">
+      <div className="border border-cronos-line/80 bg-white p-8 text-center sm:p-12">
         <span className="font-mono text-[10px] tracking-widest-brand text-cronos-bronze">CRONOS GENÈVE · CHECKOUT PRO</span>
         {loading ? (
           <p className="mt-8 animate-pulse font-mono text-xs tracking-widest text-cronos-muted">VERIFICANDO EL ESTADO CON MERCADO PAGO…</p>
