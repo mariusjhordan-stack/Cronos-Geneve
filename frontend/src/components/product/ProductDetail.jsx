@@ -64,7 +64,7 @@ export function ProductDetail({ reloj }) {
           <span>VOLVER AL CATÁLOGO</span>
         </Link>
 
-        <nav className="font-mono text-[10px] tracking-widest text-cronos-muted uppercase flex items-center gap-2 overflow-x-auto whitespace-nowrap">
+        <nav className="font-mono text-[11px] tracking-widest text-cronos-muted uppercase flex items-center gap-2 overflow-x-auto whitespace-nowrap">
           <Link to="/" className="hover:text-cronos-bronze transition-colors">
             INICIO
           </Link>
@@ -106,7 +106,7 @@ export function ProductDetail({ reloj }) {
 
         {/* Columna Derecha: Información Editorial y Acciones (5 cols = ~42%) */}
         <div className="lg:col-span-5 flex flex-col justify-center">
-          <span className="font-mono text-[10px] tracking-widest-brand text-cronos-bronze uppercase block mb-2">
+          <span className="font-mono text-[11px] tracking-widest-brand text-cronos-bronze uppercase block mb-2">
             CRONOS GENÈVE / MANUFACTURE
           </span>
 
@@ -120,13 +120,13 @@ export function ProductDetail({ reloj }) {
 
           {/* Precio y Cotización */}
           <div className="mb-6 pb-6 border-b border-cronos-line">
-            <span className="block font-mono text-[9px] tracking-widest text-cronos-muted uppercase mb-1">
+            <span className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase mb-1">
               COTIZACIÓN OFICIAL EN BÓVEDA
             </span>
             <div className="font-mono text-3xl text-cronos-text font-normal">
               {formatPrice(price)} <span className="text-xs text-cronos-muted">USD</span>
             </div>
-            <span className="block font-mono text-[10px] text-cronos-muted mt-1.5">
+            <span className="block font-mono text-[11px] text-cronos-muted mt-1.5">
               Valores expresados en dólares estadounidenses (USD).
             </span>
           </div>
@@ -165,7 +165,7 @@ export function ProductDetail({ reloj }) {
               <>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <span className="font-mono text-[10px] tracking-widest text-cronos-muted uppercase">
+                    <span className="font-mono text-[11px] tracking-widest text-cronos-muted uppercase">
                       UNIDADES:
                     </span>
                     <div className="inline-flex items-center border border-cronos-line bg-white">
@@ -192,7 +192,7 @@ export function ProductDetail({ reloj }) {
                       </button>
                     </div>
                   </div>
-                  <span className="font-mono text-[10px] text-cronos-bronze tracking-wider uppercase">
+                  <span className="font-mono text-[11px] text-cronos-bronze tracking-wider uppercase">
                     [ DISPONIBLE ]
                   </span>
                 </div>
@@ -252,7 +252,7 @@ export function ProductDetail({ reloj }) {
               </>
             ) : (
               <div className="border border-cronos-line bg-white p-6 text-center">
-                <span className="font-mono text-[10px] tracking-widest text-red-600 uppercase block mb-1">
+                <span className="font-mono text-[11px] tracking-widest text-red-600 uppercase block mb-1">
                   DISPONIBILIDAD AGOTADA
                 </span>
                 <p className="text-xs text-cronos-muted font-sans mb-4 leading-relaxed">
@@ -321,7 +321,7 @@ export function ProductDetail({ reloj }) {
               </p>
               {reloj.marca_detalle?.descripcion && (
                 <div className="mt-8 border-l border-cronos-bronze bg-cronos-surface-1/60 p-5">
-                  <span className="font-mono text-[9px] tracking-widest text-cronos-bronze uppercase block mb-1">
+                  <span className="font-mono text-[11px] tracking-widest text-cronos-bronze uppercase block mb-1">
                     HERENCIA DE LA MANUFACTURA {brandName}
                   </span>
                   <p className="font-sans text-xs text-cronos-muted leading-relaxed">

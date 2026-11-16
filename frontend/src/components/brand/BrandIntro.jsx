@@ -255,12 +255,12 @@ export function BrandIntro() {
           <div className="w-10 sm:w-12 h-[1px] bg-[#A58A68]/60 my-2.5 sm:my-3 animate-intro-line" />
 
           {/* ETAPA 3 — GENÈVE: Inter, tracking amplio, champagne sutil */}
-          <span className="font-sans text-[10px] sm:text-[11px] tracking-[0.48em] text-[#A58A68]/85 uppercase font-medium leading-none animate-intro-geneve pl-[0.48em]">
+          <span className="font-sans text-[11px] sm:text-[11px] tracking-[0.48em] text-[#A58A68]/85 uppercase font-medium leading-none animate-intro-geneve pl-[0.48em]">
             Genève
           </span>
 
           {/* ETAPA 4 — HAUTE HORLOGERIE: Inter, discreto editorial con expansión sutil de tracking */}
-          <span className="font-sans text-[8px] sm:text-[9px] text-[#8F8B83] uppercase mt-2.5 leading-none animate-intro-tagline pl-[0.38em]">
+          <span className="font-sans text-[11px] sm:text-[11px] text-[#8F8B83] uppercase mt-2.5 leading-none animate-intro-tagline pl-[0.38em]">
             Haute Horlogerie
           </span>
         </div>
@@ -274,7 +274,7 @@ export function BrandIntro() {
             e.stopPropagation();
             handleDismiss();
           }}
-          className="text-[9px] sm:text-[10px] tracking-[0.22em] text-[#6F6B64] hover:text-[#A58A68] uppercase transition-colors duration-200"
+          className="text-[11px] sm:text-[11px] tracking-[0.22em] text-[#6F6B64] hover:text-[#A58A68] uppercase transition-colors duration-200"
           aria-label="Saltar introducción de marca"
         >
           Saltar intro · Esc

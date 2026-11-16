@@ -77,7 +77,7 @@ export function HeritageEssay({ mainPiece, detailPiece }) {
                 imgClassName="transition-transform duration-700 ease-out group-hover:scale-[1.02]"
               />
               <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#171717]/55 to-transparent px-5 pb-5 pt-16 sm:px-7 sm:pb-7">
-                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/90">
+                <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/90">
                   {pieceLabel(mainPiece)}
                 </span>
               </div>
@@ -110,7 +110,7 @@ export function HeritageEssay({ mainPiece, detailPiece }) {
                 imgClassName="transition-transform duration-700 ease-out group-hover:scale-[1.02]"
               />
               <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#171717]/55 to-transparent px-4 pb-4 pt-12">
-                <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/90">
+                <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/90">
                   {pieceLabel(detailPiece)}
                 </span>
               </div>

@@ -13,7 +13,7 @@ export function Table({ className, children, ...props }) {
 
 export function TableHeader({ className, children, ...props }) {
   return (
-    <thead className={cn('border-b border-cronos-line text-cronos-muted uppercase font-mono text-[10px] tracking-[0.18em]', className)} {...props}>
+    <thead className={cn('border-b border-cronos-line text-cronos-muted uppercase font-mono text-[11px] tracking-[0.18em]', className)} {...props}>
       {children}
     </thead>
   );
@@ -37,7 +37,7 @@ export function TableRow({ className, children, ...props }) {
 
 export function TableHead({ className, children, ...props }) {
   return (
-    <th className={cn('h-11 px-4 text-left font-normal align-middle text-cronos-muted font-mono tracking-widest text-[10px] uppercase', className)} {...props}>
+    <th className={cn('h-11 px-4 text-left font-normal align-middle text-cronos-muted font-mono tracking-widest text-[11px] uppercase', className)} {...props}>
       {children}
     </th>
   );

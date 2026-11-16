@@ -140,7 +140,7 @@ export function ProfilePage() {
     <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8 space-y-12">
       {/* 1. ENCABEZADO DE LA PÁGINA */}
       <div className="border-b border-cronos-line pb-6">
-        <span className="font-mono text-[10px] tracking-widest-brand text-cronos-bronze uppercase block mb-2">
+        <span className="font-mono text-[11px] tracking-widest-brand text-cronos-bronze uppercase block mb-2">
           PANORAMA &bull; MI CUENTA
         </span>
         <h1 className="font-serif text-3xl sm:text-4xl text-cronos-text tracking-[0.03em] uppercase mb-2 font-normal">
@@ -177,7 +177,7 @@ export function ProfilePage() {
       <section aria-labelledby="section-profile-title" className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 pb-3 border-b border-cronos-line/60">
           <div>
-            <span className="font-mono text-[9px] tracking-widest text-cronos-bronze uppercase block mb-1">
+            <span className="font-mono text-[11px] tracking-widest text-cronos-bronze uppercase block mb-1">
               SECCIÓN 01
             </span>
             <h2 id="section-profile-title" className="font-serif text-2xl text-cronos-text tracking-wide uppercase font-normal">
@@ -198,7 +198,7 @@ export function ProfilePage() {
                 DATOS DE LA CUENTA
               </h3>
             </div>
-            <span className="inline-flex items-center gap-1 font-mono text-[9px] tracking-widest text-cronos-muted bg-cronos-surface-1 border border-cronos-line px-2.5 py-0.5 uppercase font-medium">
+            <span className="inline-flex items-center gap-1 font-mono text-[11px] tracking-widest text-cronos-muted bg-cronos-surface-1 border border-cronos-line px-2.5 py-0.5 uppercase font-medium">
               [ SOLO LECTURA ]
             </span>
           </div>
@@ -209,7 +209,7 @@ export function ProfilePage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
             <div className="bg-cronos-surface-1 p-4">
-              <span className="block font-mono text-[9px] tracking-widest text-cronos-muted uppercase mb-1">
+              <span className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase mb-1">
                 NOMBRE DE USUARIO
               </span>
               <span className="font-mono text-xs text-cronos-text block font-medium">
@@ -218,7 +218,7 @@ export function ProfilePage() {
             </div>
 
             <div className="bg-cronos-surface-1 p-4">
-              <span className="block font-mono text-[9px] tracking-widest text-cronos-muted uppercase mb-1">
+              <span className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase mb-1">
                 CORREO ELECTRÓNICO
               </span>
               <span className="font-mono text-xs text-cronos-text block truncate">
@@ -227,7 +227,7 @@ export function ProfilePage() {
             </div>
 
             <div className="bg-cronos-surface-1 p-4">
-              <span className="block font-mono text-[9px] tracking-widest text-cronos-muted uppercase mb-1">
+              <span className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase mb-1">
                 FECHA DE REGISTRO
               </span>
               <span className="font-sans text-xs text-cronos-muted block capitalize">
@@ -246,7 +246,7 @@ export function ProfilePage() {
                 INFORMACIÓN PERSONAL
               </h3>
             </div>
-            <span className="text-[10px] font-mono text-cronos-bronze tracking-wider uppercase">
+            <span className="text-[11px] font-mono text-cronos-bronze tracking-wider uppercase">
               CAMPOS EDITABLES
             </span>
           </div>
@@ -257,7 +257,7 @@ export function ProfilePage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label htmlFor="profile_first_name" className="block font-mono text-[10px] tracking-widest text-cronos-muted uppercase">
+              <label htmlFor="profile_first_name" className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase">
                 NOMBRE
               </label>
               <Input
@@ -272,7 +272,7 @@ export function ProfilePage() {
             </div>
 
             <div className="space-y-1.5">
-              <label htmlFor="profile_last_name" className="block font-mono text-[10px] tracking-widest text-cronos-muted uppercase">
+              <label htmlFor="profile_last_name" className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase">
                 APELLIDOS
               </label>
               <Input
@@ -288,7 +288,7 @@ export function ProfilePage() {
           </div>
 
           <div className="space-y-1.5">
-            <label htmlFor="profile_telefono" className="block font-mono text-[10px] tracking-widest text-cronos-muted uppercase">
+            <label htmlFor="profile_telefono" className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase">
               TELÉFONO DE CONTACTO
             </label>
             <Input

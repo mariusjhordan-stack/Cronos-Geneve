@@ -24,7 +24,7 @@ export function Tooltip({ content, children, side = 'top', className }) {
         <div
           role="tooltip"
           className={cn(
-            'pointer-events-none absolute z-50 whitespace-nowrap rounded-none border border-cronos-line bg-white px-2.5 py-1 text-[9px] font-mono tracking-[0.2em] uppercase text-cronos-text shadow-dropdown transition-opacity duration-150 select-none',
+            'pointer-events-none absolute z-50 whitespace-nowrap rounded-none border border-cronos-line bg-white px-2.5 py-1 text-[11px] font-mono tracking-[0.2em] uppercase text-cronos-text shadow-dropdown transition-opacity duration-150 select-none',
             positionClasses[side],
             className
           )}

@@ -31,7 +31,7 @@ export function ProductSpecifications({ reloj }) {
         <TableBody>
           {specs.map((item, idx) => (
             <TableRow key={idx} className="border-b border-cronos-line/60 last:border-b-0 hover:bg-cronos-surface-1/40 transition-colors">
-              <TableCell className="w-2/5 sm:w-1/3 py-3.5 sm:py-4 pr-4 font-mono text-[10px] tracking-widest text-cronos-muted uppercase align-top">
+              <TableCell className="w-2/5 sm:w-1/3 py-3.5 sm:py-4 pr-4 font-mono text-[11px] tracking-widest text-cronos-muted uppercase align-top">
                 {item.label}
               </TableCell>
               <TableCell className="py-3.5 sm:py-4 font-sans text-xs sm:text-sm text-cronos-text leading-relaxed font-normal">

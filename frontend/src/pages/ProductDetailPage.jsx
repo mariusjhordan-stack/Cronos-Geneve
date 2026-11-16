@@ -50,7 +50,7 @@ export function ProductDetailPage() {
   if (error || !reloj) {
     return (
       <div className="mx-auto max-w-xl px-4 py-24 text-center">
-        <span className="font-mono text-[10px] tracking-widest text-cronos-bronze uppercase block mb-2">
+        <span className="font-mono text-[11px] tracking-widest text-cronos-bronze uppercase block mb-2">
           CRONOS GENÈVE / ARCHIVO DE BÓVEDA
         </span>
         <h2 className="font-serif text-3xl text-cronos-text mb-4 font-normal">

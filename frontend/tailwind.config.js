@@ -51,8 +51,8 @@ export default {
         'display-md': ['1.75rem', { lineHeight: '1.25', letterSpacing: '0.03em' }],
         'heading': ['1.25rem', { lineHeight: '1.4', letterSpacing: '0.02em' }],
         'body': ['0.875rem', { lineHeight: '1.6', letterSpacing: '0.01em' }],
-        'label': ['0.6875rem', { lineHeight: '1.4', letterSpacing: '0.18em' }],
-        'technical': ['0.625rem', { lineHeight: '1.4', letterSpacing: '0.14em' }],
+        'label': ['0.75rem', { lineHeight: '1.4', letterSpacing: '0.18em' }],
+        'technical': ['0.6875rem', { lineHeight: '1.4', letterSpacing: '0.14em' }],
       },
       letterSpacing: {
         'tightest': '-0.03em',
@@ -65,6 +65,19 @@ export default {
         'dropdown': '0 8px 24px rgba(23, 23, 23, 0.06)',
         'modal': '0 12px 36px rgba(23, 23, 23, 0.08)',
         'none': 'none',
+      },
+      borderRadius: {
+        'token-sm': 'var(--radius-sm)',
+        'token-md': 'var(--radius-md)',
+      },
+      spacing: {
+        'section': 'var(--space-section)',
+        'section-lg': 'var(--space-section-lg)',
+      },
+      transitionDuration: {
+        'fast': '200ms',
+        'base': '250ms',
+        'slow': '300ms',
       },
       borderWidth: {
         'px': '1px',

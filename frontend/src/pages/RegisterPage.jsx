@@ -139,7 +139,7 @@ export function RegisterPage() {
     <section className="mx-auto max-w-lg px-4 py-16 sm:py-24 sm:px-6">
       {/* Encabezado Editorial */}
       <div className="text-center mb-10">
-        <span className="font-mono text-[10px] tracking-widest-brand text-cronos-bronze uppercase block mb-3">
+        <span className="font-mono text-[11px] tracking-widest-brand text-cronos-bronze uppercase block mb-3">
           ESPACE CLIENT &bull; REGISTRO DE TITULAR
         </span>
         <h1 className="font-serif text-3xl sm:text-4xl text-cronos-text tracking-[0.02em] uppercase mb-3 font-normal">
@@ -169,7 +169,7 @@ export function RegisterPage() {
           <div className="space-y-1.5">
             <label
               htmlFor="username"
-              className="block font-mono text-[10px] tracking-widest text-cronos-muted uppercase"
+              className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase"
             >
               NOMBRE DE USUARIO *
             </label>
@@ -187,7 +187,7 @@ export function RegisterPage() {
               className={`w-full ${fieldErrors.username ? 'border-red-400 focus:border-red-600' : ''}`}
             />
             {fieldErrors.username && (
-              <span className="block font-mono text-[10px] text-red-600 mt-1">
+              <span className="block font-mono text-[11px] text-red-600 mt-1">
                 {fieldErrors.username}
               </span>
             )}
@@ -197,7 +197,7 @@ export function RegisterPage() {
           <div className="space-y-1.5">
             <label
               htmlFor="email"
-              className="block font-mono text-[10px] tracking-widest text-cronos-muted uppercase"
+              className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase"
             >
               CORREO ELECTRÓNICO *
             </label>
@@ -214,7 +214,7 @@ export function RegisterPage() {
               className={`w-full ${fieldErrors.email ? 'border-red-400 focus:border-red-600' : ''}`}
             />
             {fieldErrors.email && (
-              <span className="block font-mono text-[10px] text-red-600 mt-1">
+              <span className="block font-mono text-[11px] text-red-600 mt-1">
                 {fieldErrors.email}
               </span>
             )}
@@ -222,7 +222,7 @@ export function RegisterPage() {
 
           {/* Contraseña */}
           <div className="space-y-1.5">
-            <ul className="list-disc space-y-0.5 pl-4 font-sans text-[10px] leading-relaxed sm:text-[11px]">
+            <ul className="list-disc space-y-0.5 pl-4 font-sans text-[11px] leading-relaxed sm:text-[11px]">
               {passwordRules.slice(0, 5).map((rule) => {
                 const statusStyle = !rule.started
                   ? 'text-cronos-muted'
@@ -236,7 +236,7 @@ export function RegisterPage() {
             </ul>
             <label
               htmlFor="password"
-              className="block font-mono text-[10px] tracking-widest text-cronos-muted uppercase"
+              className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase"
             >
               CONTRASEÑA *
             </label>
@@ -268,7 +268,7 @@ export function RegisterPage() {
               </button>
             </div>
             {fieldErrors.password && (
-              <span className="block font-mono text-[10px] text-red-600 mt-1">
+              <span className="block font-mono text-[11px] text-red-600 mt-1">
                 {fieldErrors.password}
               </span>
             )}
@@ -283,7 +283,7 @@ export function RegisterPage() {
             )}
             <label
               htmlFor="password_confirm"
-              className="block font-mono text-[10px] tracking-widest text-cronos-muted uppercase"
+              className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase"
             >
               CONFIRMAR CONTRASEÑA *
             </label>
@@ -315,7 +315,7 @@ export function RegisterPage() {
               </button>
             </div>
             {fieldErrors.password_confirm && (
-              <span className="block font-mono text-[10px] text-red-600 mt-1">
+              <span className="block font-mono text-[11px] text-red-600 mt-1">
                 {fieldErrors.password_confirm}
               </span>
             )}

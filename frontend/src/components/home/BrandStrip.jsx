@@ -40,7 +40,7 @@ export function BrandStrip({ marcas = [], onSelectMarca }) {
                 {m.nombre}
               </span>
               {m.total_modelos > 0 && (
-                <span className="font-mono text-[9px] text-cronos-tertiary transition-colors group-hover:text-cronos-bronze/80">
+                <span className="font-mono text-[11px] text-cronos-tertiary transition-colors group-hover:text-cronos-bronze/80">
                   [{String(m.total_modelos).padStart(2, '0')}]
                 </span>
               )}

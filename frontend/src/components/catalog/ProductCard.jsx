@@ -10,16 +10,8 @@ import { useFavorites } from '@/context/FavoritesContext';
 import { WatchImage } from '@/components/product/WatchImage';
 import { getWatchHoverSrc, getWatchImageAlt, getWatchImageSrc } from '@/lib/watchImages';
 
-// Todas las tarjetas conservan la razón 4:5 de las imágenes normalizadas: solo cambia el ancho de columna.
-const CARD_LAYOUTS = {
-  single: { column: 'xl:col-span-8 xl:col-start-3' },
-  pair: { column: 'xl:col-span-6' },
-  lead: { column: 'xl:col-span-5' },
-  middle: { column: 'xl:col-span-4' },
-  narrow: { column: 'xl:col-span-3' },
-};
-
-export function ProductCard({ reloj, layoutVariant = 'middle' }) {
+/** `featured`: pieza destacada del catálogo, ocupa 2 columnas (imagen + texto lado a lado en pantallas medianas). */
+export function ProductCard({ reloj, featured = false }) {
   const { addToCart } = useCart();
   const { toggleCompare, isCompared } = useCompare();
   const { isFavorite, toggleFavorite, isProcessing } = useFavorites();
@@ -48,7 +40,6 @@ export function ProductCard({ reloj, layoutVariant = 'middle' }) {
 
   const cardImage = getWatchImageSrc(reloj, 'card');
   const hoverImage = getWatchHoverSrc(reloj, 'card');
-  const layout = CARD_LAYOUTS[layoutVariant] || CARD_LAYOUTS.middle;
 
   return (
     <motion.article
@@ -56,10 +47,10 @@ export function ProductCard({ reloj, layoutVariant = 'middle' }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.12 }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      className={`group relative col-span-1 flex h-full flex-col justify-between bg-transparent px-1 py-4 sm:py-6 xl:py-8 ${layout.column}`}
+      className={`group relative flex h-full flex-col justify-between bg-transparent py-2 ${featured ? 'md:col-span-2' : 'col-span-1'}`}
     >
-      <div className="flex flex-1 flex-col">
-        <div className={`relative mb-7 aspect-[4/5] w-full overflow-hidden bg-[#FAF8F4]`}>
+      <div className={featured ? 'flex flex-1 flex-col md:grid md:grid-cols-2 md:items-center md:gap-12' : 'flex flex-1 flex-col'}>
+        <div className="relative mb-7 aspect-[4/5] w-full overflow-hidden bg-[#FAF8F4] md:mb-0">
           <Link
             to={`/reloj/${reloj.id}`}
             className="absolute inset-0 focus:outline-none focus-visible:ring-1 focus-visible:ring-cronos-text"
@@ -102,24 +93,30 @@ export function ProductCard({ reloj, layoutVariant = 'middle' }) {
 
           <div className="pointer-events-none absolute bottom-3 left-3">
             {!inStock && (
-              <span className="bg-white/90 px-2 py-0.5 font-mono text-[9px] tracking-widest text-red-700 uppercase">
+              <span className="bg-white/90 px-2 py-0.5 font-mono text-[11px] tracking-widest text-red-700 uppercase">
                 Agotado
               </span>
             )}
             {inStock && reloj.stock === 1 && (
-              <span className="bg-white/90 px-2 py-0.5 font-mono text-[9px] tracking-widest text-cronos-bronze uppercase">
+              <span className="bg-white/90 px-2 py-0.5 font-mono text-[11px] tracking-widest text-cronos-bronze uppercase">
                 Pieza única
               </span>
             )}
           </div>
         </div>
 
+        <div className={featured ? 'md:py-6' : ''}>
+        {featured && (
+          <span className="mb-4 block font-mono text-[11px] uppercase tracking-[0.28em] text-cronos-text">
+            Pieza destacada
+          </span>
+        )}
         <div className="flex-1 space-y-2">
-          <span className="block font-mono text-[10px] uppercase tracking-[0.28em] text-cronos-bronze">
+          <span className="block font-mono text-[11px] uppercase tracking-[0.28em] text-cronos-bronze">
             {brandName}
           </span>
 
-          <h3 className="font-serif text-xl leading-snug tracking-[0.02em] text-cronos-text sm:text-[1.35rem]">
+          <h3 className={`font-serif leading-snug tracking-[0.02em] text-cronos-text ${featured ? 'text-3xl lg:text-4xl' : 'text-xl sm:text-[1.35rem]'}`}>
             <Link
               to={`/reloj/${reloj.id}`}
               className="block transition-colors duration-200 hover:text-cronos-bronze focus:outline-none"
@@ -139,9 +136,10 @@ export function ProductCard({ reloj, layoutVariant = 'middle' }) {
             {formatPrice(price)} <span className="text-xs font-normal text-cronos-muted">USD</span>
           </span>
         </div>
+        </div>
       </div>
 
-      <div className="flex items-center justify-between gap-3 border-t border-cronos-line/70 pt-4">
+      <div className="flex items-center justify-between gap-3 border-t border-cronos-line/40 pt-4">
         {inStock ? (
           <button
             type="button"
@@ -156,7 +154,7 @@ export function ProductCard({ reloj, layoutVariant = 'middle' }) {
             <span className="absolute bottom-0 left-0 h-px w-0 bg-cronos-bronze transition-all duration-300 group-hover/btn:w-full" />
           </button>
         ) : (
-          <span className="py-1 font-mono text-[10px] uppercase tracking-widest text-cronos-muted">
+          <span className="py-1 font-mono text-[11px] uppercase tracking-widest text-cronos-muted">
             Bajo encargo
           </span>
         )}
@@ -164,7 +162,7 @@ export function ProductCard({ reloj, layoutVariant = 'middle' }) {
         <button
           type="button"
           onClick={() => toggleCompare(reloj)}
-          className={`flex cursor-pointer items-center gap-1.5 py-1 font-mono text-[10px] uppercase tracking-widest transition-colors ${
+          className={`flex cursor-pointer items-center gap-1.5 py-1 font-mono text-[11px] uppercase tracking-widest transition-colors ${
             compared
               ? 'font-medium text-cronos-bronze'
               : 'text-cronos-muted hover:text-cronos-text'

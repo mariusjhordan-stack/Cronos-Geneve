@@ -8,7 +8,7 @@ export function Toaster() {
       toastOptions={{
         className:
           '!bg-white !border !border-[#D8D4CC] !text-[#171717] !font-sans !text-xs !shadow-dropdown !rounded-none',
-        descriptionClassName: '!text-[#6F6B64] !font-mono !text-[10px] !tracking-wider',
+        descriptionClassName: '!text-[#6F6B64] !font-mono !text-[11px] !tracking-wider',
         actionButtonStyle: {
           backgroundColor: '#171717',
           color: '#FFFFFF',
@@ -16,7 +16,7 @@ export function Toaster() {
           fontWeight: 500,
           letterSpacing: '0.16em',
           textTransform: 'uppercase',
-          fontSize: '10px',
+          fontSize: '11px',
         },
         cancelButtonStyle: {
           backgroundColor: 'transparent',
@@ -25,7 +25,7 @@ export function Toaster() {
           borderRadius: '0px',
           letterSpacing: '0.14em',
           textTransform: 'uppercase',
-          fontSize: '10px',
+          fontSize: '11px',
         },
       }}
     />

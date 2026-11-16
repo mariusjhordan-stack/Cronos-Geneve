@@ -88,7 +88,7 @@ export function SheetDescription({ className, children }) {
   return (
     <p
       className={cn(
-        'mt-1 font-mono text-[10px] uppercase tracking-widest text-cronos-muted',
+        'mt-1 font-mono text-[11px] uppercase tracking-widest text-cronos-muted',
         className
       )}
     >

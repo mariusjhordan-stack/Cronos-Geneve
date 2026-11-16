@@ -6,6 +6,7 @@ import { BrandStrip } from '@/components/home/BrandStrip';
 import { FeaturedPieces } from '@/components/home/FeaturedPieces';
 import { HeritageEssay } from '@/components/home/HeritageEssay';
 import { FinalCta } from '@/components/home/FinalCta';
+import { AtelierBand } from '@/components/home/AtelierBand';
 import { CatalogToolbar } from '@/components/catalog/CatalogToolbar';
 import { ProductGrid } from '@/components/catalog/ProductGrid';
 import { api } from '@/services/api';
@@ -155,16 +156,20 @@ export function HomePage() {
   // Selección determinista del guardatiempo protagonista (sin IDs hardcodeados)
   const protagonistPiece = useMemo(() => {
     if (!relojes || relojes.length === 0) return null;
-    const conImagen = relojes.filter((r) => Boolean(getWatchImageSrc(r)));
-    if (conImagen.length === 0) return relojes[0];
+    // Solo piezas disponibles: el hero y los destacados nunca muestran una pieza agotada.
+    const disponibles = relojes.filter((r) => r.stock > 0);
+    if (disponibles.length === 0) return null;
+    const conImagen = disponibles.filter((r) => Boolean(getWatchImageSrc(r)));
+    if (conImagen.length === 0) return disponibles[0];
     return [...conImagen].sort((a, b) => parseFloat(b.precio) - parseFloat(a.precio))[0];
   }, [relojes]);
 
   // Selección determinista de piezas destacadas (3 piezas distintas del protagonista)
   const featuredPieces = useMemo(() => {
     if (!relojes || relojes.length === 0) return [];
-    const restantes = relojes.filter((r) => r.id !== protagonistPiece?.id && Boolean(getWatchImageSrc(r)));
-    return restantes.length >= 3 ? restantes.slice(0, 3) : relojes.slice(0, 3);
+    const disponibles = relojes.filter((r) => r.stock > 0 && r.id !== protagonistPiece?.id);
+    const conImagen = disponibles.filter((r) => Boolean(getWatchImageSrc(r)));
+    return (conImagen.length >= 3 ? conImagen : disponibles).slice(0, 3);
   }, [relojes, protagonistPiece]);
 
   const hasActiveFilters =
@@ -194,14 +199,19 @@ export function HomePage() {
       />
 
       {/* 4. ENSAYO DE HERENCIA & ARQUITECTURA */}
-      <HeritageEssay mainPiece={protagonistPiece} detailPiece={featuredPieces[0] || protagonistPiece} />
+      {protagonistPiece && (
+        <HeritageEssay mainPiece={protagonistPiece} detailPiece={featuredPieces[0] || protagonistPiece} />
+      )}
+
+      {/* 4b. BANDA OSCURA: garantías de la casa */}
+      <AtelierBand />
 
       {/* 5. CATÁLOGO GENERAL (VITRINA EDITORIAL) */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:py-28 lg:py-32 scroll-mt-24" id="catalogo">
         {/* HEADER DE CATÁLOGO EDITORIAL */}
         <div className="mb-12 border-b border-cronos-line pb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
           <div>
-            <span className="font-mono text-[10px] tracking-[0.28em] text-cronos-bronze uppercase block mb-2">
+            <span className="font-mono text-[11px] tracking-[0.28em] text-cronos-bronze uppercase block mb-2">
               CRONOS GENÈVE &bull; CATÁLOGO
             </span>
             <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-cronos-text tracking-[0.02em]">
@@ -216,7 +226,7 @@ export function HomePage() {
               {totalCount} {totalCount === 1 ? 'PIEZA REGISTRADA' : 'PIEZAS REGISTRADAS'}
             </span>
             {totalPages > 1 && (
-              <span className="font-mono text-[10px] text-cronos-muted uppercase tracking-widest block mt-1">
+              <span className="font-mono text-[11px] text-cronos-muted uppercase tracking-widest block mt-1">
                 PÁGINA {String(currentPage).padStart(2, '0')} DE {String(totalPages).padStart(2, '0')}
               </span>
             )}

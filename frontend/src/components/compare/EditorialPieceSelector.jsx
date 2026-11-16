@@ -85,7 +85,7 @@ export function EditorialPieceSelector({
         <span className="truncate pr-2">
           {currentPiece ? (
             <span className="inline-flex items-center gap-1.5 truncate">
-              <strong className="font-semibold text-cronos-text uppercase font-mono text-[10px] tracking-wider">
+              <strong className="font-semibold text-cronos-text uppercase font-mono text-[11px] tracking-wider">
                 {brandDisplayName}
               </strong>
               <span className="text-cronos-muted">&mdash;</span>
@@ -173,7 +173,7 @@ export function EditorialPieceSelector({
                     }`}
                   >
                     <div className="min-w-0 flex-1">
-                      <span className="block font-mono text-[9px] tracking-widest text-cronos-bronze uppercase">
+                      <span className="block font-mono text-[11px] tracking-widest text-cronos-bronze uppercase">
                         {brand}
                       </span>
                       <span className="block font-serif text-xs sm:text-sm text-cronos-text font-normal truncate">

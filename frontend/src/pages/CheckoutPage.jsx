@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ShieldCheck, ArrowRight, AlertCircle, ShoppingBag, UserCheck } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { Checkbox } from '@/components/ui/Checkbox';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { useCart } from '@/context/CartContext';
@@ -248,7 +249,7 @@ export function CheckoutPage() {
       <div className="mx-auto max-w-xl px-4 py-24 text-center">
         <div className="border border-cronos-line/80 bg-white p-8">
           <ShoppingBag className="h-10 w-10 text-cronos-muted/40 mx-auto mb-4 stroke-[1.2]" />
-          <span className="font-mono text-[10px] tracking-widest-brand text-cronos-bronze uppercase block mb-1">
+          <span className="font-mono text-[11px] tracking-widest-brand text-cronos-bronze uppercase block mb-1">
             CRONOS GENÈVE / PRIVATE WATCH BAG
           </span>
           <h2 className="font-serif text-2xl text-cronos-text mb-3 font-normal">
@@ -271,7 +272,7 @@ export function CheckoutPage() {
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       {/* 1. ENCABEZADO */}
       <div className="mb-10 pb-6 border-b border-cronos-line">
-        <span className="font-mono text-[10px] tracking-widest-brand text-cronos-bronze uppercase block mb-2">
+        <span className="font-mono text-[11px] tracking-widest-brand text-cronos-bronze uppercase block mb-2">
           CRONOS GENÈVE &bull; CHECKOUT
         </span>
         <h1 className="font-serif text-3xl sm:text-4xl text-cronos-text tracking-[0.03em] mb-2 uppercase font-normal">
@@ -293,7 +294,7 @@ export function CheckoutPage() {
 
       {notices.length > 0 && (
         <div className="mb-8 border border-cronos-line/80 bg-white p-4">
-          <span className="font-mono text-[10px] tracking-widest text-cronos-bronze uppercase block mb-2">
+          <span className="font-mono text-[11px] tracking-widest text-cronos-bronze uppercase block mb-2">
             ACTUALIZACIÓN DE DISPONIBILIDAD EN INVENTARIO
           </span>
           <ul className="text-xs text-cronos-muted font-sans leading-relaxed list-disc pl-5 space-y-1">
@@ -311,7 +312,7 @@ export function CheckoutPage() {
           <div className="bg-white p-6 sm:p-8">
             <div className="mb-6 pb-4 border-b border-cronos-line flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <span className="font-mono text-[9px] tracking-widest text-cronos-bronze uppercase block mb-0.5">
+                <span className="font-mono text-[11px] tracking-widest text-cronos-bronze uppercase block mb-0.5">
                   DATOS DE LA ORDEN
                 </span>
                 <h2 className="font-serif text-xl sm:text-2xl text-cronos-text uppercase font-normal">
@@ -319,7 +320,7 @@ export function CheckoutPage() {
                 </h2>
               </div>
               {isAuthenticated && user && (
-                <div className="flex items-center gap-1.5 font-mono text-[10px] text-cronos-bronze bg-cronos-surface-1 border border-cronos-line px-2.5 py-1">
+                <div className="flex items-center gap-1.5 font-mono text-[11px] text-cronos-bronze bg-cronos-surface-1 border border-cronos-line px-2.5 py-1">
                   <UserCheck className="h-3 w-3" />
                   <span>SESIÓN: {user.username}</span>
                 </div>
@@ -331,12 +332,12 @@ export function CheckoutPage() {
               {isAuthenticated && savedAddresses.length > 0 && (
                 <div className="space-y-1.5 pb-4 border-b border-cronos-line/60">
                   <div className="flex items-center justify-between">
-                    <label htmlFor="checkout_saved_address" className="block font-mono text-[10px] tracking-widest text-cronos-muted uppercase">
+                    <label htmlFor="checkout_saved_address" className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase">
                       DIRECCIÓN GUARDADA
                     </label>
                     <Link
                       to="/direcciones"
-                      className="font-mono text-[9px] tracking-widest text-cronos-bronze hover:underline uppercase"
+                      className="font-mono text-[11px] tracking-widest text-cronos-bronze hover:underline uppercase"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -358,14 +359,14 @@ export function CheckoutPage() {
                       [ Ingresar dirección manualmente ]
                     </option>
                   </Select>
-                  <span className="text-[10px] font-sans text-cronos-muted block mt-1">
+                  <span className="text-[11px] font-sans text-cronos-muted block mt-1">
                     Puede modificar cualquier campo a continuación para esta orden específica.
                   </span>
                 </div>
               )}
 
               <div>
-                <label htmlFor="checkout_nombre" className="block font-mono text-[10px] tracking-widest text-cronos-muted uppercase mb-1.5">
+                <label htmlFor="checkout_nombre" className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase mb-1.5">
                   NOMBRE Y APELLIDOS *
                 </label>
                 <Input
@@ -382,7 +383,7 @@ export function CheckoutPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="checkout_email" className="block font-mono text-[10px] tracking-widest text-cronos-muted uppercase mb-1.5">
+                  <label htmlFor="checkout_email" className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase mb-1.5">
                     CORREO ELECTRÓNICO *
                   </label>
                   <Input
@@ -398,7 +399,7 @@ export function CheckoutPage() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="checkout_telefono" className="block font-mono text-[10px] tracking-widest text-cronos-muted uppercase mb-1.5">
+                  <label htmlFor="checkout_telefono" className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase mb-1.5">
                     TELÉFONO DE CONTACTO *
                   </label>
                   <Input
@@ -416,7 +417,7 @@ export function CheckoutPage() {
               </div>
 
               <div>
-                <label htmlFor="checkout_direccion" className="block font-mono text-[10px] tracking-widest text-cronos-muted uppercase mb-1.5">
+                <label htmlFor="checkout_direccion" className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase mb-1.5">
                   DIRECCIÓN DE ENVÍO *
                 </label>
                 <textarea
@@ -435,7 +436,7 @@ export function CheckoutPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="checkout_ciudad" className="block font-mono text-[10px] tracking-widest text-cronos-muted uppercase mb-1.5">
+                  <label htmlFor="checkout_ciudad" className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase mb-1.5">
                     CIUDAD *
                   </label>
                   <Input
@@ -449,7 +450,7 @@ export function CheckoutPage() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="checkout_pais" className="block font-mono text-[10px] tracking-widest text-cronos-muted uppercase mb-1.5">
+                  <label htmlFor="checkout_pais" className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase mb-1.5">
                     PAÍS *
                   </label>
                   <Select
@@ -470,7 +471,7 @@ export function CheckoutPage() {
               </div>
 
               <div>
-                <label htmlFor="checkout_notas" className="block font-mono text-[10px] tracking-widest text-cronos-muted uppercase mb-1.5">
+                <label htmlFor="checkout_notas" className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase mb-1.5">
                   NOTAS ADICIONALES (OPCIONAL)
                 </label>
                 <textarea
@@ -489,13 +490,11 @@ export function CheckoutPage() {
               {/* Términos de Garantía */}
               <div className="border border-cronos-line bg-cronos-surface-1 p-4 text-[11px] font-sans text-cronos-muted leading-relaxed">
                 <label className="flex items-start gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     name="garantia_aceptada"
                     checked={formData.garantia_aceptada}
                     onChange={handleChange}
                     disabled={submitting}
-                    className="mt-0.5 h-4 w-4 rounded-none border-cronos-line bg-white text-cronos-text focus:ring-0 cursor-pointer"
                   />
                   <span>
                     He revisado y acepto los términos de garantía aplicables a la orden.
@@ -518,7 +517,7 @@ export function CheckoutPage() {
                     </>
                   )}
                 </Button>
-                <p className="text-center font-mono text-[10px] tracking-widest text-cronos-muted uppercase mt-3">
+                <p className="text-center font-mono text-[11px] tracking-widest text-cronos-muted uppercase mt-3">
                   Proyecto académico — sin cobro bancario real
                 </p>
               </div>
@@ -530,7 +529,7 @@ export function CheckoutPage() {
         <div className="lg:col-span-5">
           <div className="sticky top-24 bg-cronos-surface-1 p-6 sm:p-8">
             <div className="flex items-center justify-between pb-4 mb-4 border-b border-cronos-line">
-              <span className="font-mono text-[10px] tracking-widest-brand text-cronos-bronze uppercase">
+              <span className="font-mono text-[11px] tracking-widest-brand text-cronos-bronze uppercase">
                 RESUMEN DE LA ORDEN
               </span>
               <span className="font-mono text-xs text-cronos-muted uppercase tracking-wider">
@@ -551,20 +550,20 @@ export function CheckoutPage() {
                       />
                     </div>
                     <div className="min-w-0">
-                      <span className="font-mono text-[9px] tracking-widest text-cronos-bronze block uppercase">
+                      <span className="font-mono text-[11px] tracking-widest text-cronos-bronze block uppercase">
                         {item.marca_nombre}
                       </span>
                       <h4 className="font-serif text-sm text-cronos-text truncate" title={item.nombre}>
                         {item.nombre}
                       </h4>
-                      <span className="font-mono text-[10px] text-cronos-muted">
+                      <span className="font-mono text-[11px] text-cronos-muted">
                         {item.cantidad} &times; {formatPrice(item.precio)}
                       </span>
                     </div>
                   </div>
 
                   <div className="font-mono text-right text-cronos-text shrink-0 text-xs font-medium">
-                    {formatPrice(item.precio * item.cantidad)} <span className="text-[9px] text-cronos-muted">USD</span>
+                    {formatPrice(item.precio * item.cantidad)} <span className="text-[11px] text-cronos-muted">USD</span>
                   </div>
                 </div>
               ))}
@@ -582,7 +581,7 @@ export function CheckoutPage() {
               </div>
             </div>
 
-            <div className="mt-6 pt-4 border-t border-cronos-line/60 flex items-center gap-2.5 text-[10px] font-mono text-cronos-muted">
+            <div className="mt-6 pt-4 border-t border-cronos-line/60 flex items-center gap-2.5 text-[11px] font-mono text-cronos-muted">
               <ShieldCheck className="h-4 w-4 text-cronos-bronze shrink-0 stroke-[1.4]" />
               <span>Pago procesado en el entorno de prueba seguro de Mercado Pago.</span>
             </div>

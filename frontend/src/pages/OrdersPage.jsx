@@ -80,37 +80,37 @@ export function OrdersPage() {
     switch (estado) {
       case 'pendiente':
         return (
-          <span className="inline-flex items-center rounded-none border border-amber-300 bg-amber-50 px-2.5 py-1 text-[9px] font-mono uppercase tracking-[0.2em] text-amber-800">
+          <span className="inline-flex items-center rounded-none border border-amber-300 bg-amber-50 px-2.5 py-1 text-[11px] font-mono uppercase tracking-[0.2em] text-amber-800">
             {label}
           </span>
         );
       case 'confirmado':
         return (
-          <span className="inline-flex items-center rounded-none border border-emerald-300 bg-emerald-50 px-2.5 py-1 text-[9px] font-mono uppercase tracking-[0.2em] text-emerald-800">
+          <span className="inline-flex items-center rounded-none border border-emerald-300 bg-emerald-50 px-2.5 py-1 text-[11px] font-mono uppercase tracking-[0.2em] text-emerald-800">
             {label}
           </span>
         );
       case 'enviado':
         return (
-          <span className="inline-flex items-center rounded-none border border-sky-300 bg-sky-50 px-2.5 py-1 text-[9px] font-mono uppercase tracking-[0.2em] text-sky-800">
+          <span className="inline-flex items-center rounded-none border border-sky-300 bg-sky-50 px-2.5 py-1 text-[11px] font-mono uppercase tracking-[0.2em] text-sky-800">
             {label}
           </span>
         );
       case 'entregado':
         return (
-          <span className="inline-flex items-center rounded-none border border-cronos-line bg-cronos-surface-1 px-2.5 py-1 text-[9px] font-mono uppercase tracking-[0.2em] text-cronos-text">
+          <span className="inline-flex items-center rounded-none border border-cronos-line bg-cronos-surface-1 px-2.5 py-1 text-[11px] font-mono uppercase tracking-[0.2em] text-cronos-text">
             {label}
           </span>
         );
       case 'cancelado':
         return (
-          <span className="inline-flex items-center rounded-none border border-red-200 bg-red-50 px-2.5 py-1 text-[9px] font-mono uppercase tracking-[0.2em] text-red-700">
+          <span className="inline-flex items-center rounded-none border border-red-200 bg-red-50 px-2.5 py-1 text-[11px] font-mono uppercase tracking-[0.2em] text-red-700">
             {label}
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center rounded-none border border-cronos-line bg-cronos-surface-1 px-2.5 py-1 text-[9px] font-mono uppercase tracking-[0.2em] text-cronos-muted">
+          <span className="inline-flex items-center rounded-none border border-cronos-line bg-cronos-surface-1 px-2.5 py-1 text-[11px] font-mono uppercase tracking-[0.2em] text-cronos-muted">
             {label}
           </span>
         );
@@ -152,7 +152,7 @@ export function OrdersPage() {
       {/* 1. ENCABEZADO EDITORIAL DE LA PÁGINA */}
       <div className="border-b border-cronos-line pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <span className="font-mono text-[10px] tracking-widest-brand text-cronos-bronze uppercase block mb-2">
+          <span className="font-mono text-[11px] tracking-widest-brand text-cronos-bronze uppercase block mb-2">
             01 · ARCHIVE CLIENT
           </span>
           <h1 className="font-serif text-3xl sm:text-4xl text-cronos-text tracking-[0.04em] uppercase mb-2">
@@ -163,7 +163,7 @@ export function OrdersPage() {
           </p>
         </div>
         {totalCount > 0 && (
-          <span className="font-mono text-[10px] tracking-widest text-cronos-muted uppercase">
+          <span className="font-mono text-[11px] tracking-widest text-cronos-muted uppercase">
             [ {totalCount} {totalCount === 1 ? 'ORDEN' : 'ÓRDENES'} EN ARCHIVO ]
           </span>
         )}
@@ -203,7 +203,7 @@ export function OrdersPage() {
       {orders.length === 0 ? (
         <div className="px-6 py-16 text-center sm:py-20">
           <Package className="h-10 w-10 text-cronos-bronze mx-auto mb-4 stroke-[1.2]" />
-          <span className="font-mono text-[9px] tracking-widest text-cronos-bronze uppercase block mb-2">
+          <span className="font-mono text-[11px] tracking-widest text-cronos-bronze uppercase block mb-2">
             ARCHIVE VIDE
           </span>
           <h2 className="font-serif text-2xl text-cronos-text mb-3 uppercase">
@@ -258,12 +258,12 @@ export function OrdersPage() {
                   </div>
 
                   <div className="text-left sm:text-right">
-                    <span className="font-mono text-[10px] tracking-widest text-cronos-muted uppercase block">
+                    <span className="font-mono text-[11px] tracking-widest text-cronos-muted uppercase block">
                       TOTAL ADQUISICIÓN
                     </span>
                     <span className="font-mono text-base sm:text-lg text-cronos-text tracking-wider">
                       {formatPrice(order.total)}{' '}
-                      <span className="text-[10px] text-cronos-muted">USD</span>
+                      <span className="text-[11px] text-cronos-muted">USD</span>
                     </span>
                   </div>
                 </div>
@@ -294,7 +294,7 @@ export function OrdersPage() {
                             </div>
 
                             <div className="min-w-0">
-                              <span className="font-mono text-[9px] tracking-widest text-cronos-bronze uppercase block truncate">
+                              <span className="font-mono text-[11px] tracking-widest text-cronos-bronze uppercase block truncate">
                                 {brandName}
                               </span>
                               <h3 className="font-serif text-sm sm:text-base text-cronos-text truncate">
@@ -309,7 +309,7 @@ export function OrdersPage() {
                                   watchName
                                 )}
                               </h3>
-                              <div className="font-mono text-[10px] text-cronos-muted mt-0.5">
+                              <div className="font-mono text-[11px] text-cronos-muted mt-0.5">
                                 <span>Cant: {detalle.cantidad}</span>
                                 {watch?.movimiento_display && (
                                   <>
@@ -325,7 +325,7 @@ export function OrdersPage() {
                             <span className="font-mono text-xs sm:text-sm text-cronos-text tracking-wider block">
                               {formatPrice(detalle.subtotal || detalle.precio_unitario * detalle.cantidad)}
                             </span>
-                            <span className="font-mono text-[10px] text-cronos-muted">
+                            <span className="font-mono text-[11px] text-cronos-muted">
                               {formatPrice(detalle.precio_unitario)} c/u
                             </span>
                           </div>
@@ -337,7 +337,7 @@ export function OrdersPage() {
 
                 {/* Destino y acción */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-cronos-line pt-4 mt-2">
-                  <div className="font-mono text-[10px] text-cronos-muted">
+                  <div className="font-mono text-[11px] text-cronos-muted">
                     {order.direccion_envio ? (
                       <span>
                         ENVÍO:{' '}

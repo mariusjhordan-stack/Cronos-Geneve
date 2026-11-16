@@ -1,5 +1,6 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { motion, useReducedMotion } from 'motion/react';
 import { CartProvider } from '@/context/CartContext';
 import { CompareProvider } from '@/context/CompareContext';
 import { FavoritesProvider } from '@/context/FavoritesContext';
@@ -20,7 +21,28 @@ import { ProfilePage } from '@/pages/ProfilePage';
 import { AddressesPage } from '@/pages/AddressesPage';
 import { OrdersPage } from '@/pages/OrdersPage';
 import { FavoritesPage } from '@/pages/FavoritesPage';
+import { CollectionsPage } from '@/pages/CollectionsPage';
 import { BrandIntro } from '@/components/brand/BrandIntro';
+
+/** Fundido entre páginas (250 ms) y regreso al inicio al cambiar de ruta. */
+function PageTransition({ children }) {
+  const { pathname } = useLocation();
+  const reduce = useReducedMotion();
+  React.useEffect(() => {
+    // Los enlaces con ancla (#catalogo) gestionan su propio desplazamiento.
+    if (!window.location.hash) window.scrollTo({ top: 0 });
+  }, [pathname]);
+  return (
+    <motion.div
+      key={pathname}
+      initial={reduce ? false : { opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25, ease: 'easeOut' }}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 export function App() {
   return (
@@ -38,8 +60,10 @@ export function App() {
 
             {/* Contenido Dinámico Principal */}
             <main className="flex-1">
+              <PageTransition>
               <Routes>
                 <Route path="/" element={<HomePage />} />
+                <Route path="/colecciones" element={<CollectionsPage />} />
                 <Route path="/reloj/:id" element={<ProductDetailPage />} />
                 <Route path="/comparador" element={<ComparePage />} />
                 <Route path="/checkout" element={<CheckoutPage />} />
@@ -53,6 +77,7 @@ export function App() {
                 <Route path="/favoritos" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
+              </PageTransition>
             </main>
 
             {/* Private Watch Bag (Drawer Lateral Editorial) */}

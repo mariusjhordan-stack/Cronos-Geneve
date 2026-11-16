@@ -4,6 +4,7 @@ import { MapPin, Plus, Pencil, Trash2, CheckCircle2, AlertCircle, RefreshCw } fr
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { Checkbox } from '@/components/ui/Checkbox';
 import { Dialog, DialogHeader, DialogTitle } from '@/components/ui/Dialog';
 import { api } from '@/services/api';
 import { useAuth } from '@/context/AuthContext';
@@ -218,7 +219,7 @@ export function AddressManager({ showTitle = true, showFullPageLink = false }) {
       {showTitle && (
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-cronos-line/60">
           <div>
-            <span className="font-mono text-[9px] tracking-widest text-cronos-bronze uppercase block mb-1">
+            <span className="font-mono text-[11px] tracking-widest text-cronos-bronze uppercase block mb-1">
               LIBRETA DE DIRECCIONES
             </span>
             <h2 id="section-addresses-heading" className="font-serif text-2xl text-cronos-text tracking-wide uppercase">
@@ -232,7 +233,7 @@ export function AddressManager({ showTitle = true, showFullPageLink = false }) {
             {showFullPageLink && (
               <Link
                 to="/direcciones"
-                className="font-mono text-[10px] tracking-widest text-cronos-bronze hover:underline uppercase transition-colors"
+                className="font-mono text-[11px] tracking-widest text-cronos-bronze hover:underline uppercase transition-colors"
               >
                 [ PÁGINA DE DIRECCIONES &rarr; ]
               </Link>
@@ -285,7 +286,7 @@ export function AddressManager({ showTitle = true, showFullPageLink = false }) {
                     {item.etiqueta}
                   </span>
                   {item.es_predeterminada && (
-                    <span className="inline-flex items-center gap-1 font-mono text-[9px] tracking-widest text-cronos-bronze bg-cronos-surface-1 border border-cronos-line px-2.5 py-0.5 uppercase shrink-0 font-medium">
+                    <span className="inline-flex items-center gap-1 font-mono text-[11px] tracking-widest text-cronos-bronze bg-cronos-surface-1 border border-cronos-line px-2.5 py-0.5 uppercase shrink-0 font-medium">
                       <CheckCircle2 className="h-3 w-3 stroke-[1.8]" />
                       <span>PREDETERMINADA</span>
                     </span>
@@ -295,7 +296,7 @@ export function AddressManager({ showTitle = true, showFullPageLink = false }) {
                 {/* Datos de envío */}
                 <div className="space-y-2 text-xs font-sans">
                   <div>
-                    <span className="block font-mono text-[9px] tracking-widest text-cronos-muted uppercase">
+                    <span className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase">
                       DESTINATARIO
                     </span>
                     <span className="text-cronos-text font-serif text-sm block">
@@ -304,7 +305,7 @@ export function AddressManager({ showTitle = true, showFullPageLink = false }) {
                   </div>
 
                   <div>
-                    <span className="block font-mono text-[9px] tracking-widest text-cronos-muted uppercase">
+                    <span className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase">
                       DIRECCIÓN
                     </span>
                     <span className="text-cronos-text block font-medium">
@@ -318,7 +319,7 @@ export function AddressManager({ showTitle = true, showFullPageLink = false }) {
                   </div>
 
                   <div>
-                    <span className="block font-mono text-[9px] tracking-widest text-cronos-muted uppercase">
+                    <span className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase">
                       TELÉFONO
                     </span>
                     <span className="font-mono text-xs text-cronos-muted block">
@@ -335,7 +336,7 @@ export function AddressManager({ showTitle = true, showFullPageLink = false }) {
                     <button
                       type="button"
                       onClick={() => handleSetDefaultAddress(item)}
-                      className="font-mono text-[10px] tracking-widest text-cronos-bronze hover:text-cronos-text uppercase transition-colors cursor-pointer"
+                      className="font-mono text-[11px] tracking-widest text-cronos-bronze hover:text-cronos-text uppercase transition-colors cursor-pointer"
                     >
                       [ ESTABLECER COMO PREDETERMINADA ]
                     </button>
@@ -346,7 +347,7 @@ export function AddressManager({ showTitle = true, showFullPageLink = false }) {
                   <button
                     type="button"
                     onClick={() => handleOpenEditAddress(item)}
-                    className="inline-flex items-center gap-1 font-mono text-[10px] tracking-widest text-cronos-muted hover:text-cronos-text uppercase transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1 font-mono text-[11px] tracking-widest text-cronos-muted hover:text-cronos-text uppercase transition-colors cursor-pointer"
                     aria-label={`Editar dirección ${item.etiqueta}`}
                   >
                     <Pencil className="h-3 w-3" />
@@ -355,7 +356,7 @@ export function AddressManager({ showTitle = true, showFullPageLink = false }) {
                   <button
                     type="button"
                     onClick={() => handleOpenDeleteConfirm(item)}
-                    className="inline-flex items-center gap-1 font-mono text-[10px] tracking-widest text-cronos-muted hover:text-red-600 uppercase transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1 font-mono text-[11px] tracking-widest text-cronos-muted hover:text-red-600 uppercase transition-colors cursor-pointer"
                     aria-label={`Eliminar dirección ${item.etiqueta}`}
                   >
                     <Trash2 className="h-3 w-3" />
@@ -371,7 +372,7 @@ export function AddressManager({ showTitle = true, showFullPageLink = false }) {
       {/* Modal: Crear / Editar Dirección */}
       <Dialog open={addressModalOpen} onOpenChange={setAddressModalOpen}>
         <DialogHeader onClose={() => setAddressModalOpen(false)}>
-          <span className="font-mono text-[9px] tracking-widest text-cronos-bronze uppercase block mb-1">
+          <span className="font-mono text-[11px] tracking-widest text-cronos-bronze uppercase block mb-1">
             LIBRETA DE DIRECCIONES
           </span>
           <DialogTitle>
@@ -389,7 +390,7 @@ export function AddressManager({ showTitle = true, showFullPageLink = false }) {
         <form onSubmit={handleSaveAddress} className="space-y-4 max-h-[72vh] overflow-y-auto pr-1">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label htmlFor="addr_etiqueta" className="block font-mono text-[10px] tracking-widest text-cronos-muted uppercase">
+              <label htmlFor="addr_etiqueta" className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase">
                 ETIQUETA (CASA, OFICINA…) *
               </label>
               <Input
@@ -403,7 +404,7 @@ export function AddressManager({ showTitle = true, showFullPageLink = false }) {
               />
             </div>
             <div className="space-y-1.5">
-              <label htmlFor="addr_destinatario" className="block font-mono text-[10px] tracking-widest text-cronos-muted uppercase">
+              <label htmlFor="addr_destinatario" className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase">
                 DESTINATARIO *
               </label>
               <Input
@@ -420,7 +421,7 @@ export function AddressManager({ showTitle = true, showFullPageLink = false }) {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label htmlFor="addr_telefono" className="block font-mono text-[10px] tracking-widest text-cronos-muted uppercase">
+              <label htmlFor="addr_telefono" className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase">
                 TELÉFONO DE CONTACTO *
               </label>
               <Input
@@ -435,7 +436,7 @@ export function AddressManager({ showTitle = true, showFullPageLink = false }) {
               />
             </div>
             <div className="space-y-1.5">
-              <label htmlFor="addr_pais" className="block font-mono text-[10px] tracking-widest text-cronos-muted uppercase">
+              <label htmlFor="addr_pais" className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase">
                 PAÍS *
               </label>
               <Input
@@ -451,7 +452,7 @@ export function AddressManager({ showTitle = true, showFullPageLink = false }) {
           </div>
 
           <div className="space-y-1.5">
-            <label htmlFor="addr_direccion" className="block font-mono text-[10px] tracking-widest text-cronos-muted uppercase">
+            <label htmlFor="addr_direccion" className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase">
               DIRECCIÓN COMPLETA *
             </label>
             <Input
@@ -467,7 +468,7 @@ export function AddressManager({ showTitle = true, showFullPageLink = false }) {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="space-y-1.5">
-              <label htmlFor="addr_ciudad" className="block font-mono text-[10px] tracking-widest text-cronos-muted uppercase">
+              <label htmlFor="addr_ciudad" className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase">
                 CIUDAD *
               </label>
               <Input
@@ -481,7 +482,7 @@ export function AddressManager({ showTitle = true, showFullPageLink = false }) {
               />
             </div>
             <div className="space-y-1.5">
-              <label htmlFor="addr_region" className="block font-mono text-[10px] tracking-widest text-cronos-muted uppercase">
+              <label htmlFor="addr_region" className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase">
                 REGIÓN (OPCIONAL)
               </label>
               <Input
@@ -494,7 +495,7 @@ export function AddressManager({ showTitle = true, showFullPageLink = false }) {
               />
             </div>
             <div className="space-y-1.5">
-              <label htmlFor="addr_codigo_postal" className="block font-mono text-[10px] tracking-widest text-cronos-muted uppercase">
+              <label htmlFor="addr_codigo_postal" className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase">
                 CÓDIGO POSTAL
               </label>
               <Input
@@ -510,12 +511,10 @@ export function AddressManager({ showTitle = true, showFullPageLink = false }) {
 
           <div className="pt-2">
             <label className="flex items-center gap-2.5 cursor-pointer text-xs text-cronos-muted select-none">
-              <input
-                type="checkbox"
+              <Checkbox
                 name="es_predeterminada"
                 checked={addressForm.es_predeterminada}
                 onChange={(e) => setAddressForm({ ...addressForm, es_predeterminada: e.target.checked })}
-                className="h-4 w-4 rounded-none border-cronos-line bg-white text-cronos-bronze focus:ring-0 cursor-pointer"
               />
               <span>Establecer como dirección predeterminada</span>
             </label>
@@ -546,7 +545,7 @@ export function AddressManager({ showTitle = true, showFullPageLink = false }) {
       {/* Modal: Confirmación de Eliminación */}
       <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
         <DialogHeader onClose={() => setDeleteModalOpen(false)}>
-          <span className="font-mono text-[9px] tracking-widest text-cronos-bronze uppercase block mb-1">
+          <span className="font-mono text-[11px] tracking-widest text-cronos-bronze uppercase block mb-1">
             CONFIRMACIÓN REQUERIDA
           </span>
           <DialogTitle>ELIMINAR DIRECCIÓN</DialogTitle>

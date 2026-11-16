@@ -35,13 +35,13 @@ export function CompareTable({ pieces = [], onRemovePiece }) {
           {/* Encabezado con nombres y botón de remoción */}
           <thead>
             <tr className="border-b border-cronos-line bg-cronos-surface-1">
-              <th className="w-1/4 min-w-[120px] sm:min-w-[160px] lg:min-w-[200px] p-3 sm:p-4 font-mono text-[9px] sm:text-[10px] tracking-wider sm:tracking-widest text-cronos-muted uppercase sticky left-0 bg-cronos-surface-1 z-10 border-r border-cronos-line">
+              <th className="w-1/4 min-w-[120px] sm:min-w-[160px] lg:min-w-[200px] p-3 sm:p-4 font-mono text-[11px] sm:text-[11px] tracking-wider sm:tracking-widest text-cronos-muted uppercase sticky left-0 bg-cronos-surface-1 z-10 border-r border-cronos-line">
                 ESPECIFICACIÓN
               </th>
               {pieces.map((piece) => (
                 <th key={piece.id} className="p-3 sm:p-4 text-center border-r border-cronos-line last:border-r-0 min-w-[200px] sm:min-w-[220px] bg-white">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-mono text-[9px] tracking-widest-brand text-cronos-bronze uppercase">
+                    <span className="font-mono text-[11px] tracking-widest-brand text-cronos-bronze uppercase">
                       {piece.marca_nombre || piece.marca_detalle?.nombre || 'Manufactura Suiza'}
                     </span>
                     <button
@@ -68,7 +68,7 @@ export function CompareTable({ pieces = [], onRemovePiece }) {
           <tbody className="divide-y divide-cronos-line/60">
             {attributes.map((attr) => (
               <tr key={attr.key} className="hover:bg-cronos-surface-1/60 transition-colors group">
-                <td className="min-w-[120px] sm:min-w-[160px] lg:min-w-[200px] p-3 sm:p-4 font-mono text-[9px] sm:text-[10px] tracking-wider sm:tracking-widest text-cronos-muted uppercase sticky left-0 bg-white group-hover:bg-cronos-surface-1 z-10 border-r border-cronos-line align-middle transition-colors">
+                <td className="min-w-[120px] sm:min-w-[160px] lg:min-w-[200px] p-3 sm:p-4 font-mono text-[11px] sm:text-[11px] tracking-wider sm:tracking-widest text-cronos-muted uppercase sticky left-0 bg-white group-hover:bg-cronos-surface-1 z-10 border-r border-cronos-line align-middle transition-colors">
                   {attr.label}
                 </td>
 
@@ -111,7 +111,7 @@ export function CompareTable({ pieces = [], onRemovePiece }) {
                   if (attr.key === 'precio') {
                     return (
                       <td key={piece.id} className="p-3 sm:p-4 text-center font-mono text-sm text-cronos-text font-normal border-r border-cronos-line last:border-r-0 align-middle">
-                        {formatPrice(piece.precio)} <span className="text-[10px] text-cronos-muted">USD</span>
+                        {formatPrice(piece.precio)} <span className="text-[11px] text-cronos-muted">USD</span>
                       </td>
                     );
                   }
@@ -178,13 +178,13 @@ export function CompareTable({ pieces = [], onRemovePiece }) {
                             size="sm"
                             variant="default"
                             onClick={() => addToCart(piece, 1)}
-                            className="w-full flex items-center justify-center gap-1.5 font-mono text-[10px] tracking-widest uppercase"
+                            className="w-full flex items-center justify-center gap-1.5 font-mono text-[11px] tracking-widest uppercase"
                           >
                             <span>RESERVAR</span>
                             <ArrowRight className="h-3 w-3" />
                           </Button>
                         ) : (
-                          <span className="font-mono text-[10px] text-cronos-muted uppercase block py-1">
+                          <span className="font-mono text-[11px] text-cronos-muted uppercase block py-1">
                             [ BAJO ENCARGO ]
                           </span>
                         )}

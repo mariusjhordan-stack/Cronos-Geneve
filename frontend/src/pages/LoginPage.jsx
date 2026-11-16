@@ -65,7 +65,7 @@ export function LoginPage() {
     <section className="mx-auto max-w-lg px-4 py-16 sm:py-24 sm:px-6">
       {/* Encabezado Editorial */}
       <div className="text-center mb-10">
-        <span className="font-mono text-[10px] tracking-widest-brand text-cronos-bronze uppercase block mb-3">
+        <span className="font-mono text-[11px] tracking-widest-brand text-cronos-bronze uppercase block mb-3">
           ESPACE CLIENT &bull; ACCÈS PRIVÉ
         </span>
         <h1 className="font-serif text-3xl sm:text-4xl text-cronos-text tracking-[0.02em] uppercase mb-3 font-normal">
@@ -94,7 +94,7 @@ export function LoginPage() {
           <div className="space-y-2">
             <label
               htmlFor="username"
-              className="block font-mono text-[10px] tracking-widest text-cronos-muted uppercase"
+              className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase"
             >
               NOMBRE DE USUARIO *
             </label>
@@ -116,7 +116,7 @@ export function LoginPage() {
             <div className="flex items-center justify-between">
               <label
                 htmlFor="password"
-                className="block font-mono text-[10px] tracking-widest text-cronos-muted uppercase"
+                className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase"
               >
                 CONTRASEÑA *
               </label>

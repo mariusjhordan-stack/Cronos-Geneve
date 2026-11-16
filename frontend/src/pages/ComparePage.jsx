@@ -72,7 +72,7 @@ export function ComparePage() {
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       {/* 1. HEADER EDITORIAL DE LA MATRIZ */}
       <div className="text-center max-w-2xl mx-auto mb-10">
-        <span className="font-mono text-[10px] tracking-widest-brand text-cronos-bronze uppercase block mb-2">
+        <span className="font-mono text-[11px] tracking-widest-brand text-cronos-bronze uppercase block mb-2">
           CRONOS GENÈVE / MATRIZ HOROLÓGICA
         </span>
         <h1 className="mb-3 font-serif text-3xl font-normal tracking-wide text-cronos-text sm:text-4xl">
@@ -90,7 +90,7 @@ export function ComparePage() {
             const currentPiece = comparedPieces[slotIdx];
             return (
               <div key={slotIdx} className="space-y-1.5">
-                <label className="block font-mono text-[9px] tracking-widest text-cronos-muted uppercase">
+                <label className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase">
                   PIEZA 0{slotIdx + 1} {slotIdx === 2 ? '(OPCIONAL)' : ''}
                 </label>
                 <EditorialPieceSelector
@@ -143,7 +143,7 @@ export function ComparePage() {
       ) : comparedPieces.length === 1 ? (
         <div className="py-16 px-4 text-center my-6">
           <Scale className="h-8 w-8 text-cronos-bronze mx-auto mb-3 stroke-[1.2]" />
-          <span className="font-mono text-[10px] tracking-widest text-cronos-bronze uppercase block mb-1">
+          <span className="font-mono text-[11px] tracking-widest text-cronos-bronze uppercase block mb-1">
             CONTRASTE INCOMPLETO
           </span>
           <h3 className="font-serif text-2xl text-cronos-text mb-2 font-normal">
@@ -161,7 +161,7 @@ export function ComparePage() {
       ) : (
         <div className="py-20 px-4 text-center my-6">
           <Scale className="h-10 w-10 text-cronos-tertiary mx-auto mb-4 stroke-[1.2]" />
-          <span className="font-mono text-[10px] tracking-widest-brand text-cronos-bronze uppercase block mb-1">
+          <span className="font-mono text-[11px] tracking-widest-brand text-cronos-bronze uppercase block mb-1">
             MATRIZ VACÍA
           </span>
           <h3 className="font-serif text-2xl text-cronos-text mb-3 font-normal">

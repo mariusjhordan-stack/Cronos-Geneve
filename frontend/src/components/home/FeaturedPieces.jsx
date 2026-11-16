@@ -95,17 +95,17 @@ export function FeaturedPieces({ pieces = [] }) {
                       imgClassName={shouldReduceMotion ? '' : 'transition-transform duration-700 ease-out group-hover:scale-[1.04]'}
                     />
                     {piece.stock === 1 && (
-                      <span className="absolute right-3 top-3 bg-white/90 px-2.5 py-0.5 font-mono text-[9px] tracking-widest text-cronos-bronze uppercase">
+                      <span className="absolute right-3 top-3 bg-white/90 px-2.5 py-0.5 font-mono text-[11px] tracking-widest text-cronos-bronze uppercase">
                         Pieza única
                       </span>
                     )}
 
-                    <div className="pointer-events-none absolute bottom-3 left-3 font-mono text-[9px] uppercase tracking-widest text-cronos-muted/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                    <div className="pointer-events-none absolute bottom-3 left-3 font-mono text-[11px] uppercase tracking-widest text-cronos-muted/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                       N° 0{idx + 1}
                     </div>
                   </Link>
 
-                  <span className="mb-1.5 block text-center font-mono text-[10px] uppercase tracking-[0.28em] text-cronos-bronze">
+                  <span className="mb-1.5 block text-center font-mono text-[11px] uppercase tracking-[0.28em] text-cronos-bronze">
                     {brand}
                   </span>
 
@@ -124,7 +124,7 @@ export function FeaturedPieces({ pieces = [] }) {
 
                   <div className="mb-6 text-center font-mono text-base tracking-wider text-cronos-text">
                     {formatPrice(price)}{' '}
-                    <span className="text-[10px] text-cronos-muted">USD</span>
+                    <span className="text-[11px] text-cronos-muted">USD</span>
                   </div>
                 </div>
 

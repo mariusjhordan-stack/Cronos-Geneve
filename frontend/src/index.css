@@ -17,6 +17,40 @@
   --cronos-line-subtle: #E8E5DD;
   --cronos-accent: #A58A68;
   --cronos-accent-hover: #8F7555;
+  --cronos-ink: #171717;
+  --cronos-ink-soft: #2B2B2B;
+  --cronos-bronze-light: #C4AA8A;
+
+  /* Espaciado: escala de 4 px + ritmo vertical de secciones */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-section: 5rem;
+  --space-section-lg: 8rem;
+
+  /* Radios: la marca es de ángulos rectos; solo los controles pequeños admiten 2 px */
+  --radius-none: 0;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+
+  /* Sombras suaves (nunca duras): elevación editorial */
+  --shadow-soft: 0 2px 8px rgba(23, 23, 23, 0.04);
+  --shadow-raised: 0 8px 24px rgba(23, 23, 23, 0.06);
+  --shadow-overlay: 0 12px 36px rgba(23, 23, 23, 0.08);
+
+  /* Tipografía: etiquetas monoespaciadas nunca por debajo de 11 px */
+  --text-label: 0.6875rem;
+  --text-label-lg: 0.75rem;
+  --tracking-label: 0.18em;
+
+  /* Movimiento: 200-300 ms */
+  --motion-fast: 200ms;
+  --motion-base: 250ms;
+  --motion-slow: 300ms;
+  --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 body {

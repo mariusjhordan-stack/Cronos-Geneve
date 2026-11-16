@@ -73,7 +73,7 @@ export function Footer() {
             <p className="text-xs text-[#9E9B95] leading-relaxed font-sans max-w-sm">
               Plataforma editorial y vitrina digital dedicada a la documentación, catalogación y adquisición de piezas de alta relojería.
             </p>
-            <div className="font-mono text-[10px] text-cronos-bronze tracking-[0.2em] pt-1 uppercase">
+            <div className="font-mono text-[11px] text-cronos-bronze tracking-[0.2em] pt-1 uppercase">
               HAUTE HORLOGERIE &bull; ÉDITION SUISSE
             </div>
           </div>
@@ -90,8 +90,8 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/?orden=novedades#catalogo" className="hover:text-white transition-colors">
-                  Novedades
+                <Link to="/colecciones" className="hover:text-white transition-colors">
+                  Colecciones por casa
                 </Link>
               </li>
               <li>
@@ -155,10 +155,10 @@ export function Footer() {
               <p>
                 Asesoría técnica y soporte de adquisición en línea.
               </p>
-              <p className="font-mono text-[10px] text-[#A3A09A]">
+              <p className="font-mono text-[11px] text-[#A3A09A]">
                 Lunes a Viernes &bull; 09:00 - 18:00 UTC
               </p>
-              <p className="font-mono text-[10px] text-cronos-bronze">
+              <p className="font-mono text-[11px] text-cronos-bronze">
                 concierge@cronos-geneve.ch
               </p>
             </div>
@@ -166,7 +166,7 @@ export function Footer() {
         </div>
 
         {/* 3. Línea de Cierre Institucional */}
-        <div className="mt-14 pt-8 border-t border-[#262523] flex flex-col sm:flex-row items-center justify-between text-[10px] font-mono tracking-widest text-[#73706A] gap-4">
+        <div className="mt-14 pt-8 border-t border-[#262523] flex flex-col sm:flex-row items-center justify-between text-[11px] font-mono tracking-widest text-[#73706A] gap-4">
           <div>
             &copy; {CURRENT_YEAR} CRONOS GENÈVE. TODOS LOS DERECHOS RESERVADOS.
           </div>

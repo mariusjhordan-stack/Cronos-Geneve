@@ -63,7 +63,7 @@ export function FavoritesPage() {
       {/* 1. ENCABEZADO EDITORIAL DE LA PÁGINA */}
       <div className="border-b border-cronos-line pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <span className="font-mono text-[10px] tracking-widest-brand text-cronos-bronze uppercase block mb-2">
+          <span className="font-mono text-[11px] tracking-widest-brand text-cronos-bronze uppercase block mb-2">
             SÉLECTION PRIVÉE
           </span>
           <h1 className="font-serif text-3xl sm:text-4xl text-cronos-text tracking-[0.04em] uppercase mb-2">
@@ -74,7 +74,7 @@ export function FavoritesPage() {
           </p>
         </div>
         {favorites.length > 0 && (
-          <span className="font-mono text-[10px] tracking-widest text-cronos-muted uppercase">
+          <span className="font-mono text-[11px] tracking-widest text-cronos-muted uppercase">
             [ {favorites.length} {favorites.length === 1 ? 'PIEZA GUARDADA' : 'PIEZAS GUARDADAS'} ]
           </span>
         )}
@@ -84,7 +84,7 @@ export function FavoritesPage() {
       {favorites.length === 0 ? (
         <div className="px-6 py-16 text-center sm:py-20">
           <Heart className="h-10 w-10 text-cronos-bronze mx-auto mb-4 stroke-[1.2]" />
-          <span className="font-mono text-[9px] tracking-widest text-cronos-bronze uppercase block mb-2">
+          <span className="font-mono text-[11px] tracking-widest text-cronos-bronze uppercase block mb-2">
             SÉLECTION VIDE
           </span>
           <h2 className="font-serif text-2xl text-cronos-text mb-3 uppercase">
@@ -125,22 +125,22 @@ export function FavoritesPage() {
                 <div>
                   {/* Fila superior: Marca e indicador de stock */}
                   <div className="flex items-center justify-between gap-2 mb-2">
-                    <span className="font-mono text-[9px] tracking-widest-brand text-cronos-bronze uppercase">
+                    <span className="font-mono text-[11px] tracking-widest-brand text-cronos-bronze uppercase">
                       {brandName}
                     </span>
                     <div>
                       {!inStock && (
-                        <span className="font-mono text-[9px] tracking-widest text-red-600">
+                        <span className="font-mono text-[11px] tracking-widest text-red-600">
                           [ AGOTADO ]
                         </span>
                       )}
                       {inStock && watch.stock === 1 && (
-                        <span className="font-mono text-[9px] tracking-widest text-cronos-bronze font-medium">
+                        <span className="font-mono text-[11px] tracking-widest text-cronos-bronze font-medium">
                           [ PIEZA ÚNICA ]
                         </span>
                       )}
                       {inStock && watch.stock > 1 && (
-                        <span className="font-mono text-[9px] tracking-widest text-cronos-muted">
+                        <span className="font-mono text-[11px] tracking-widest text-cronos-muted">
                           [ {watch.stock} EN BÓVEDA ]
                         </span>
                       )}
@@ -174,7 +174,7 @@ export function FavoritesPage() {
                   </div>
 
                   {/* Calibre / Especificaciones técnicas */}
-                  <div className="text-center font-mono text-[10px] tracking-widest text-cronos-muted mb-3">
+                  <div className="text-center font-mono text-[11px] tracking-widest text-cronos-muted mb-3">
                     {watch.movimiento_display || watch.movimiento || 'Calibre suizo'}
                     {watch.diametro_caja_mm && ` &bull; ${watch.diametro_caja_mm} MM`}
                     {watch.resistencia_agua_m && ` &bull; ${watch.resistencia_agua_m} M WR`}
@@ -183,7 +183,7 @@ export function FavoritesPage() {
                   {/* Precio */}
                   <div className="text-center font-mono text-base sm:text-lg text-cronos-text tracking-wider mb-5">
                     {formatPrice(price)}{' '}
-                    <span className="text-[10px] text-cronos-muted">USD</span>
+                    <span className="text-[11px] text-cronos-muted">USD</span>
                   </div>
                 </div>
 
@@ -199,7 +199,7 @@ export function FavoritesPage() {
                       <span>AÑADIR A LA BOLSA</span>
                     </button>
                   ) : (
-                    <div className="w-full py-2.5 text-center font-mono text-[10px] tracking-widest text-cronos-muted uppercase border border-cronos-line bg-cronos-surface-1 select-none">
+                    <div className="w-full py-2.5 text-center font-mono text-[11px] tracking-widest text-cronos-muted uppercase border border-cronos-line bg-cronos-surface-1 select-none">
                       [ PIEZA AGOTADA ]
                     </div>
                   )}
@@ -208,7 +208,7 @@ export function FavoritesPage() {
                     type="button"
                     disabled={isRemoving}
                     onClick={() => handleRemove(favorite.reloj, watch.nombre)}
-                    className="w-full py-2 text-center font-mono text-[10px] tracking-widest text-cronos-muted hover:text-red-600 uppercase transition-colors flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                    className="w-full py-2 text-center font-mono text-[11px] tracking-widest text-cronos-muted hover:text-red-600 uppercase transition-colors flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
                   >
                     <Trash2 className="h-3 w-3" />
                     <span>{isRemoving ? 'RETIRANDO…' : 'RETIRAR DE SELECCIÓN'}</span>

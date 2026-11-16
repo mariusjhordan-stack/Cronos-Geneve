@@ -8,7 +8,7 @@ import { useFavorites } from '@/context/FavoritesContext';
 import { Sheet, SheetHeader, SheetTitle, SheetDescription, SheetContent, SheetFooter } from '@/components/ui/Sheet';
 import { Separator } from '@/components/ui/Separator';
 import { toast } from 'sonner';
-import { useReducedMotion } from 'motion/react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -37,8 +37,8 @@ export function Header() {
   }, [location.pathname, location.search]);
 
   const isHome = location.pathname === '/';
-  const isColecciones = isHome && location.search.includes('orden=novedades');
-  const isCatalogo = isHome && !isColecciones;
+  const isColecciones = location.pathname.startsWith('/colecciones');
+  const isCatalogo = isHome;
   const isComparador = location.pathname === '/comparador';
 
   const handleCatalogClick = () => {
@@ -50,10 +50,6 @@ export function Header() {
   };
 
   const handleColeccionesClick = () => {
-    if (isHome) {
-      const el = document.getElementById('catalogo');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }
     setMobileMenuOpen(false);
   };
 
@@ -86,7 +82,7 @@ export function Header() {
           <span className="font-serif text-lg sm:text-xl tracking-[0.22em] sm:tracking-[0.28em] text-cronos-text transition-colors group-hover:text-cronos-bronze">
             CRONOS GENÈVE
           </span>
-          <span className="font-mono text-[8px] sm:text-[9px] tracking-widest sm:tracking-widest-brand text-cronos-muted group-hover:text-cronos-bronze/80">
+          <span className="font-mono text-[11px] sm:text-[11px] tracking-widest sm:tracking-widest-brand text-cronos-muted group-hover:text-cronos-bronze/80">
             HAUTE HORLOGERIE &bull; SUISSE
           </span>
         </Link>
@@ -105,7 +101,7 @@ export function Header() {
             Catálogo
           </Link>
           <Link
-            to="/?orden=novedades#catalogo"
+            to="/colecciones"
             onClick={handleColeccionesClick}
             className={`text-[11px] font-sans uppercase tracking-[0.22em] transition-colors py-1.5 relative ${
               isColecciones
@@ -125,7 +121,7 @@ export function Header() {
           >
             <span>Comparador</span>
             {totalCompared > 0 && (
-              <span className="px-1.5 py-0.5 rounded-none bg-cronos-text text-white text-[9px] font-mono font-medium">
+              <span className="px-1.5 py-0.5 rounded-none bg-cronos-text text-white text-[11px] font-mono font-medium">
                 {totalCompared}
               </span>
             )}
@@ -147,7 +143,7 @@ export function Header() {
               }`}
             />
             {totalFavorites > 0 && (
-              <span className="font-mono text-[10px] text-cronos-bronze font-medium">
+              <span className="font-mono text-[11px] text-cronos-bronze font-medium">
                 ({totalFavorites})
               </span>
             )}
@@ -159,19 +155,19 @@ export function Header() {
               <>
                 <Link
                   to="/perfil"
-                  className="font-mono text-[10px] tracking-widest text-cronos-muted hover:text-cronos-text transition-colors"
+                  className="font-mono text-[11px] tracking-widest text-cronos-muted hover:text-cronos-text transition-colors"
                 >
                   PERFIL
                 </Link>
                 <Link
                   to="/direcciones"
-                  className="font-mono text-[10px] tracking-widest text-cronos-muted hover:text-cronos-text transition-colors"
+                  className="font-mono text-[11px] tracking-widest text-cronos-muted hover:text-cronos-text transition-colors"
                 >
                   DIRECCIONES
                 </Link>
                 <Link
                   to="/mis-ordenes"
-                  className="font-mono text-[10px] tracking-widest text-cronos-muted hover:text-cronos-text transition-colors"
+                  className="font-mono text-[11px] tracking-widest text-cronos-muted hover:text-cronos-text transition-colors"
                 >
                   ÓRDENES
                 </Link>
@@ -188,7 +184,7 @@ export function Header() {
             ) : (
               <Link
                 to="/login"
-                className="inline-flex items-center gap-1.5 font-mono text-[10px] tracking-widest text-cronos-muted hover:text-cronos-text transition-colors"
+                className="inline-flex items-center gap-1.5 font-mono text-[11px] tracking-widest text-cronos-muted hover:text-cronos-text transition-colors"
               >
                 <UserRound className="h-3.5 w-3.5 stroke-[1.4]" />
                 <span>ACCESO</span>
@@ -205,7 +201,23 @@ export function Header() {
           >
             <ShoppingBag className="h-3.5 w-3.5 text-cronos-muted group-hover:text-cronos-text transition-colors stroke-[1.4]" />
             <span className="text-[11px] font-mono tracking-widest text-cronos-text">
-              BOLSA <span className="text-cronos-bronze font-medium">({totalUnidades})</span>
+              BOLSA{' '}
+              <span className="inline-flex text-cronos-bronze font-medium" aria-live="polite">
+                (
+                <AnimatePresence mode="popLayout" initial={false}>
+                  <motion.span
+                    key={totalUnidades}
+                    initial={shouldReduceMotion ? false : { y: -8, opacity: 0, scale: 1.25 }}
+                    animate={{ y: 0, opacity: 1, scale: 1 }}
+                    exit={shouldReduceMotion ? { opacity: 0 } : { y: 8, opacity: 0 }}
+                    transition={{ duration: 0.25, ease: 'easeOut' }}
+                    className="inline-block min-w-[1ch] text-center"
+                  >
+                    {totalUnidades}
+                  </motion.span>
+                </AnimatePresence>
+                )
+              </span>
             </span>
           </button>
 
@@ -224,7 +236,7 @@ export function Header() {
       {/* Drawer Lateral Unificado para Tablet y Móvil usando Sheet */}
       <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
         <SheetHeader onClose={() => setMobileMenuOpen(false)}>
-          <span className="font-mono text-[9px] tracking-widest-brand text-cronos-bronze uppercase block">
+          <span className="font-mono text-[11px] tracking-widest-brand text-cronos-bronze uppercase block">
             CRONOS GENÈVE &bull; NAVEGACIÓN
           </span>
           <SheetTitle>MENÚ EDITORIAL</SheetTitle>
@@ -242,11 +254,11 @@ export function Header() {
                 Catálogo General
               </Link>
               <Link
-                to="/?orden=novedades#catalogo"
+                to="/colecciones"
                 onClick={handleColeccionesClick}
                 className="block text-xs uppercase tracking-[0.22em] text-cronos-muted hover:text-cronos-text py-3 transition-colors border-b border-cronos-line"
               >
-                Colecciones &bull; Novedades
+                Colecciones
               </Link>
               <Link
                 to="/comparador"
@@ -255,7 +267,7 @@ export function Header() {
               >
                 <span>Matriz Comparativa</span>
                 {totalCompared > 0 && (
-                  <span className="px-2 py-0.5 rounded-none bg-cronos-text text-white text-[10px] font-mono font-medium">
+                  <span className="px-2 py-0.5 rounded-none bg-cronos-text text-white text-[11px] font-mono font-medium">
                     {totalCompared}
                   </span>
                 )}
@@ -267,7 +279,7 @@ export function Header() {
               >
                 <span>Selección Privada &bull; Favoritos</span>
                 {totalFavorites > 0 && (
-                  <span className="px-2 py-0.5 rounded-none bg-cronos-bronze text-white text-[10px] font-mono font-medium">
+                  <span className="px-2 py-0.5 rounded-none bg-cronos-bronze text-white text-[11px] font-mono font-medium">
                     {totalFavorites}
                   </span>
                 )}
@@ -336,7 +348,7 @@ export function Header() {
         </SheetContent>
 
         <SheetFooter>
-          <div className="text-[10px] font-mono text-cronos-muted text-center tracking-widest uppercase">
+          <div className="text-[11px] font-mono text-cronos-muted text-center tracking-widest uppercase">
             CRONOS GENÈVE &bull; HAUTE HORLOGERIE
           </div>
         </SheetFooter>

@@ -33,7 +33,7 @@ export function CartItem({ item, onUpdateQuantity, onRemove, onNavigate }) {
 
       {/* Ficha técnica y descriptiva */}
       <div className="min-w-0 flex-1">
-        <span className="mb-0.5 block font-mono text-[9px] uppercase tracking-[0.24em] text-cronos-bronze">
+        <span className="mb-0.5 block font-mono text-[11px] uppercase tracking-[0.24em] text-cronos-bronze">
           {item.marca_nombre}
         </span>
         <h4 className="font-serif text-base leading-snug tracking-[0.02em] text-cronos-text">
@@ -48,7 +48,7 @@ export function CartItem({ item, onUpdateQuantity, onRemove, onNavigate }) {
 
         {/* Cotización unitaria */}
         <div className="mt-1 font-mono text-xs text-cronos-muted">
-          {formatPrice(precioUnitario)} <span className="text-[10px]">USD</span>
+          {formatPrice(precioUnitario)} <span className="text-[11px]">USD</span>
         </div>
 
         {/* Controles de unidades y subtotal por guardatiempo */}
@@ -78,7 +78,7 @@ export function CartItem({ item, onUpdateQuantity, onRemove, onNavigate }) {
           </div>
 
           <span className="font-mono text-xs font-medium tracking-wider text-cronos-text">
-            {formatPrice(precioSubtotal)} <span className="text-[10px] text-cronos-muted">USD</span>
+            {formatPrice(precioSubtotal)} <span className="text-[11px] text-cronos-muted">USD</span>
           </span>
         </div>
       </div>

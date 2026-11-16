@@ -105,7 +105,7 @@ export function PaymentReturnPage() {
   return (
     <section className="mx-auto max-w-2xl px-4 py-20 sm:px-6">
       <div className="border border-cronos-line/80 bg-white p-8 text-center sm:p-12">
-        <span className="font-mono text-[10px] tracking-widest-brand text-cronos-bronze">CRONOS GENÈVE · CHECKOUT PRO</span>
+        <span className="font-mono text-[11px] tracking-widest-brand text-cronos-bronze">CRONOS GENÈVE · CHECKOUT PRO</span>
         {loading ? (
           <p className="mt-8 animate-pulse font-mono text-xs tracking-widest text-cronos-muted">VERIFICANDO EL ESTADO CON MERCADO PAGO…</p>
         ) : error ? (
@@ -131,7 +131,7 @@ export function PaymentReturnPage() {
             )}
           </>
         )}
-        {reference && <p className="mt-5 break-all font-mono text-[10px] text-cronos-muted">Referencia: {reference}</p>}
+        {reference && <p className="mt-5 break-all font-mono text-[11px] text-cronos-muted">Referencia: {reference}</p>}
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           {payment?.estado_pago === 'APROBADO' && payment?.orden_id && (
             <Link

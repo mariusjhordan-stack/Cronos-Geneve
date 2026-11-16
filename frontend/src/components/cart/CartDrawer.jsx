@@ -43,7 +43,7 @@ export function CartDrawer() {
     <Sheet open={isOpen} onOpenChange={closeCart}>
       <SheetHeader onClose={closeCart}>
         <div>
-          <span className="font-mono text-[9px] tracking-widest-brand text-cronos-bronze uppercase block mb-1">
+          <span className="font-mono text-[11px] tracking-widest-brand text-cronos-bronze uppercase block mb-1">
             CRONOS GENÈVE &bull; BOLSA DE ADQUISICIÓN
           </span>
           <SheetTitle>TU SELECCIÓN</SheetTitle>
@@ -59,7 +59,7 @@ export function CartDrawer() {
             <div className="mb-5 p-5 text-cronos-muted">
               <ShoppingBag className="h-8 w-8 stroke-[1.2]" />
             </div>
-            <span className="font-mono text-[10px] tracking-widest-brand text-cronos-bronze uppercase block mb-1.5">
+            <span className="font-mono text-[11px] tracking-widest-brand text-cronos-bronze uppercase block mb-1.5">
               BOLSA VACÍA
             </span>
             <h3 className="font-serif text-2xl text-cronos-text mb-3">
@@ -118,14 +118,14 @@ export function CartDrawer() {
               <button
                 type="button"
                 onClick={clearCart}
-                className="text-[10px] font-mono tracking-widest text-cronos-muted hover:text-red-700 transition-colors uppercase cursor-pointer"
+                className="text-[11px] font-mono tracking-widest text-cronos-muted hover:text-red-700 transition-colors uppercase cursor-pointer"
               >
                 [ VACIAR BOLSA ]
               </button>
               <button
                 type="button"
                 onClick={closeCart}
-                className="text-[10px] font-mono tracking-widest text-cronos-muted hover:text-cronos-text transition-colors uppercase cursor-pointer"
+                className="text-[11px] font-mono tracking-widest text-cronos-muted hover:text-cronos-text transition-colors uppercase cursor-pointer"
               >
                 CONTINUAR EXPLORANDO
               </button>

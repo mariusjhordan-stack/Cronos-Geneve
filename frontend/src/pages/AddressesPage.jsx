@@ -7,7 +7,7 @@ export function AddressesPage() {
     <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8 space-y-10">
       {/* 1. ENCABEZADO */}
       <div className="border-b border-cronos-line pb-6">
-        <span className="font-mono text-[10px] tracking-widest-brand text-cronos-bronze uppercase block mb-2">
+        <span className="font-mono text-[11px] tracking-widest-brand text-cronos-bronze uppercase block mb-2">
           LIBRETA DE DIRECCIONES
         </span>
         <h1 className="font-serif text-3xl sm:text-4xl text-cronos-text tracking-[0.03em] uppercase mb-2 font-normal">

@@ -7,7 +7,7 @@ export function ProductGrid({ relojes = [], onResetFilters }) {
   if (relojes.length === 0) {
     return (
       <div className="my-8 px-6 py-24 text-center">
-        <span className="mb-2 block font-mono text-[10px] uppercase tracking-[0.24em] text-cronos-bronze">
+        <span className="mb-2 block font-mono text-[11px] uppercase tracking-[0.24em] text-cronos-bronze">
           Consulta de catálogo
         </span>
         <h3 className="mb-3 font-serif text-2xl text-cronos-text sm:text-3xl">
@@ -24,17 +24,15 @@ export function ProductGrid({ relojes = [], onResetFilters }) {
     );
   }
 
-  const layoutForIndex = (index) => {
-    if (relojes.length === 1) return 'single';
-    if (relojes.length === 2) return 'pair';
-    return ['lead', 'middle', 'narrow'][index % 3];
-  };
+  // Jerarquía: la primera pieza disponible se presenta grande (2 columnas); el resto, en tarjetas normales.
+  const featuredId = relojes.length >= 4 ? relojes.find((r) => r.stock > 0)?.id : undefined;
+  const ordered = featuredId ? [relojes.find((r) => r.id === featuredId), ...relojes.filter((r) => r.id !== featuredId)] : relojes;
 
   return (
-    <div className="grid grid-cols-1 items-start gap-x-8 gap-y-8 md:grid-cols-2 md:gap-x-10 md:gap-y-12 xl:grid-cols-12 xl:gap-x-8 xl:gap-y-16">
+    <div className="grid grid-cols-1 items-start gap-x-10 gap-y-16 md:grid-cols-2 xl:grid-cols-3">
       <AnimatePresence mode="popLayout">
-        {relojes.map((reloj, index) => (
-          <ProductCard key={reloj.id} reloj={reloj} layoutVariant={layoutForIndex(index)} />
+        {ordered.map((reloj) => (
+          <ProductCard key={reloj.id} reloj={reloj} featured={reloj.id === featuredId} />
         ))}
       </AnimatePresence>
     </div>

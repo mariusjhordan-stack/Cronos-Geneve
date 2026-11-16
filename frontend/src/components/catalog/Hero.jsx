@@ -110,7 +110,7 @@ export function Hero({ protagonistPiece, totalPiezas = 0 }) {
               className="mt-14 grid grid-cols-1 gap-8 border-t border-cronos-line/80 pt-8 sm:grid-cols-3"
             >
               <div>
-                <span className="mb-1 block font-mono text-[10px] uppercase tracking-[0.24em] text-cronos-muted">
+                <span className="mb-1 block font-mono text-[11px] uppercase tracking-[0.24em] text-cronos-muted">
                   Disciplina
                 </span>
                 <span className="block font-serif text-lg text-cronos-text">
@@ -118,7 +118,7 @@ export function Hero({ protagonistPiece, totalPiezas = 0 }) {
                 </span>
               </div>
               <div>
-                <span className="mb-1 block font-mono text-[10px] uppercase tracking-[0.24em] text-cronos-muted">
+                <span className="mb-1 block font-mono text-[11px] uppercase tracking-[0.24em] text-cronos-muted">
                   Calibres
                 </span>
                   <span className="block font-serif text-lg text-cronos-text">
@@ -126,7 +126,7 @@ export function Hero({ protagonistPiece, totalPiezas = 0 }) {
                   </span>
               </div>
               <div>
-                <span className="mb-1 block font-mono text-[10px] uppercase tracking-[0.24em] text-cronos-muted">
+                <span className="mb-1 block font-mono text-[11px] uppercase tracking-[0.24em] text-cronos-muted">
                   Inventario
                 </span>
                 <span className="block font-serif text-lg text-cronos-text">
@@ -159,14 +159,14 @@ export function Hero({ protagonistPiece, totalPiezas = 0 }) {
                   />
 
                   {/* Descriptor editorial sin afirmar procedencia */}
-                  <div className="pointer-events-none absolute bottom-4 left-4 font-mono text-[9px] uppercase tracking-[0.2em] text-cronos-muted/70">
+                  <div className="pointer-events-none absolute bottom-4 left-4 font-mono text-[11px] uppercase tracking-[0.2em] text-cronos-muted/70">
                     Selección editorial
                   </div>
                 </div>
 
                 <div className="mt-6 flex items-end justify-between gap-4 border-b border-cronos-line/60 pb-3">
                   <div>
-                    <span className="mb-1 block font-mono text-[10px] uppercase tracking-[0.28em] text-cronos-bronze">
+                    <span className="mb-1 block font-mono text-[11px] uppercase tracking-[0.28em] text-cronos-bronze">
                       {brandName}
                     </span>
                     <span className="font-serif text-2xl text-cronos-text transition-colors group-hover:text-cronos-bronze sm:text-3xl">
@@ -175,14 +175,14 @@ export function Hero({ protagonistPiece, totalPiezas = 0 }) {
                   </div>
                   {price && (
                     <span className="shrink-0 font-mono text-base tracking-wider text-cronos-text">
-                      {formatPrice(price)} <span className="text-[10px] text-cronos-muted">USD</span>
+                      {formatPrice(price)} <span className="text-[11px] text-cronos-muted">USD</span>
                     </span>
                   )}
                 </div>
               </Link>
             ) : (
               <div className="flex aspect-square w-full flex-col items-center justify-center bg-cronos-surface-1 p-8 text-center">
-                <span className="mb-2 block font-mono text-[9px] uppercase tracking-widest-brand text-cronos-bronze">
+                <span className="mb-2 block font-mono text-[11px] uppercase tracking-widest-brand text-cronos-bronze">
                   Catálogo editorial
                 </span>
                 <span className="mb-2 font-serif text-xl text-cronos-text">

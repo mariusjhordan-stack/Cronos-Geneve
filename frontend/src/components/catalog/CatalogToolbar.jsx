@@ -60,15 +60,15 @@ export function CatalogToolbar({
   ].filter(Boolean).length;
 
   return (
-    <div className="mb-8">
+    <div className="sticky top-16 z-30 -mx-4 mb-10 bg-cronos-bg/95 px-4 py-2 backdrop-blur-md sm:-mx-0 sm:px-0" data-testid="catalog-filters">
       {/* ==========================================
           1. BARRA EDITORIAL HORIZONTAL (DESKTOP >= 1024px)
           ========================================== */}
-      <div className="hidden border-y border-cronos-line bg-transparent lg:block">
+      <div className="hidden border-y border-cronos-line/60 bg-transparent lg:block">
         <div className="grid grid-cols-12 divide-x divide-cronos-line">
           {/* 1.1 BÚSQUEDA (3 columnas) */}
           <div className="col-span-3 p-3 flex flex-col justify-center">
-            <label className="block font-mono text-[9px] tracking-widest text-cronos-muted uppercase mb-1">
+            <label className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase mb-1">
               BUSCAR
             </label>
             <div className="relative flex items-center">
@@ -95,7 +95,7 @@ export function CatalogToolbar({
 
           {/* 1.2 MANUFACTURA (2 columnas) */}
           <div className="col-span-2 p-3 flex flex-col justify-center">
-            <label className="block font-mono text-[9px] tracking-widest text-cronos-muted uppercase mb-1">
+            <label className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase mb-1">
               MANUFACTURA
             </label>
             <Select
@@ -117,7 +117,7 @@ export function CatalogToolbar({
 
           {/* 1.3 CATEGORÍA / COMPLICACIÓN (2 columnas) */}
           <div className="col-span-2 p-3 flex flex-col justify-center">
-            <label className="block font-mono text-[9px] tracking-widest text-cronos-muted uppercase mb-1">
+            <label className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase mb-1">
               CATEGORÍA
             </label>
             <Select
@@ -139,7 +139,7 @@ export function CatalogToolbar({
 
           {/* 1.4 CALIBRE / MECANISMO (2 columnas) */}
           <div className="col-span-2 p-3 flex flex-col justify-center">
-            <label className="block font-mono text-[9px] tracking-widest text-cronos-muted uppercase mb-1">
+            <label className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase mb-1">
               CALIBRE
             </label>
             <Select
@@ -169,7 +169,7 @@ export function CatalogToolbar({
           {/* 1.5 ORDENAMIENTO & RESET (3 columnas) */}
           <div className="col-span-3 p-3 flex items-center justify-between gap-2">
             <div className="flex-1">
-              <label className="block font-mono text-[9px] tracking-widest text-cronos-muted uppercase mb-1">
+              <label className="block font-mono text-[11px] tracking-widest text-cronos-muted uppercase mb-1">
                 ORDENAR
               </label>
               <Select
@@ -197,7 +197,7 @@ export function CatalogToolbar({
               <button
                 type="button"
                 onClick={onResetFilters}
-                className="self-end mb-1 text-[10px] font-mono tracking-widest text-cronos-bronze hover:text-cronos-text uppercase transition-colors shrink-0 flex items-center gap-1 cursor-pointer pl-2"
+                className="self-end mb-1 text-[11px] font-mono tracking-widest text-cronos-bronze hover:text-cronos-text uppercase transition-colors shrink-0 flex items-center gap-1 cursor-pointer pl-2"
                 title="Restablecer todos los criterios"
               >
                 <RotateCcw className="h-3 w-3" />
@@ -241,7 +241,7 @@ export function CatalogToolbar({
           <SlidersHorizontal className="h-3.5 w-3.5 text-cronos-bronze stroke-[1.5]" />
           <span className="hidden sm:inline">FILTROS</span>
           {activeCount > 0 && (
-            <span className="bg-[#171717] text-white font-mono text-[10px] px-1.5 py-0.5 font-medium">
+            <span className="bg-[#171717] text-white font-mono text-[11px] px-1.5 py-0.5 font-medium">
               {activeCount}
             </span>
           )}
@@ -256,7 +256,7 @@ export function CatalogToolbar({
         </SheetHeader>
         <SheetContent className="space-y-6 py-6">
           <div>
-            <label className="block font-mono text-[10px] tracking-widest text-cronos-bronze uppercase mb-2">
+            <label className="block font-mono text-[11px] tracking-widest text-cronos-bronze uppercase mb-2">
               MANUFACTURA
             </label>
             <Select
@@ -276,7 +276,7 @@ export function CatalogToolbar({
           </div>
 
           <div>
-            <label className="block font-mono text-[10px] tracking-widest text-cronos-bronze uppercase mb-2">
+            <label className="block font-mono text-[11px] tracking-widest text-cronos-bronze uppercase mb-2">
               CATEGORÍA / COMPLICACIÓN
             </label>
             <Select
@@ -296,7 +296,7 @@ export function CatalogToolbar({
           </div>
 
           <div>
-            <label className="block font-mono text-[10px] tracking-widest text-cronos-bronze uppercase mb-2">
+            <label className="block font-mono text-[11px] tracking-widest text-cronos-bronze uppercase mb-2">
               CALIBRE / MECANISMO
             </label>
             <Select
@@ -323,7 +323,7 @@ export function CatalogToolbar({
           </div>
 
           <div>
-            <label className="block font-mono text-[10px] tracking-widest text-cronos-bronze uppercase mb-2">
+            <label className="block font-mono text-[11px] tracking-widest text-cronos-bronze uppercase mb-2">
               ORDENAMIENTO
             </label>
             <Select
