@@ -77,7 +77,7 @@ export function LoginPage() {
       </div>
 
       {/* Contenedor del Formulario */}
-      <div className="border border-cronos-line bg-white p-7 sm:p-10 shadow-xs relative">
+      <div className="relative bg-white p-8 sm:p-12">
         {error && (
           <div
             role="alert"

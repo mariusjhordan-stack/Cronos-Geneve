@@ -57,8 +57,8 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-cronos-line bg-white/95 backdrop-blur-md transition-all">
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-40 w-full border-b border-cronos-line/80 bg-[#F4F2EE]/90 backdrop-blur-md">
+      <div className="mx-auto flex h-[4.75rem] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Monograma de Marca Editorial */}
         <Link to="/" className="group flex flex-col text-left focus:outline-none select-none shrink-0">
           <span className="font-serif text-lg sm:text-xl tracking-[0.22em] sm:tracking-[0.28em] text-cronos-text transition-colors group-hover:text-cronos-bronze">
@@ -70,7 +70,7 @@ export function Header() {
         </Link>
 
         {/* Navegación Central para Pantallas Grandes (Desktop >= 1024px) */}
-        <nav className="hidden lg:flex items-center space-x-10">
+        <nav className="hidden items-center space-x-12 lg:flex">
           <Link
             to="/#catalogo"
             onClick={handleCatalogClick}
@@ -178,7 +178,7 @@ export function Header() {
           <button
             type="button"
             onClick={openCart}
-            className="group flex items-center gap-2 border border-cronos-line bg-white px-3 sm:px-4 py-2 hover:border-cronos-text transition-colors focus:outline-none rounded-none cursor-pointer shrink-0"
+            className="group flex shrink-0 cursor-pointer items-center gap-2 rounded-none px-1 py-2 transition-colors focus:outline-none"
             aria-label="Abrir selección de piezas en bolsa"
           >
             <ShoppingBag className="h-3.5 w-3.5 text-cronos-muted group-hover:text-cronos-text transition-colors stroke-[1.4]" />

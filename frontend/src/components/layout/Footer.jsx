@@ -6,7 +6,7 @@ const CURRENT_YEAR = new Date().getFullYear();
 
 export function Footer() {
   return (
-    <footer className="border-t border-[#2A2927] bg-[#171717] text-[#9E9B95] text-xs">
+    <footer className="border-t border-[#2A2927] bg-[#141413] text-[#9E9B95] text-sm">
       {/* 1. Barra de Pilares Factuales de la Plataforma */}
       <div className="border-b border-[#262523] bg-[#1C1B19]/60">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">

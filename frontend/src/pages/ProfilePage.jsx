@@ -190,7 +190,7 @@ export function ProfilePage() {
         </div>
 
         {/* 3.1. BLOQUE A: DATOS DE LA CUENTA (SOLO LECTURA) */}
-        <div className="border border-cronos-line bg-white p-6 sm:p-7 space-y-4 shadow-xs">
+        <div className="space-y-4 bg-white p-6 sm:p-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-cronos-line/50">
             <div className="flex items-center gap-2">
               <User className="h-4 w-4 text-cronos-bronze stroke-[1.4]" />
@@ -208,7 +208,7 @@ export function ProfilePage() {
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-            <div className="border border-cronos-line bg-cronos-surface-1 p-4">
+            <div className="bg-cronos-surface-1 p-4">
               <span className="block font-mono text-[9px] tracking-widest text-cronos-muted uppercase mb-1">
                 NOMBRE DE USUARIO
               </span>
@@ -217,7 +217,7 @@ export function ProfilePage() {
               </span>
             </div>
 
-            <div className="border border-cronos-line bg-cronos-surface-1 p-4">
+            <div className="bg-cronos-surface-1 p-4">
               <span className="block font-mono text-[9px] tracking-widest text-cronos-muted uppercase mb-1">
                 CORREO ELECTRÓNICO
               </span>
@@ -226,7 +226,7 @@ export function ProfilePage() {
               </span>
             </div>
 
-            <div className="border border-cronos-line bg-cronos-surface-1 p-4">
+            <div className="bg-cronos-surface-1 p-4">
               <span className="block font-mono text-[9px] tracking-widest text-cronos-muted uppercase mb-1">
                 FECHA DE REGISTRO
               </span>
@@ -238,7 +238,7 @@ export function ProfilePage() {
         </div>
 
         {/* 3.2. BLOQUE B: INFORMACIÓN PERSONAL EDITABLE */}
-        <form onSubmit={handleUpdateProfile} className="border border-cronos-line bg-white p-6 sm:p-7 space-y-6 shadow-xs">
+        <form onSubmit={handleUpdateProfile} className="space-y-6 bg-white p-6 sm:p-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-cronos-line/50">
             <div className="flex items-center gap-2">
               <UserCheck className="h-4 w-4 text-cronos-bronze stroke-[1.4]" />
