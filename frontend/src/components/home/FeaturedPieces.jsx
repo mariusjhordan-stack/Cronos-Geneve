@@ -69,7 +69,7 @@ export function FeaturedPieces({ pieces = [] }) {
             const brand =
               piece.marca_nombre || piece.marca_detalle?.nombre || 'Manufactura Suiza';
             const price = parseFloat(piece.precio);
-            const imageSrc = getWatchImageSrc(piece);
+            const imageSrc = getWatchImageSrc(piece, 'card');
 
             // Ritmo asimétrico: el elemento central tiene un ligero desfase vertical para romper la cuadrícula rígida
             const isCenterPiece = idx === 1;

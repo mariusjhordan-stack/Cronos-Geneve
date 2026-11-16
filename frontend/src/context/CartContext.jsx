@@ -38,7 +38,7 @@ export function CartProvider({ children }) {
 
     const requestedQty = Math.max(1, parseInt(cantidad, 10) || 1);
 
-    const resolvedImage = getWatchImageSrc(reloj) || '/images/relojes/placeholder-reloj.svg';
+    const resolvedImage = getWatchImageSrc(reloj, 'card') || '/images/relojes/placeholder-reloj.svg';
 
     // Comprobar disponibilidad actual en el carrito
     const existingItem = items.find((it) => it.id === reloj.id);

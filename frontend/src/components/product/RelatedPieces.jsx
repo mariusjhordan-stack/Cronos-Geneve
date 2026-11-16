@@ -48,7 +48,7 @@ function RelatedCard({ piece }) {
       >
         <div className="relative aspect-[4/5] w-full overflow-hidden bg-gradient-to-br from-cronos-surface-1 via-[#f5f3ee] to-cronos-surface-2">
           <WatchImage
-            src={getWatchImageSrc(piece)}
+            src={getWatchImageSrc(piece, 'card')}
             alt={`${brand} ${piece.nombre}`}
             className="h-full w-full"
             imgClassName={`transition-transform duration-500 ease-out group-hover:scale-[1.04] ${soldOut ? 'opacity-60' : ''}`}

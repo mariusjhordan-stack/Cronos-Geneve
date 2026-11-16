@@ -1,4 +1,6 @@
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import Q
 from django.utils.text import slugify
 
 
@@ -133,6 +135,18 @@ class Reloj(models.Model):
         return self.stock > 0
 
 
+EXTENSIONES_IMAGEN = ('.webp', '.jpg', '.jpeg', '.png', '.avif', '.svg')
+
+
+def validar_url_imagen(valor):
+    """Acepta rutas locales (/images/...) o http(s) y solo formatos de imagen conocidos (validación de tipo)."""
+    if not (valor.startswith('/') or valor.startswith(('http://', 'https://'))):
+        raise ValidationError('Usa una ruta que empiece con "/" o una URL http(s).')
+    ruta = valor.split('?', 1)[0].lower()
+    if not ruta.endswith(EXTENSIONES_IMAGEN):
+        raise ValidationError('Formato no permitido. Usa: ' + ', '.join(EXTENSIONES_IMAGEN))
+
+
 class ImagenReloj(models.Model):
     """
     Galería de imágenes asociadas a una pieza horológica.
@@ -145,9 +159,35 @@ class ImagenReloj(models.Model):
         related_name='imagenes',
         verbose_name="Reloj"
     )
-    url = models.URLField(
+    class Tipo(models.TextChoices):
+        PRODUCTO = 'PRODUCTO', 'Fotografía de producto (fondo estándar)'
+        DETALLE = 'DETALLE', 'Detalle / ambiente'
+        ILUSTRACION = 'ILUSTRACION', 'Ilustración provisional'
+
+    url = models.CharField(
         max_length=1000,
-        verbose_name="URL de la Imagen"
+        validators=[validar_url_imagen],
+        help_text="Ruta local (/images/relojes/<slug>/principal.webp) o URL https. Se prefiere local.",
+        verbose_name="Ruta o URL de la imagen"
+    )
+    url_card = models.CharField(
+        max_length=1000,
+        blank=True,
+        default="",
+        validators=[validar_url_imagen],
+        help_text="Miniatura 600x750 para tarjetas de catálogo. Si se omite se usa la imagen completa.",
+        verbose_name="Miniatura para tarjeta"
+    )
+    es_principal = models.BooleanField(
+        default=False,
+        help_text="Imagen que se muestra primero. Solo una por reloj.",
+        verbose_name="Imagen principal"
+    )
+    tipo = models.CharField(
+        max_length=12,
+        choices=Tipo.choices,
+        default=Tipo.PRODUCTO,
+        verbose_name="Tipo de imagen"
     )
     orden = models.PositiveIntegerField(
         default=1,
@@ -169,6 +209,14 @@ class ImagenReloj(models.Model):
         verbose_name = "Imagen de Reloj"
         verbose_name_plural = "Imágenes de Reloj"
         ordering = ['orden', 'id']
+        constraints = [
+            # Una sola imagen principal por reloj (la BD lo garantiza aunque falle la validación del formulario).
+            models.UniqueConstraint(
+                fields=['reloj'],
+                condition=Q(es_principal=True),
+                name='unica_imagen_principal_por_reloj',
+            ),
+        ]
 
     def __str__(self):
         return f"{self.reloj.nombre} - Imagen {self.orden}"

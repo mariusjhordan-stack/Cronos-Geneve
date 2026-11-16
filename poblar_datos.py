@@ -463,25 +463,13 @@ def poblar():
         action = "creado" if created else "existente; se conservan sus datos y categorías"
         print(f" [+] Reloj {action}: {obj.marca.nombre} {obj.nombre} (${obj.precio}) -> {obj.imagen_url}")
 
-    # 4. Carga de Galería de Imágenes Oficiales (FASE 1.5 - 2 imágenes por reloj)
-    print("\nCompletando galerías sin sobrescribir imágenes existentes...")
-    import json
+    # 4. Galería de imágenes: assets locales de frontend/public/images/relojes (ver docs/IMAGE-SOURCES.md).
+    print("
+Sincronizando galerías con los assets locales...")
     try:
-        with open('scratch/url_validation_results.json', 'r', encoding='utf-8') as f:
-            galeria_data = json.load(f)
-            for item in galeria_data:
-                reloj_obj = Reloj.objects.filter(id=item['watch_id']).first()
-                if reloj_obj:
-                    _, img_created = ImagenReloj.objects.get_or_create(
-                        reloj=reloj_obj,
-                        orden=item['orden'],
-                        defaults={
-                            'url': item['url'],
-                            'alt_text': item['alt_text']
-                        }
-                    )
-            total_galeria = ImagenReloj.objects.count()
-            print(f" [+] Total imágenes registradas en galería: {total_galeria} (24 piezas x 2 vistas)")
+        from catalogo.management.commands.sincronizar_imagenes import sincronizar
+        r = sincronizar()
+        print(f" [+] {r['relojes']} relojes | {r['creadas']} creadas, {r['actualizadas']} actualizadas, {r['retiradas']} retiradas")
     except Exception as e:
         print(f" [!] Advertencia al sincronizar galería: {e}")
 

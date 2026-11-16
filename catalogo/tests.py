@@ -116,3 +116,65 @@ class RecomendacionesTests(APITestCase):
 
     def test_404_si_no_existe(self):
         self.assertEqual(self.client.get('/api/relojes/9999/recomendaciones/').status_code, 404)
+
+
+class ImagenPrincipalYSincronizacionTests(APITestCase):
+    def setUp(self):
+        from .models import ImagenReloj
+        self.ImagenReloj = ImagenReloj
+        self.marca = Marca.objects.create(nombre='Casa Imagen')
+        self.reloj = Reloj.objects.create(
+            nombre='Pieza', marca=self.marca, precio='1000.00', stock=1,
+            diametro_caja_mm='40.0', descripcion='x', imagen_url='/images/relojes/placeholder-reloj.svg',
+        )
+
+    def test_imagen_url_prefiere_la_marcada_como_principal_y_expone_tipo_y_card(self):
+        self.ImagenReloj.objects.create(reloj=self.reloj, url='/images/relojes/p/detalle.webp', orden=1, tipo='DETALLE')
+        self.ImagenReloj.objects.create(
+            reloj=self.reloj, url='/images/relojes/p/principal.webp', url_card='/images/relojes/p/principal-card.webp',
+            orden=2, es_principal=True, tipo='PRODUCTO',
+        )
+        data = self.client.get(f'/api/relojes/{self.reloj.id}/').json()
+        self.assertEqual(data['imagen_url'], '/images/relojes/p/principal.webp')
+        principal = next(i for i in data['imagenes'] if i['es_principal'])
+        self.assertEqual(principal['url_card'], '/images/relojes/p/principal-card.webp')
+        detalle = next(i for i in data['imagenes'] if not i['es_principal'])
+        self.assertEqual(detalle['url_card'], detalle['url'])  # sin miniatura -> imagen completa
+        self.assertEqual(detalle['tipo'], 'DETALLE')
+
+    def test_solo_una_imagen_principal_por_reloj(self):
+        from django.db import IntegrityError, transaction
+        self.ImagenReloj.objects.create(reloj=self.reloj, url='/a.webp', orden=1, es_principal=True)
+        with self.assertRaises(IntegrityError), transaction.atomic():
+            self.ImagenReloj.objects.create(reloj=self.reloj, url='/b.webp', orden=2, es_principal=True)
+
+    def test_validador_rechaza_formatos_y_esquemas_no_permitidos(self):
+        from django.core.exceptions import ValidationError
+        from .models import validar_url_imagen
+        validar_url_imagen('/images/relojes/x/principal.webp')
+        validar_url_imagen('https://cdn.example.com/a.jpg?v=2')
+        for malo in ('/images/x.gif', 'javascript:alert(1)', 'ftp://x/a.png', 'imagen.webp'):
+            with self.assertRaises(ValidationError):
+                validar_url_imagen(malo)
+
+    def test_sincronizar_es_idempotente_y_retira_galerias_externas(self):
+        import json, tempfile
+        from pathlib import Path
+        from .management.commands.sincronizar_imagenes import sincronizar
+        self.ImagenReloj.objects.create(reloj=self.reloj, url='https://encrypted-tbn0.gstatic.com/x.jpg', orden=1, es_principal=True)
+        self.ImagenReloj.objects.create(reloj=self.reloj, url='https://encrypted-tbn0.gstatic.com/y.jpg', orden=2)
+        self.ImagenReloj.objects.create(reloj=self.reloj, url='https://otra.com/z.jpg', orden=3)
+        manifest = {'slug': {'reloj': 'Pieza', 'marca': 'Casa Imagen', 'imagenes': [
+            {'orden': 1, 'es_principal': True, 'tipo': 'ILUSTRACION', 'url': '/images/relojes/slug/principal.svg', 'url_card': '', 'alt_text': 'a'},
+            {'orden': 2, 'es_principal': False, 'tipo': 'DETALLE', 'url': '/images/relojes/slug/detalle.webp', 'url_card': '/images/relojes/slug/detalle-card.webp', 'alt_text': 'b'},
+        ]}}
+        with tempfile.TemporaryDirectory() as tmp:
+            ruta = Path(tmp) / 'manifest.json'
+            ruta.write_text(json.dumps(manifest), encoding='utf-8')
+            primero = sincronizar(ruta)
+            segundo = sincronizar(ruta)
+        self.assertEqual(primero['retiradas'], 1)
+        self.assertEqual(segundo['retiradas'], 0)
+        self.assertEqual(self.ImagenReloj.objects.filter(reloj=self.reloj).count(), 2)
+        self.reloj.refresh_from_db()
+        self.assertEqual(self.reloj.imagen_url, '/images/relojes/slug/principal.svg')

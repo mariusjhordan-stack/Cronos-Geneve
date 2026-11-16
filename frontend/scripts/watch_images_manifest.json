@@ -1,0 +1,498 @@
+[
+  {
+    "slug": "rolex-submariner-kermit",
+    "marca": "Rolex",
+    "reloj": "Submariner Date 41mm 'Kermit'",
+    "imagenes": [
+      {
+        "archivo": "principal",
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "modo": "svg",
+        "origen_local": "public/images/relojes/rolex-submariner-kermit.svg",
+        "alt_text": "Ilustración de Rolex Submariner Date 41mm 'Kermit' (fotografía pendiente)",
+        "fuente": "Ilustración vectorial propia del proyecto (provisional)",
+        "url_original": "—",
+        "licencia": "Original del proyecto; sustituir por fotografía con licencia verificada"
+      }
+    ]
+  },
+  {
+    "slug": "rolex-daytona-panda",
+    "marca": "Rolex",
+    "reloj": "Cosmograph Daytona 'Panda'",
+    "imagenes": [
+      {
+        "archivo": "principal",
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "modo": "svg",
+        "origen_local": "public/images/relojes/rolex-daytona-panda.svg",
+        "alt_text": "Ilustración de Rolex Cosmograph Daytona 'Panda' (fotografía pendiente)",
+        "fuente": "Ilustración vectorial propia del proyecto (provisional)",
+        "url_original": "—",
+        "licencia": "Original del proyecto; sustituir por fotografía con licencia verificada"
+      }
+    ]
+  },
+  {
+    "slug": "omega-speedmaster-moonwatch",
+    "marca": "Omega",
+    "reloj": "Speedmaster Professional 'Moonwatch'",
+    "imagenes": [
+      {
+        "archivo": "principal",
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "modo": "svg",
+        "origen_local": "public/images/relojes/omega-speedmaster-moonwatch.svg",
+        "alt_text": "Ilustración de Omega Speedmaster Professional 'Moonwatch' (fotografía pendiente)",
+        "fuente": "Ilustración vectorial propia del proyecto (provisional)",
+        "url_original": "—",
+        "licencia": "Original del proyecto; sustituir por fotografía con licencia verificada"
+      },
+      {
+        "archivo": "detalle",
+        "orden": 2,
+        "es_principal": false,
+        "tipo": "DETALLE",
+        "modo": "ambiente",
+        "original": "speedmaster-professional-front.jpg",
+        "url_descarga": "https://upload.wikimedia.org/wikipedia/commons/d/db/OMEGA-Speedmaster-Professional-Front.jpg",
+        "alt_text": "Omega Speedmaster Professional, vista frontal de la esfera",
+        "fuente": "Wikimedia Commons — Torsten Bolten",
+        "url_original": "https://commons.wikimedia.org/wiki/File:OMEGA-Speedmaster-Professional-Front.jpg",
+        "licencia": "Public domain"
+      }
+    ]
+  },
+  {
+    "slug": "omega-seamaster-diver-300m",
+    "marca": "Omega",
+    "reloj": "Seamaster Diver 300M Co-Axial",
+    "imagenes": [
+      {
+        "archivo": "principal",
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "modo": "svg",
+        "origen_local": "public/images/relojes/omega-seamaster-diver-300m.svg",
+        "alt_text": "Ilustración de Omega Seamaster Diver 300M Co-Axial (fotografía pendiente)",
+        "fuente": "Ilustración vectorial propia del proyecto (provisional)",
+        "url_original": "—",
+        "licencia": "Original del proyecto; sustituir por fotografía con licencia verificada"
+      }
+    ]
+  },
+  {
+    "slug": "patek-philippe-nautilus-5711",
+    "marca": "Patek Philippe",
+    "reloj": "Nautilus 5711/1A Azul Imperial",
+    "imagenes": [
+      {
+        "archivo": "principal",
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "PRODUCTO",
+        "modo": "producto",
+        "original": "nautilus-5711-1a-010.jpg",
+        "url_descarga": "https://upload.wikimedia.org/wikipedia/commons/0/04/Patek-Philippe-Nautilus-5711-1A-010-1.jpg",
+        "alt_text": "Patek Philippe Nautilus 5711/1A, esfera azul, vista frontal",
+        "fuente": "Wikimedia Commons — Patek Philippe SA",
+        "url_original": "https://commons.wikimedia.org/wiki/File:Patek-Philippe-Nautilus-5711-1A-010-1.jpg",
+        "licencia": "CC BY-SA 4.0 (licencia declarada en Commons; el autor figura como Patek Philippe SA: verificar permiso antes de producción)"
+      }
+    ]
+  },
+  {
+    "slug": "audemars-piguet-royal-oak-jumbo",
+    "marca": "Audemars Piguet",
+    "reloj": "Royal Oak 'Jumbo' Extra-Thin",
+    "imagenes": [
+      {
+        "archivo": "principal",
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "modo": "svg",
+        "origen_local": "public/images/relojes/audemars-piguet-royal-oak-jumbo.svg",
+        "alt_text": "Ilustración de Audemars Piguet Royal Oak 'Jumbo' Extra-Thin (fotografía pendiente)",
+        "fuente": "Ilustración vectorial propia del proyecto (provisional)",
+        "url_original": "—",
+        "licencia": "Original del proyecto; sustituir por fotografía con licencia verificada"
+      }
+    ]
+  },
+  {
+    "slug": "tag-heuer-monaco-calibre-11",
+    "marca": "TAG Heuer",
+    "reloj": "Monaco Calibre 11 'Steve McQueen'",
+    "imagenes": [
+      {
+        "archivo": "principal",
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "modo": "svg",
+        "origen_local": "public/images/relojes/tag-heuer-monaco-calibre-11.svg",
+        "alt_text": "Ilustración de TAG Heuer Monaco Calibre 11 'Steve McQueen' (fotografía pendiente)",
+        "fuente": "Ilustración vectorial propia del proyecto (provisional)",
+        "url_original": "—",
+        "licencia": "Original del proyecto; sustituir por fotografía con licencia verificada"
+      }
+    ]
+  },
+  {
+    "slug": "grand-seiko-snowflake-sbga211",
+    "marca": "Grand Seiko",
+    "reloj": "Grand Seiko Heritage 'Snowflake' SBGA211",
+    "imagenes": [
+      {
+        "archivo": "principal",
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "modo": "svg",
+        "origen_local": "public/images/relojes/grand-seiko-snowflake-sbga211.svg",
+        "alt_text": "Ilustración de Grand Seiko Grand Seiko Heritage 'Snowflake' SBGA211 (fotografía pendiente)",
+        "fuente": "Ilustración vectorial propia del proyecto (provisional)",
+        "url_original": "—",
+        "licencia": "Original del proyecto; sustituir por fotografía con licencia verificada"
+      }
+    ]
+  },
+  {
+    "slug": "rolex-datejust-41",
+    "marca": "Rolex",
+    "reloj": "Datejust 41 Esfera Azul Fluted",
+    "imagenes": [
+      {
+        "archivo": "principal",
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "modo": "svg",
+        "origen_local": "public/images/relojes/rolex-datejust-41.svg",
+        "alt_text": "Ilustración de Rolex Datejust 41 Esfera Azul Fluted (fotografía pendiente)",
+        "fuente": "Ilustración vectorial propia del proyecto (provisional)",
+        "url_original": "—",
+        "licencia": "Original del proyecto; sustituir por fotografía con licencia verificada"
+      }
+    ]
+  },
+  {
+    "slug": "rolex-gmt-master-pepsi",
+    "marca": "Rolex",
+    "reloj": "GMT-Master II 'Pepsi' 40mm",
+    "imagenes": [
+      {
+        "archivo": "principal",
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "modo": "svg",
+        "origen_local": "public/images/relojes/rolex-gmt-master-pepsi.svg",
+        "alt_text": "Ilustración de Rolex GMT-Master II 'Pepsi' 40mm (fotografía pendiente)",
+        "fuente": "Ilustración vectorial propia del proyecto (provisional)",
+        "url_original": "—",
+        "licencia": "Original del proyecto; sustituir por fotografía con licencia verificada"
+      },
+      {
+        "archivo": "detalle",
+        "orden": 2,
+        "es_principal": false,
+        "tipo": "DETALLE",
+        "modo": "ambiente",
+        "original": "gmt-master-ii-126710blro.jpg",
+        "url_descarga": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Rolex_GMT_Master_II_126710BLRO.jpg",
+        "alt_text": "Rolex GMT-Master II ref. 126710BLRO, detalle del bisel bicolor Pepsi",
+        "fuente": "Wikimedia Commons — Qubeek",
+        "url_original": "https://commons.wikimedia.org/wiki/File:Rolex_GMT_Master_II_126710BLRO.jpg",
+        "licencia": "CC0"
+      }
+    ]
+  },
+  {
+    "slug": "rolex-explorer-36",
+    "marca": "Rolex",
+    "reloj": "Explorer 36mm Esfera Negra",
+    "imagenes": [
+      {
+        "archivo": "principal",
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "modo": "svg",
+        "origen_local": "public/images/relojes/rolex-explorer-36.svg",
+        "alt_text": "Ilustración de Rolex Explorer 36mm Esfera Negra (fotografía pendiente)",
+        "fuente": "Ilustración vectorial propia del proyecto (provisional)",
+        "url_original": "—",
+        "licencia": "Original del proyecto; sustituir por fotografía con licencia verificada"
+      },
+      {
+        "archivo": "detalle",
+        "orden": 2,
+        "es_principal": false,
+        "tipo": "DETALLE",
+        "modo": "ambiente",
+        "original": "explorer-114270.png",
+        "url_descarga": "https://upload.wikimedia.org/wikipedia/commons/3/3f/Rolex_Oyster_Perpetual_Explorer_Ref._114270_Cal._3130.png",
+        "alt_text": "Rolex Explorer ref. 114270, esfera negra",
+        "fuente": "Wikimedia Commons — Max3351",
+        "url_original": "https://commons.wikimedia.org/wiki/File:Rolex_Oyster_Perpetual_Explorer_Ref._114270_Cal._3130.png",
+        "licencia": "CC BY-SA 4.0"
+      }
+    ]
+  },
+  {
+    "slug": "omega-aqua-terra-150m",
+    "marca": "Omega",
+    "reloj": "Seamaster Aqua Terra 150M 41mm",
+    "imagenes": [
+      {
+        "archivo": "principal",
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "modo": "svg",
+        "origen_local": "public/images/relojes/omega-aqua-terra-150m.svg",
+        "alt_text": "Ilustración de Omega Seamaster Aqua Terra 150M 41mm (fotografía pendiente)",
+        "fuente": "Ilustración vectorial propia del proyecto (provisional)",
+        "url_original": "—",
+        "licencia": "Original del proyecto; sustituir por fotografía con licencia verificada"
+      }
+    ]
+  },
+  {
+    "slug": "omega-constellation-39",
+    "marca": "Omega",
+    "reloj": "Constellation Co-Axial 39mm",
+    "imagenes": [
+      {
+        "archivo": "principal",
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "modo": "svg",
+        "origen_local": "public/images/relojes/omega-constellation-39.svg",
+        "alt_text": "Ilustración de Omega Constellation Co-Axial 39mm (fotografía pendiente)",
+        "fuente": "Ilustración vectorial propia del proyecto (provisional)",
+        "url_original": "—",
+        "licencia": "Original del proyecto; sustituir por fotografía con licencia verificada"
+      }
+    ]
+  },
+  {
+    "slug": "patek-philippe-calatrava-5227",
+    "marca": "Patek Philippe",
+    "reloj": "Calatrava 5227R Oro Rosa",
+    "imagenes": [
+      {
+        "archivo": "principal",
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "modo": "svg",
+        "origen_local": "public/images/relojes/patek-philippe-calatrava-5227.svg",
+        "alt_text": "Ilustración de Patek Philippe Calatrava 5227R Oro Rosa (fotografía pendiente)",
+        "fuente": "Ilustración vectorial propia del proyecto (provisional)",
+        "url_original": "—",
+        "licencia": "Original del proyecto; sustituir por fotografía con licencia verificada"
+      }
+    ]
+  },
+  {
+    "slug": "patek-philippe-aquanaut-5167",
+    "marca": "Patek Philippe",
+    "reloj": "Aquanaut 5167A 'Jumbo'",
+    "imagenes": [
+      {
+        "archivo": "principal",
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "modo": "svg",
+        "origen_local": "public/images/relojes/patek-philippe-aquanaut-5167.svg",
+        "alt_text": "Ilustración de Patek Philippe Aquanaut 5167A 'Jumbo' (fotografía pendiente)",
+        "fuente": "Ilustración vectorial propia del proyecto (provisional)",
+        "url_original": "—",
+        "licencia": "Original del proyecto; sustituir por fotografía con licencia verificada"
+      }
+    ]
+  },
+  {
+    "slug": "audemars-piguet-royal-oak-offshore",
+    "marca": "Audemars Piguet",
+    "reloj": "Royal Oak Offshore Chronograph 43mm",
+    "imagenes": [
+      {
+        "archivo": "principal",
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "modo": "svg",
+        "origen_local": "public/images/relojes/audemars-piguet-royal-oak-offshore.svg",
+        "alt_text": "Ilustración de Audemars Piguet Royal Oak Offshore Chronograph 43mm (fotografía pendiente)",
+        "fuente": "Ilustración vectorial propia del proyecto (provisional)",
+        "url_original": "—",
+        "licencia": "Original del proyecto; sustituir por fotografía con licencia verificada"
+      }
+    ]
+  },
+  {
+    "slug": "audemars-piguet-code-1159",
+    "marca": "Audemars Piguet",
+    "reloj": "Code 11.59 Automático 41mm",
+    "imagenes": [
+      {
+        "archivo": "principal",
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "modo": "svg",
+        "origen_local": "public/images/relojes/audemars-piguet-code-1159.svg",
+        "alt_text": "Ilustración de Audemars Piguet Code 11.59 Automático 41mm (fotografía pendiente)",
+        "fuente": "Ilustración vectorial propia del proyecto (provisional)",
+        "url_original": "—",
+        "licencia": "Original del proyecto; sustituir por fotografía con licencia verificada"
+      }
+    ]
+  },
+  {
+    "slug": "cartier-santos-large",
+    "marca": "Cartier",
+    "reloj": "Santos de Cartier Grande 39.8mm",
+    "imagenes": [
+      {
+        "archivo": "principal",
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "modo": "svg",
+        "origen_local": "public/images/relojes/cartier-santos-large.svg",
+        "alt_text": "Ilustración de Cartier Santos de Cartier Grande 39.8mm (fotografía pendiente)",
+        "fuente": "Ilustración vectorial propia del proyecto (provisional)",
+        "url_original": "—",
+        "licencia": "Original del proyecto; sustituir por fotografía con licencia verificada"
+      }
+    ]
+  },
+  {
+    "slug": "cartier-tank-must",
+    "marca": "Cartier",
+    "reloj": "Tank Must Grande 33.7mm",
+    "imagenes": [
+      {
+        "archivo": "principal",
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "modo": "svg",
+        "origen_local": "public/images/relojes/cartier-tank-must.svg",
+        "alt_text": "Ilustración de Cartier Tank Must Grande 33.7mm (fotografía pendiente)",
+        "fuente": "Ilustración vectorial propia del proyecto (provisional)",
+        "url_original": "—",
+        "licencia": "Original del proyecto; sustituir por fotografía con licencia verificada"
+      }
+    ]
+  },
+  {
+    "slug": "cartier-ballon-bleu-40",
+    "marca": "Cartier",
+    "reloj": "Ballon Bleu de Cartier 40mm",
+    "imagenes": [
+      {
+        "archivo": "principal",
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "modo": "svg",
+        "origen_local": "public/images/relojes/cartier-ballon-bleu-40.svg",
+        "alt_text": "Ilustración de Cartier Ballon Bleu de Cartier 40mm (fotografía pendiente)",
+        "fuente": "Ilustración vectorial propia del proyecto (provisional)",
+        "url_original": "—",
+        "licencia": "Original del proyecto; sustituir por fotografía con licencia verificada"
+      }
+    ]
+  },
+  {
+    "slug": "tag-heuer-carrera-glassbox",
+    "marca": "TAG Heuer",
+    "reloj": "Carrera Chronograph 39mm 'Glassbox'",
+    "imagenes": [
+      {
+        "archivo": "principal",
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "modo": "svg",
+        "origen_local": "public/images/relojes/tag-heuer-carrera-glassbox.svg",
+        "alt_text": "Ilustración de TAG Heuer Carrera Chronograph 39mm 'Glassbox' (fotografía pendiente)",
+        "fuente": "Ilustración vectorial propia del proyecto (provisional)",
+        "url_original": "—",
+        "licencia": "Original del proyecto; sustituir por fotografía con licencia verificada"
+      }
+    ]
+  },
+  {
+    "slug": "tag-heuer-aquaracer-300",
+    "marca": "TAG Heuer",
+    "reloj": "Aquaracer Professional 300 43mm",
+    "imagenes": [
+      {
+        "archivo": "principal",
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "modo": "svg",
+        "origen_local": "public/images/relojes/tag-heuer-aquaracer-300.svg",
+        "alt_text": "Ilustración de TAG Heuer Aquaracer Professional 300 43mm (fotografía pendiente)",
+        "fuente": "Ilustración vectorial propia del proyecto (provisional)",
+        "url_original": "—",
+        "licencia": "Original del proyecto; sustituir por fotografía con licencia verificada"
+      }
+    ]
+  },
+  {
+    "slug": "grand-seiko-white-birch-slgh005",
+    "marca": "Grand Seiko",
+    "reloj": "Evolution 9 'White Birch' SLGH005",
+    "imagenes": [
+      {
+        "archivo": "principal",
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "modo": "svg",
+        "origen_local": "public/images/relojes/grand-seiko-white-birch-slgh005.svg",
+        "alt_text": "Ilustración de Grand Seiko Evolution 9 'White Birch' SLGH005 (fotografía pendiente)",
+        "fuente": "Ilustración vectorial propia del proyecto (provisional)",
+        "url_original": "—",
+        "licencia": "Original del proyecto; sustituir por fotografía con licencia verificada"
+      }
+    ]
+  },
+  {
+    "slug": "grand-seiko-sport-gmt-sbge201",
+    "marca": "Grand Seiko",
+    "reloj": "Sport Collection Spring Drive GMT SBGE201",
+    "imagenes": [
+      {
+        "archivo": "principal",
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "modo": "svg",
+        "origen_local": "public/images/relojes/grand-seiko-sport-gmt-sbge201.svg",
+        "alt_text": "Ilustración de Grand Seiko Sport Collection Spring Drive GMT SBGE201 (fotografía pendiente)",
+        "fuente": "Ilustración vectorial propia del proyecto (provisional)",
+        "url_original": "—",
+        "licencia": "Original del proyecto; sustituir por fotografía con licencia verificada"
+      }
+    ]
+  }
+]

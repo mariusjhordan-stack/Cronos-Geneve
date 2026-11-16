@@ -165,7 +165,7 @@ export function FavoritesPage() {
                       aria-label={`Ver especificaciones de ${watch.nombre}`}
                     >
                       <WatchImage
-                        src={getWatchImageSrc(watch)}
+                        src={getWatchImageSrc(watch, 'card')}
                         alt={`${brandName} ${watch.nombre}`}
                         className="h-full w-full"
                         imgClassName="transition-transform duration-500 group-hover:scale-[1.02]"

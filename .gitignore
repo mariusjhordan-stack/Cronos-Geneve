@@ -55,3 +55,6 @@ Thumbs.db
 
 # Capturas temporales de revisión
 frontend/.review-assets/
+
+# Originales de imagenes (se descargan con scripts/process_watch_images.py --descargar)
+frontend/image-originals/

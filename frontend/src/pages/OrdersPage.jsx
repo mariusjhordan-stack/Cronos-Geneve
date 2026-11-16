@@ -277,7 +277,7 @@ export function OrdersPage() {
                         detalle.reloj_marca || watch?.marca_nombre || 'Manufactura Suiza';
                       const watchName =
                         detalle.reloj_nombre || watch?.nombre || `Guardatiempo #${detalle.reloj}`;
-                      const watchImg = getWatchImageSrc(watch);
+                      const watchImg = getWatchImageSrc(watch, 'card');
 
                       return (
                         <div

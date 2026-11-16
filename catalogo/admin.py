@@ -5,7 +5,7 @@ from .models import Marca, Categoria, Reloj, ImagenReloj
 class ImagenRelojInline(admin.TabularInline):
     model = ImagenReloj
     extra = 1
-    fields = ('orden', 'url', 'alt_text')
+    fields = ('orden', 'es_principal', 'tipo', 'url', 'url_card', 'alt_text')
     ordering = ('orden',)
 
 
@@ -93,8 +93,8 @@ class RelojAdmin(admin.ModelAdmin):
 
 @admin.register(ImagenReloj)
 class ImagenRelojAdmin(admin.ModelAdmin):
-    list_display = ('reloj', 'orden', 'url', 'alt_text', 'creado_en')
-    list_filter = ('reloj__marca', 'orden')
+    list_display = ('reloj', 'orden', 'es_principal', 'tipo', 'url', 'alt_text', 'creado_en')
+    list_filter = ('reloj__marca', 'tipo', 'es_principal')
     search_fields = ('reloj__nombre', 'alt_text', 'url')
     list_editable = ('orden',)
     ordering = ('reloj', 'orden')

@@ -79,7 +79,7 @@ export function CompareTable({ pieces = [], onRemovePiece }) {
                         <div className="flex h-40 w-full items-center justify-center overflow-hidden bg-cronos-surface-1">
                           <Link to={`/reloj/${piece.id}`} className="block h-full w-full">
                             <WatchImage
-                              src={getWatchImageSrc(piece)}
+                              src={getWatchImageSrc(piece, 'card')}
                               alt={piece.nombre}
                               className="h-full w-full"
                               imgClassName="transition-transform duration-500 hover:scale-[1.02]"

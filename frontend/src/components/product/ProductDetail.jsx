@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Plus, Minus, ShieldCheck, Scale, Check, Heart, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
-import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
+import { Plus, Minus, ShieldCheck, Scale, Check, Heart, ArrowRight } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
 import { Button } from '@/components/ui/Button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs';
 import { ProductSpecifications } from './ProductSpecifications';
 import { RelatedPieces } from '@/components/product/RelatedPieces';
-import { WatchImage } from '@/components/product/WatchImage';
+import { ProductGallery } from '@/components/product/ProductGallery';
 import { formatPrice } from '@/lib/utils';
 import { useCart } from '@/context/CartContext';
 import { useCompare } from '@/context/CompareContext';
@@ -15,14 +15,7 @@ import { useFavorites } from '@/context/FavoritesContext';
 
 export function ProductDetail({ reloj }) {
   const [quantity, setQuantity] = useState(1);
-  const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [prevId, setPrevId] = useState(reloj.id);
   const shouldReduceMotion = useReducedMotion();
-
-  if (reloj.id !== prevId) {
-    setPrevId(reloj.id);
-    setActiveImageIndex(0);
-  }
 
   const { addToCart } = useCart();
   const { toggleCompare, isCompared } = useCompare();
@@ -37,23 +30,6 @@ export function ProductDetail({ reloj }) {
   const compared = isCompared(reloj.id);
   const isFav = isFavorite(reloj.id);
   const processingFav = isProcessing(reloj.id);
-
-  // Lista normalizada de imágenes de galería (con fallback a imagen_url)
-  const galleryList = (reloj.imagenes && reloj.imagenes.length > 0)
-    ? reloj.imagenes
-    : (reloj.imagen_url ? [{ id: 'primary', url: reloj.imagen_url, orden: 1, alt_text: reloj.nombre }] : []);
-
-  const activeImage = galleryList[activeImageIndex] || galleryList[0] || null;
-
-  const handlePrevImage = () => {
-    if (galleryList.length <= 1) return;
-    setActiveImageIndex((prev) => (prev === 0 ? galleryList.length - 1 : prev - 1));
-  };
-
-  const handleNextImage = () => {
-    if (galleryList.length <= 1) return;
-    setActiveImageIndex((prev) => (prev === galleryList.length - 1 ? 0 : prev + 1));
-  };
 
   const handleAddToCart = (e) => {
     if (e) {
@@ -109,111 +85,23 @@ export function ProductDetail({ reloj }) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start pb-16 border-b border-cronos-line">
         {/* Columna Izquierda: Escaparate y Galería Fotográfica (7 cols = ~58%) */}
         <div className="lg:col-span-7 flex flex-col">
-          {/* Lienzo Principal de la Imagen Activa */}
-          <div className="group relative aspect-square w-full overflow-hidden bg-cronos-surface-1">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeImage?.url || `placeholder-${reloj.id}`}
-                initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
-                transition={{ duration: 0.35, ease: 'easeInOut' }}
-                className="h-full w-full"
-              >
-                <WatchImage
-                  src={activeImage?.url}
-                  alt={activeImage?.alt_text || `${brandName} ${reloj.nombre}`}
-                  eager
-                  className="h-full w-full"
-                  imgClassName="transition-transform duration-700 ease-out group-hover:scale-[1.02]"
-                />
-              </motion.div>
-            </AnimatePresence>
-
-            {/* Controles de Navegación de Galería (Anterior / Siguiente) */}
-            {galleryList.length > 1 && (
-              <>
-                <button
-                  type="button"
-                  onClick={handlePrevImage}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 p-2.5 bg-white/80 backdrop-blur-xs text-cronos-muted hover:text-cronos-text transition-colors cursor-pointer focus:outline-none"
-                  aria-label="Imagen anterior"
-                >
-                  <ChevronLeft className="h-4 w-4 stroke-[1.5]" />
-                </button>
-                <button
-                  type="button"
-                  onClick={handleNextImage}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-2.5 bg-white/80 backdrop-blur-xs text-cronos-muted hover:text-cronos-text transition-colors cursor-pointer focus:outline-none"
-                  aria-label="Imagen siguiente"
-                >
-                  <ChevronRight className="h-4 w-4 stroke-[1.5]" />
-                </button>
-              </>
+          <ProductGallery reloj={reloj}>
+            {!inStock && (
+              <span className="font-mono text-[11px] tracking-widest text-red-700 bg-red-50 border border-red-200 px-2.5 py-1 uppercase">
+                Agotado
+              </span>
             )}
-
-            {/* Contador Discreto de Galería [ 1 / 2 ] */}
-            {galleryList.length > 1 && (
-              <div className="absolute bottom-3 right-3 font-mono text-[9px] tracking-widest text-cronos-muted bg-white/90 border border-cronos-line px-2.5 py-1 select-none">
-                [ {activeImageIndex + 1} / {galleryList.length} ]
-              </div>
+            {inStock && reloj.stock === 1 && (
+              <span className="font-mono text-[11px] tracking-widest text-cronos-bronze bg-cronos-surface-2 border border-cronos-bronze/40 px-2.5 py-1 uppercase">
+                Pieza única
+              </span>
             )}
-
-            {/* Indicador Discreto de Stock */}
-            <div className="absolute top-4 right-4">
-              {!inStock && (
-                <span className="font-mono text-[9px] tracking-widest text-red-600 bg-red-50 border border-red-200 px-2.5 py-1">
-                  [ AGOTADO EN BÓVEDA ]
-                </span>
-              )}
-              {inStock && reloj.stock === 1 && (
-                <span className="font-mono text-[9px] tracking-widest text-cronos-bronze bg-cronos-surface-2 border border-cronos-bronze/40 px-2.5 py-1">
-                  [ PIEZA ÚNICA ]
-                </span>
-              )}
-              {inStock && reloj.stock > 1 && reloj.stock <= 3 && (
-                <span className="font-mono text-[9px] tracking-widest text-cronos-muted bg-white border border-cronos-line px-2.5 py-1">
-                  [ {reloj.stock} DISPONIBLES ]
-                </span>
-              )}
-              {inStock && reloj.stock > 3 && (
-                <span className="font-mono text-[9px] tracking-widest text-cronos-muted bg-white border border-cronos-line px-2.5 py-1">
-                  [ EN BÓVEDA ]
-                </span>
-              )}
-            </div>
-          </div>
-
-          {/* Carrusel de Miniaturas (Thumbnails) */}
-          {galleryList.length > 1 && (
-            <div className="mt-4 flex items-center gap-3 overflow-x-auto pb-1 scrollbar-none">
-              {galleryList.map((item, idx) => {
-                const isSelected = idx === activeImageIndex;
-                return (
-                  <button
-                    key={item.id || idx}
-                    type="button"
-                    onClick={() => setActiveImageIndex(idx)}
-                    className={`relative flex h-20 w-20 shrink-0 cursor-pointer items-center justify-center overflow-hidden bg-cronos-surface-1 transition-opacity focus:outline-none ${
-                      isSelected
-                        ? 'opacity-100 ring-1 ring-cronos-text'
-                        : 'opacity-60 hover:opacity-100'
-                    }`}
-                    aria-label={`Seleccionar vista ${idx + 1}`}
-                  >
-                    <WatchImage
-                      src={item.url}
-                      alt={item.alt_text || `Vista ${idx + 1}`}
-                      className="h-full w-full"
-                    />
-                    <span className="absolute bottom-0.5 right-1 font-mono text-[8px] text-cronos-muted">
-                      {idx + 1}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
+            {inStock && reloj.stock > 1 && reloj.stock <= 3 && (
+              <span className="font-mono text-[11px] tracking-widest text-cronos-muted bg-white border border-cronos-line px-2.5 py-1 uppercase">
+                {reloj.stock} disponibles
+              </span>
+            )}
+          </ProductGallery>
         </div>
 
         {/* Columna Derecha: Información Editorial y Acciones (5 cols = ~42%) */}

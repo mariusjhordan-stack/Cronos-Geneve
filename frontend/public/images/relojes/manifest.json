@@ -1,0 +1,362 @@
+{
+  "rolex-submariner-kermit": {
+    "reloj": "Submariner Date 41mm 'Kermit'",
+    "marca": "Rolex",
+    "imagenes": [
+      {
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "url": "/images/relojes/rolex-submariner-kermit/principal.svg",
+        "url_card": "",
+        "alt_text": "Ilustración de Rolex Submariner Date 41mm 'Kermit' (fotografía pendiente)"
+      }
+    ]
+  },
+  "rolex-daytona-panda": {
+    "reloj": "Cosmograph Daytona 'Panda'",
+    "marca": "Rolex",
+    "imagenes": [
+      {
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "url": "/images/relojes/rolex-daytona-panda/principal.svg",
+        "url_card": "",
+        "alt_text": "Ilustración de Rolex Cosmograph Daytona 'Panda' (fotografía pendiente)"
+      }
+    ]
+  },
+  "omega-speedmaster-moonwatch": {
+    "reloj": "Speedmaster Professional 'Moonwatch'",
+    "marca": "Omega",
+    "imagenes": [
+      {
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "url": "/images/relojes/omega-speedmaster-moonwatch/principal.svg",
+        "url_card": "",
+        "alt_text": "Ilustración de Omega Speedmaster Professional 'Moonwatch' (fotografía pendiente)"
+      },
+      {
+        "orden": 2,
+        "es_principal": false,
+        "tipo": "DETALLE",
+        "url": "/images/relojes/omega-speedmaster-moonwatch/detalle.webp",
+        "url_card": "/images/relojes/omega-speedmaster-moonwatch/detalle-card.webp",
+        "alt_text": "Omega Speedmaster Professional, vista frontal de la esfera"
+      }
+    ]
+  },
+  "omega-seamaster-diver-300m": {
+    "reloj": "Seamaster Diver 300M Co-Axial",
+    "marca": "Omega",
+    "imagenes": [
+      {
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "url": "/images/relojes/omega-seamaster-diver-300m/principal.svg",
+        "url_card": "",
+        "alt_text": "Ilustración de Omega Seamaster Diver 300M Co-Axial (fotografía pendiente)"
+      }
+    ]
+  },
+  "patek-philippe-nautilus-5711": {
+    "reloj": "Nautilus 5711/1A Azul Imperial",
+    "marca": "Patek Philippe",
+    "imagenes": [
+      {
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "PRODUCTO",
+        "url": "/images/relojes/patek-philippe-nautilus-5711/principal.webp",
+        "url_card": "/images/relojes/patek-philippe-nautilus-5711/principal-card.webp",
+        "alt_text": "Patek Philippe Nautilus 5711/1A, esfera azul, vista frontal"
+      }
+    ]
+  },
+  "audemars-piguet-royal-oak-jumbo": {
+    "reloj": "Royal Oak 'Jumbo' Extra-Thin",
+    "marca": "Audemars Piguet",
+    "imagenes": [
+      {
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "url": "/images/relojes/audemars-piguet-royal-oak-jumbo/principal.svg",
+        "url_card": "",
+        "alt_text": "Ilustración de Audemars Piguet Royal Oak 'Jumbo' Extra-Thin (fotografía pendiente)"
+      }
+    ]
+  },
+  "tag-heuer-monaco-calibre-11": {
+    "reloj": "Monaco Calibre 11 'Steve McQueen'",
+    "marca": "TAG Heuer",
+    "imagenes": [
+      {
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "url": "/images/relojes/tag-heuer-monaco-calibre-11/principal.svg",
+        "url_card": "",
+        "alt_text": "Ilustración de TAG Heuer Monaco Calibre 11 'Steve McQueen' (fotografía pendiente)"
+      }
+    ]
+  },
+  "grand-seiko-snowflake-sbga211": {
+    "reloj": "Grand Seiko Heritage 'Snowflake' SBGA211",
+    "marca": "Grand Seiko",
+    "imagenes": [
+      {
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "url": "/images/relojes/grand-seiko-snowflake-sbga211/principal.svg",
+        "url_card": "",
+        "alt_text": "Ilustración de Grand Seiko Grand Seiko Heritage 'Snowflake' SBGA211 (fotografía pendiente)"
+      }
+    ]
+  },
+  "rolex-datejust-41": {
+    "reloj": "Datejust 41 Esfera Azul Fluted",
+    "marca": "Rolex",
+    "imagenes": [
+      {
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "url": "/images/relojes/rolex-datejust-41/principal.svg",
+        "url_card": "",
+        "alt_text": "Ilustración de Rolex Datejust 41 Esfera Azul Fluted (fotografía pendiente)"
+      }
+    ]
+  },
+  "rolex-gmt-master-pepsi": {
+    "reloj": "GMT-Master II 'Pepsi' 40mm",
+    "marca": "Rolex",
+    "imagenes": [
+      {
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "url": "/images/relojes/rolex-gmt-master-pepsi/principal.svg",
+        "url_card": "",
+        "alt_text": "Ilustración de Rolex GMT-Master II 'Pepsi' 40mm (fotografía pendiente)"
+      },
+      {
+        "orden": 2,
+        "es_principal": false,
+        "tipo": "DETALLE",
+        "url": "/images/relojes/rolex-gmt-master-pepsi/detalle.webp",
+        "url_card": "/images/relojes/rolex-gmt-master-pepsi/detalle-card.webp",
+        "alt_text": "Rolex GMT-Master II ref. 126710BLRO, detalle del bisel bicolor Pepsi"
+      }
+    ]
+  },
+  "rolex-explorer-36": {
+    "reloj": "Explorer 36mm Esfera Negra",
+    "marca": "Rolex",
+    "imagenes": [
+      {
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "url": "/images/relojes/rolex-explorer-36/principal.svg",
+        "url_card": "",
+        "alt_text": "Ilustración de Rolex Explorer 36mm Esfera Negra (fotografía pendiente)"
+      },
+      {
+        "orden": 2,
+        "es_principal": false,
+        "tipo": "DETALLE",
+        "url": "/images/relojes/rolex-explorer-36/detalle.webp",
+        "url_card": "/images/relojes/rolex-explorer-36/detalle-card.webp",
+        "alt_text": "Rolex Explorer ref. 114270, esfera negra"
+      }
+    ]
+  },
+  "omega-aqua-terra-150m": {
+    "reloj": "Seamaster Aqua Terra 150M 41mm",
+    "marca": "Omega",
+    "imagenes": [
+      {
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "url": "/images/relojes/omega-aqua-terra-150m/principal.svg",
+        "url_card": "",
+        "alt_text": "Ilustración de Omega Seamaster Aqua Terra 150M 41mm (fotografía pendiente)"
+      }
+    ]
+  },
+  "omega-constellation-39": {
+    "reloj": "Constellation Co-Axial 39mm",
+    "marca": "Omega",
+    "imagenes": [
+      {
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "url": "/images/relojes/omega-constellation-39/principal.svg",
+        "url_card": "",
+        "alt_text": "Ilustración de Omega Constellation Co-Axial 39mm (fotografía pendiente)"
+      }
+    ]
+  },
+  "patek-philippe-calatrava-5227": {
+    "reloj": "Calatrava 5227R Oro Rosa",
+    "marca": "Patek Philippe",
+    "imagenes": [
+      {
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "url": "/images/relojes/patek-philippe-calatrava-5227/principal.svg",
+        "url_card": "",
+        "alt_text": "Ilustración de Patek Philippe Calatrava 5227R Oro Rosa (fotografía pendiente)"
+      }
+    ]
+  },
+  "patek-philippe-aquanaut-5167": {
+    "reloj": "Aquanaut 5167A 'Jumbo'",
+    "marca": "Patek Philippe",
+    "imagenes": [
+      {
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "url": "/images/relojes/patek-philippe-aquanaut-5167/principal.svg",
+        "url_card": "",
+        "alt_text": "Ilustración de Patek Philippe Aquanaut 5167A 'Jumbo' (fotografía pendiente)"
+      }
+    ]
+  },
+  "audemars-piguet-royal-oak-offshore": {
+    "reloj": "Royal Oak Offshore Chronograph 43mm",
+    "marca": "Audemars Piguet",
+    "imagenes": [
+      {
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "url": "/images/relojes/audemars-piguet-royal-oak-offshore/principal.svg",
+        "url_card": "",
+        "alt_text": "Ilustración de Audemars Piguet Royal Oak Offshore Chronograph 43mm (fotografía pendiente)"
+      }
+    ]
+  },
+  "audemars-piguet-code-1159": {
+    "reloj": "Code 11.59 Automático 41mm",
+    "marca": "Audemars Piguet",
+    "imagenes": [
+      {
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "url": "/images/relojes/audemars-piguet-code-1159/principal.svg",
+        "url_card": "",
+        "alt_text": "Ilustración de Audemars Piguet Code 11.59 Automático 41mm (fotografía pendiente)"
+      }
+    ]
+  },
+  "cartier-santos-large": {
+    "reloj": "Santos de Cartier Grande 39.8mm",
+    "marca": "Cartier",
+    "imagenes": [
+      {
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "url": "/images/relojes/cartier-santos-large/principal.svg",
+        "url_card": "",
+        "alt_text": "Ilustración de Cartier Santos de Cartier Grande 39.8mm (fotografía pendiente)"
+      }
+    ]
+  },
+  "cartier-tank-must": {
+    "reloj": "Tank Must Grande 33.7mm",
+    "marca": "Cartier",
+    "imagenes": [
+      {
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "url": "/images/relojes/cartier-tank-must/principal.svg",
+        "url_card": "",
+        "alt_text": "Ilustración de Cartier Tank Must Grande 33.7mm (fotografía pendiente)"
+      }
+    ]
+  },
+  "cartier-ballon-bleu-40": {
+    "reloj": "Ballon Bleu de Cartier 40mm",
+    "marca": "Cartier",
+    "imagenes": [
+      {
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "url": "/images/relojes/cartier-ballon-bleu-40/principal.svg",
+        "url_card": "",
+        "alt_text": "Ilustración de Cartier Ballon Bleu de Cartier 40mm (fotografía pendiente)"
+      }
+    ]
+  },
+  "tag-heuer-carrera-glassbox": {
+    "reloj": "Carrera Chronograph 39mm 'Glassbox'",
+    "marca": "TAG Heuer",
+    "imagenes": [
+      {
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "url": "/images/relojes/tag-heuer-carrera-glassbox/principal.svg",
+        "url_card": "",
+        "alt_text": "Ilustración de TAG Heuer Carrera Chronograph 39mm 'Glassbox' (fotografía pendiente)"
+      }
+    ]
+  },
+  "tag-heuer-aquaracer-300": {
+    "reloj": "Aquaracer Professional 300 43mm",
+    "marca": "TAG Heuer",
+    "imagenes": [
+      {
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "url": "/images/relojes/tag-heuer-aquaracer-300/principal.svg",
+        "url_card": "",
+        "alt_text": "Ilustración de TAG Heuer Aquaracer Professional 300 43mm (fotografía pendiente)"
+      }
+    ]
+  },
+  "grand-seiko-white-birch-slgh005": {
+    "reloj": "Evolution 9 'White Birch' SLGH005",
+    "marca": "Grand Seiko",
+    "imagenes": [
+      {
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "url": "/images/relojes/grand-seiko-white-birch-slgh005/principal.svg",
+        "url_card": "",
+        "alt_text": "Ilustración de Grand Seiko Evolution 9 'White Birch' SLGH005 (fotografía pendiente)"
+      }
+    ]
+  },
+  "grand-seiko-sport-gmt-sbge201": {
+    "reloj": "Sport Collection Spring Drive GMT SBGE201",
+    "marca": "Grand Seiko",
+    "imagenes": [
+      {
+        "orden": 1,
+        "es_principal": true,
+        "tipo": "ILUSTRACION",
+        "url": "/images/relojes/grand-seiko-sport-gmt-sbge201/principal.svg",
+        "url_card": "",
+        "alt_text": "Ilustración de Grand Seiko Sport Collection Spring Drive GMT SBGE201 (fotografía pendiente)"
+      }
+    ]
+  }
+}

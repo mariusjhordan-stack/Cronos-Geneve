@@ -8,14 +8,15 @@ import { useCompare } from '@/context/CompareContext';
 import { useAuth } from '@/context/AuthContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import { WatchImage } from '@/components/product/WatchImage';
-import { getWatchImageSrc } from '@/lib/watchImages';
+import { getWatchHoverSrc, getWatchImageAlt, getWatchImageSrc } from '@/lib/watchImages';
 
+// Todas las tarjetas conservan la razón 4:5 de las imágenes normalizadas: solo cambia el ancho de columna.
 const CARD_LAYOUTS = {
-  single: { column: 'xl:col-span-8 xl:col-start-3', image: 'xl:aspect-[5/4]' },
-  pair: { column: 'xl:col-span-6', image: 'xl:aspect-[4/5]' },
-  lead: { column: 'xl:col-span-5', image: 'xl:aspect-[6/5]' },
-  middle: { column: 'xl:col-span-4', image: 'xl:aspect-[4/5]' },
-  narrow: { column: 'xl:col-span-3', image: 'xl:aspect-[3/4]' },
+  single: { column: 'xl:col-span-8 xl:col-start-3' },
+  pair: { column: 'xl:col-span-6' },
+  lead: { column: 'xl:col-span-5' },
+  middle: { column: 'xl:col-span-4' },
+  narrow: { column: 'xl:col-span-3' },
 };
 
 export function ProductCard({ reloj, layoutVariant = 'middle' }) {
@@ -45,7 +46,8 @@ export function ProductCard({ reloj, layoutVariant = 'middle' }) {
     await toggleFavorite(reloj);
   };
 
-  const cardImage = getWatchImageSrc(reloj);
+  const cardImage = getWatchImageSrc(reloj, 'card');
+  const hoverImage = getWatchHoverSrc(reloj, 'card');
   const layout = CARD_LAYOUTS[layoutVariant] || CARD_LAYOUTS.middle;
 
   return (
@@ -57,7 +59,7 @@ export function ProductCard({ reloj, layoutVariant = 'middle' }) {
       className={`group relative col-span-1 flex h-full flex-col justify-between bg-transparent px-1 py-4 sm:py-6 xl:py-8 ${layout.column}`}
     >
       <div className="flex flex-1 flex-col">
-        <div className={`relative mb-7 aspect-[4/5] w-full overflow-hidden bg-gradient-to-br from-cronos-surface-1 via-[#f5f3ee] to-cronos-surface-2 ${layout.image}`}>
+        <div className={`relative mb-7 aspect-[4/5] w-full overflow-hidden bg-[#FAF8F4]`}>
           <Link
             to={`/reloj/${reloj.id}`}
             className="absolute inset-0 focus:outline-none focus-visible:ring-1 focus-visible:ring-cronos-text"
@@ -65,10 +67,18 @@ export function ProductCard({ reloj, layoutVariant = 'middle' }) {
           >
             <WatchImage
               src={cardImage}
-              alt={`${brandName} ${reloj.nombre}`}
+              alt={getWatchImageAlt(reloj)}
               className="h-full w-full"
-              imgClassName={shouldReduceMotion ? '' : 'transition-transform duration-700 ease-out group-hover:scale-[1.04]'}
+              imgClassName={shouldReduceMotion ? '' : 'transition-[transform,opacity] duration-700 ease-out group-hover:scale-[1.03]'}
             />
+            {/* Segunda imagen: aparece con fundido al pasar el cursor (solo si existe una fotografía distinta) */}
+            {hoverImage && (
+              <WatchImage
+                src={hoverImage}
+                alt=""
+                className="absolute inset-0 h-full w-full opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100 group-focus-within:opacity-100"
+              />
+            )}
           </Link>
 
           <button

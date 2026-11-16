@@ -35,9 +35,15 @@ class ImagenRelojSerializer(serializers.ModelSerializer):
     """
     Serializador para las imágenes de la galería de cada reloj.
     """
+    url_card = serializers.SerializerMethodField()
+
     class Meta:
         model = ImagenReloj
-        fields = ['id', 'url', 'orden', 'alt_text']
+        fields = ['id', 'url', 'url_card', 'orden', 'es_principal', 'tipo', 'alt_text']
+
+    def get_url_card(self, obj):
+        # Sin miniatura propia se reutiliza la imagen completa: el frontend nunca recibe un campo vacío.
+        return obj.url_card or obj.url
 
 
 class RelojSerializer(serializers.ModelSerializer):
@@ -79,11 +85,11 @@ class RelojSerializer(serializers.ModelSerializer):
         ]
 
     def get_imagen_url(self, obj):
-        # Si tiene imágenes en galería, la primera (orden 1) es la principal
-        imgs = obj.imagenes.all()
-        if imgs:
-            return imgs[0].url
-        return obj.imagen_url
+        # Principal = la marcada es_principal; si ninguna lo está, la de menor orden.
+        # Se recorre la lista prefetcheada (sin consultas extra por reloj).
+        imgs = list(obj.imagenes.all())
+        principal = next((i for i in imgs if i.es_principal), imgs[0] if imgs else None)
+        return principal.url if principal else obj.imagen_url
 
 
 class RelojRecomendadoSerializer(RelojSerializer):
